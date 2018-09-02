@@ -17,6 +17,21 @@ MainWindow::MainWindow(QWidget *parent) :
         ui(new Ui::MainWindow)
 {
         ui->setupUi(this);
+
+        connect(ui->btn_gencontrol, &QPushButton::clicked, this, &MainWindow::generate_control);
+        connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
+        connect(ui->btn_clear, &QPushButton::clicked, this, &MainWindow::clear_output);
+        connect(ui->btn_filesystem, &QPushButton::clicked, this, &MainWindow::working_dir);
+        connect(ui->btn_output_file, &QPushButton::clicked, this, &MainWindow::output_file);
+        connect(ui->a_create_package, &QAction::triggered, this, &MainWindow::create_package);
+        connect(ui->a_generate_control, &QAction::triggered, this, &MainWindow::generate_control);
+        connect(ui->a_quit, &QAction::triggered, qApp, &QApplication::quit);
+        connect(ui->a_about, &QAction::triggered, this, &MainWindow::about);
+        connect(ui->a_aboutqt, &QAction::triggered, qApp, &QApplication::aboutQt);
+        connect(ui->ck_dependency, &QCheckBox::toggled, ui->ln_dependancies, &QLineEdit::setEnabled);
+        // connect(ui->a_manual) TODO: Add a manual?
+
+        m_api = new debcreator;
 }
 
 MainWindow::~MainWindow()
@@ -24,84 +39,28 @@ MainWindow::~MainWindow()
         delete ui;
 }
 
-void MainWindow::on_checkBox_toggled(bool checked)
+void MainWindow::generate_control()
 {
-        ui->ln_dependancies->setEnabled(checked);
+        m_api->m_package = ui->ln_projectname->text();
+        m_api->m_version = ui->ln_version->text();
+        m_api->m_arch = ui->ln_architecture->text();
+        m_api->m_depends = ui->ln_dependancies->text();
+        m_api->m_maintainer = ui->ln_maintainer->text();
+        m_api->m_desc_title = ui->ln_descriptiontitle->text();
+        m_api->m_desc_body = ui->ln_description->text();
+        m_api->m_dir = ui->ln_filesystem->text();
+        m_api->m_outputfile = ui->ln_outputfile->text();
+
+        ui->txt_control->setText(m_api->control());
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::create_package()
 {
-        QMessageBox msg;
-        QString package;
-        QString version;
-        QString arch;
-        QString depends;
-        QString maintainer;
-        QString desc_title;
-        QString desc_body;
-        QString desc;
-        string pkg_str;
-
-        package = ui->ln_projectname->text();
-        pkg_str = package.toStdString();
-
-        //qDebug() << pkg_str.find(" ") << " : " << pkg_str.length();
-        if (pkg_str.find(" ") < pkg_str.length()) {
-                msg.setText("Package name must not contain spaces.");
-                msg.exec();
-                return;
-        }
-
-        version = ui->ln_version->text();
-        arch = ui->ln_architecture->text();
-        if (arch == "") {
-                arch = "all";
-        }
-        if (ui->checkBox->isChecked() == true && ui->ln_dependancies->text() != "") {
-                depends = "\ndepends: " + ui->ln_dependancies->text();
-        } else {
-                depends = "";
-        }
-        maintainer = ui->ln_maintainer->text();
-        desc_title = ui->ln_descriptiontitle->text();
-        desc_body = ui->ln_description->text();
-        desc = "\ndescription: "+desc_title;
-        if (desc_body != "") {
-                desc += "\n             "+desc_body;
-        }
-
-        ui->txt_control->setText("package: "+package+"\nversion: "+version+"\narchitecture: "+arch+depends+"\nmaintainer: "+maintainer+desc+"\n");
+        QString output = m_api->package(ui->txt_control->toPlainText());
+        ui->txt_output->setText(output);
 }
 
-void MainWindow::on_btn_createpackage_clicked()
-{
-        QProcess dpkg(this);
-        QDir debian_dir(ui->ln_filesystem->text()+"/DEBIAN/");
-        debian_dir.mkdir(ui->ln_filesystem->text()+"/DEBIAN/");
-        QFile control_file(ui->ln_filesystem->text()+"/DEBIAN/control");
-
-        control_file.open(QIODevice::WriteOnly | QIODevice::Text);
-        QTextStream out(&control_file);
-
-        out << ui->txt_control->toPlainText();
-        out << "\n";
-
-        control_file.flush();
-        control_file.close();
-
-        qDebug() << "dpkg -b "+ui->ln_filesystem->text()+" "+ui->ln_outputdir->text();
-        dpkg.start("dpkg -b "+ui->ln_filesystem->text()+" "+ui->ln_outputdir->text(), QIODevice::ReadWrite);
-
-        QByteArray data;
-
-        while(dpkg.waitForReadyRead()) {
-                data.append(dpkg.readAll());
-        }
-
-        ui->txt_output->setText(data.data());
-}
-
-void MainWindow::on_btn_clear_clicked()
+void MainWindow::clear_output()
 {
         /*QMessageBox msg_clear;
         QPushButton all;
@@ -115,51 +74,26 @@ void MainWindow::on_btn_clear_clicked()
         ui->txt_output->setText("");
 }
 
-void MainWindow::on_btn_filesystem_clicked()
+void MainWindow::working_dir()
 {
         QFileDialog dialog(this);
-        QString dirName;
+        QString dir;
         dialog.setViewMode(QFileDialog::Detail);
-        dirName = dialog.getExistingDirectory();
-        ui->ln_filesystem->setText(dirName);
+        dir = dialog.getExistingDirectory();
+        ui->ln_filesystem->setText(dir);
 }
 
-void MainWindow::on_btn_outbutdir_clicked()
+void MainWindow::output_file()
 {
         QFileDialog dialog(this);
-        QString fileName;
+        QString file;
         dialog.setViewMode(QFileDialog::Detail);
-        fileName = dialog.getSaveFileName();
-        ui->ln_outputdir->setText(fileName);
+        file = dialog.getSaveFileName();
+        ui->ln_outputfile->setText(file);
 }
 
-void MainWindow::on_actionQuit_triggered()
-{
-        QApplication::quit();
-}
-
-void MainWindow::on_actionGenerate_control_file_triggered()
-{
-        MainWindow::on_pushButton_clicked();
-}
-
-void MainWindow::on_actionCreate_package_triggered()
-{
-        MainWindow::on_btn_createpackage_clicked();
-}
-
-void MainWindow::on_actionAbout_triggered()
+void MainWindow::about()
 {
         QMessageBox about;
         about.about(this, "About", " About Deb-Creator\n\nDeb-Creator is a simple application designed to make the creation of debian packages easier. It aims to provide a straight forward graphical user interface and to automaticaly generate control files and debian packages without the need for any command line knowledge.\n\nBen Heidemann\nLuca Gasperini");
-}
-
-void MainWindow::on_btn_add_clicked()
-{
-        ui->txt_control->setText(ui->txt_control->toPlainText()+ui->cmb_condition->currentText()+": "+ui->ln_value->text()+"\n");
-}
-
-void MainWindow::on_btn_gencontrol_clicked()
-{
-
 }
