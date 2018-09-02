@@ -5,10 +5,10 @@
 
 class DebCreator : public QObject
 {
-    Q_OBJECT
+        Q_OBJECT
 public:
-    explicit DebCreator(QObject *parent = nullptr);
-
+        explicit DebCreator(QObject *parent = nullptr);
+        void genControl();
 signals:
 
 public slots:

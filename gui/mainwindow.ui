@@ -170,7 +170,7 @@
        <widget class="QLineEdit" name="ln_description"/>
       </item>
       <item row="12" column="0" colspan="3">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="btn_gencontrol">
         <property name="text">
          <string>Generate control file</string>
         </property>
@@ -297,12 +297,12 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>27</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>Fi&amp;le</string>
     </property>
     <addaction name="actionQuit"/>
    </widget>
@@ -326,27 +326,27 @@
   </widget>
   <action name="actionQuit">
    <property name="text">
-    <string>Quit</string>
+    <string>&amp;Quit</string>
    </property>
   </action>
   <action name="actionGenerate_control_file">
    <property name="text">
-    <string>Generate control file</string>
+    <string>&amp;Generate control file</string>
    </property>
   </action>
   <action name="actionCreate_package">
    <property name="text">
-    <string>Create package</string>
+    <string>&amp;Create package</string>
    </property>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
+    <string>&amp;About</string>
    </property>
   </action>
   <action name="actionUser_manual">
    <property name="text">
-    <string>User manual</string>
+    <string>&amp;User manual</string>
    </property>
   </action>
  </widget>
