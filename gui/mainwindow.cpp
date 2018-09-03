@@ -1,3 +1,6 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
 #include <QFileDialog>
 #include <QProcess>
 #include <QFile>
@@ -5,10 +8,10 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QPushButton>
+
+#ifdef QT_DEBUG
 #include <QDebug>
-#include <iostream>
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#endif
 
 using namespace std;
 
@@ -76,19 +79,22 @@ void MainWindow::clear_output()
 
 void MainWindow::working_dir()
 {
-        QFileDialog dialog(this);
-        QString dir;
-        dialog.setViewMode(QFileDialog::Detail);
-        dir = dialog.getExistingDirectory();
-        ui->ln_filesystem->setText(dir);
+        QDir dir;
+        dir = QFileDialog::getExistingDirectory(this, "Source file of the package");
+        ui->ln_filesystem->setText(dir.absolutePath());
+
+        if(!dir.isEmpty() && ui->ln_outputfile->text().isEmpty()) {
+                QString name;
+                name = "/" + dir.dirName() + ".deb";
+                dir.cd("..");
+                ui->ln_outputfile->setText(dir.absolutePath() + name);
+        }
 }
 
 void MainWindow::output_file()
 {
-        QFileDialog dialog(this);
         QString file;
-        dialog.setViewMode(QFileDialog::Detail);
-        file = dialog.getSaveFileName();
+        file = QFileDialog::getSaveFileName(this, "Select where save package", ui->ln_outputfile->text());
         ui->ln_outputfile->setText(file);
 }
 

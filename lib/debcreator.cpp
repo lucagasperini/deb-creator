@@ -1,4 +1,5 @@
 #include "debcreator.h"
+
 #include <QFileDialog>
 #include <QProcess>
 #include <QFile>
@@ -6,8 +7,10 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QPushButton>
+
+#ifdef QT_DEBUG
 #include <QDebug>
-#include <iostream>
+#endif
 
 debcreator::debcreator(QObject *parent) : QObject(parent)
 {
@@ -61,7 +64,11 @@ QString debcreator::package(const QString& control)
         control_file.close();
 
         QString cmd = "dpkg -b " + m_dir + " " + m_outputfile;
+
+#ifdef QT_DEBUG
         qDebug() << "Executing: " << cmd;
+#endif
+
         dpkg.start(cmd, QIODevice::ReadWrite);
 
         QByteArray data;
@@ -69,7 +76,8 @@ QString debcreator::package(const QString& control)
         while(dpkg.waitForReadyRead()) {
                 data.append(dpkg.readAll());
         }
-
+#ifdef QT_DEBUG
         qDebug() << data.data();
+#endif
         return data.data();
 }
