@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resource/men.png</file>
+        <file>resource/gitlab-brands.svg</file>
+    </qresource>
+</RCC>

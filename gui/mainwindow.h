@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <debcreator.h>
 
+#include "about.h"
+
 namespace Ui
 {
 class MainWindow;
@@ -20,6 +22,7 @@ public:
         debcreator *m_api;
 private:
         Ui::MainWindow *ui;
+        about about;
 
 private slots:
         void output_file();
@@ -27,7 +30,6 @@ private slots:
         void clear_output();
         void create_package();
         void generate_control();
-        void about();
 };
 
 #endif // MAINWINDOW_H

@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->a_create_package, &QAction::triggered, this, &MainWindow::create_package);
         connect(ui->a_generate_control, &QAction::triggered, this, &MainWindow::generate_control);
         connect(ui->a_quit, &QAction::triggered, qApp, &QApplication::quit);
-        connect(ui->a_about, &QAction::triggered, this, &MainWindow::about);
+        connect(ui->a_about, &QAction::triggered, &about, &about::show);
         connect(ui->a_aboutqt, &QAction::triggered, qApp, &QApplication::aboutQt);
         connect(ui->ck_dependency, &QCheckBox::toggled, ui->ln_dependancies, &QLineEdit::setEnabled);
         // connect(ui->a_manual) TODO: Add a manual?
@@ -96,10 +96,4 @@ void MainWindow::output_file()
         QString file;
         file = QFileDialog::getSaveFileName(this, "Select where save package", ui->ln_outputfile->text());
         ui->ln_outputfile->setText(file);
-}
-
-void MainWindow::about()
-{
-        QMessageBox about;
-        about.about(this, "About", " About Deb-Creator\n\nDeb-Creator is a simple application designed to make the creation of debian packages easier. It aims to provide a straight forward graphical user interface and to automaticaly generate control files and debian packages without the need for any command line knowledge.\n\nBen Heidemann\nLuca Gasperini");
 }

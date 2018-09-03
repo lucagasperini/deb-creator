@@ -29,7 +29,8 @@ SOURCES += \
         mainwindow.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+        about.h
 
 FORMS += \
         mainwindow.ui
@@ -38,3 +39,6 @@ unix|win32: LIBS += -L$$OUT_PWD/../lib/ -ldebcreator
 
 INCLUDEPATH += $$PWD/../lib
 DEPENDPATH += $$PWD/../lib
+
+RESOURCES += \
+    resource.qrc
