@@ -26,21 +26,24 @@ QString debcreator::control()
                 return "";
         }
 
-        offset += ("package: " + m_package);
-        offset += ("\nversion: " + m_version);
+        offset += ("Package: " + m_package);
+        offset += ("\nMaintainer: " + m_maintainer);
+        offset += ("\nUploaders: " + m_uploaders);
+        offset += ("\nVersion: " + m_version);
+        offset += ("\nHomepage: " + m_homepage);
+        offset += ("\nSource: " + m_source);
 
         if (m_arch.isEmpty())
-                offset += "\narchitecture: all";
+                offset += "\nArchitecture: all";
         else
-                offset += ("\narchitecture: " + m_arch);
+                offset += ("\nArchitecture: " + m_arch);
 
         if (!m_depends.isEmpty())
-                offset += ("\ndepends: " + m_depends);
+                offset += ("\nDepends: " + m_depends);
 
-        offset += ("\nmaintainer: " + m_maintainer);
-
-        offset += ("\ndescription: " + m_desc_title);
-
+        offset += ("\nReplace: " + m_replace);
+        offset += ("\nSection: " + m_section);
+        offset += ("\nDescription: " + m_desc_title);
         if (m_desc_body != "")
                 offset += "\n             " + m_desc_body;
 

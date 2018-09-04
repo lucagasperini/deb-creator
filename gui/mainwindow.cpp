@@ -53,6 +53,11 @@ void MainWindow::generate_control()
         m_api->m_desc_body = ui->ln_description->text();
         m_api->m_dir = ui->ln_filesystem->text();
         m_api->m_outputfile = ui->ln_outputfile->text();
+        m_api->m_homepage = ui->ln_homepage->text();
+        m_api->m_replace = ui->ln_replace->text();
+        m_api->m_section = ui->ln_section->text();
+        m_api->m_source = ui->ln_source->text();
+        m_api->m_uploaders = ui->ln_uploaders->text();
 
         ui->txt_control->setText(m_api->control());
 }

@@ -18,6 +18,11 @@ public:
         QString m_maintainer;
         QString m_desc_title;
         QString m_desc_body;
+        QString m_homepage;
+        QString m_uploaders;
+        QString m_section;
+        QString m_source;
+        QString m_replace;
 
         QString m_control;
         QString m_dir;
