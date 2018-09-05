@@ -30,6 +30,7 @@ private slots:
         void clear_output();
         void create_package();
         void generate_control();
+        void check_database();
 };
 
 #endif // MAINWINDOW_H

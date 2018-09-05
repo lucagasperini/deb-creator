@@ -13,6 +13,9 @@
 #include <QDebug>
 #endif
 
+#define DEB_CREATOR_LOCAL       QDir::home().path() + QStringLiteral("/.local/share/deb-creator/")
+#define DEB_CREATOR_DB          DEB_CREATOR_LOCAL + QStringLiteral("deb-creator.db")
+
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -26,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->btn_clear, &QPushButton::clicked, this, &MainWindow::clear_output);
         connect(ui->btn_filesystem, &QPushButton::clicked, this, &MainWindow::working_dir);
         connect(ui->btn_output_file, &QPushButton::clicked, this, &MainWindow::output_file);
+        connect(ui->btn_check, &QPushButton::clicked, this, &MainWindow::check_database);
         connect(ui->a_create_package, &QAction::triggered, this, &MainWindow::create_package);
         connect(ui->a_generate_control, &QAction::triggered, this, &MainWindow::generate_control);
         connect(ui->a_quit, &QAction::triggered, qApp, &QApplication::quit);
@@ -34,7 +38,11 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->ck_dependency, &QCheckBox::toggled, ui->ln_dependancies, &QLineEdit::setEnabled);
         // connect(ui->a_manual) TODO: Add a manual?
 
-        m_api = new debcreator;
+        QDir local(DEB_CREATOR_LOCAL);
+        if(!local.exists())
+                local.mkdir(DEB_CREATOR_LOCAL);
+
+        m_api = new debcreator(DEB_CREATOR_DB);
 }
 
 MainWindow::~MainWindow()
@@ -44,6 +52,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::generate_control()
 {
+        ui->txt_output->append(QStringLiteral("Generating new control file..."));
+
         m_api->m_package = ui->ln_projectname->text();
         m_api->m_version = ui->ln_version->text();
         m_api->m_arch = ui->ln_architecture->text();
@@ -58,6 +68,11 @@ void MainWindow::generate_control()
         m_api->m_section = ui->ln_section->text();
         m_api->m_source = ui->ln_source->text();
         m_api->m_uploaders = ui->ln_uploaders->text();
+
+        if(m_api->db_insert())
+                ui->txt_output->append(QStringLiteral("Added package into database..."));
+        else
+                ui->txt_output->append(QStringLiteral("Failed while adding the package to the database!"));
 
         ui->txt_control->setText(m_api->control());
 }
@@ -101,4 +116,28 @@ void MainWindow::output_file()
         QString file;
         file = QFileDialog::getSaveFileName(this, "Select where save package", ui->ln_outputfile->text());
         ui->ln_outputfile->setText(file);
+}
+
+
+void MainWindow::check_database()
+{
+        if(!m_api->db_check(ui->ln_projectname->text())) {
+                ui->txt_output->append(ui->ln_projectname->text() + QStringLiteral(" package didn't find!"));
+                return;
+        }
+
+                ui->ln_projectname->setText(m_api->m_package);
+                ui->ln_version->setText(m_api->m_version);
+                ui->ln_architecture->setText(m_api->m_arch);
+                ui->ln_dependancies->setText(m_api->m_depends);
+                ui->ln_maintainer->setText(m_api->m_maintainer);
+                ui->ln_descriptiontitle->setText(m_api->m_desc_title);
+                ui->ln_description->setText(m_api->m_desc_body);
+                ui->ln_filesystem->setText(m_api->m_dir);
+                ui->ln_outputfile->setText(m_api->m_outputfile);
+                ui->ln_homepage->setText(m_api->m_homepage);
+                ui->ln_replace->setText(m_api->m_replace);
+                ui->ln_section->setText(m_api->m_section);
+                ui->ln_source->setText(m_api->m_source);
+                ui->ln_uploaders->setText(m_api->m_uploaders);
 }
