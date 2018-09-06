@@ -17,7 +17,7 @@
 #endif
 
 #define DB_TABLE QStringLiteral("package")
-#define DB_CREATE QStringLiteral("CREATE TABLE package("       \
+#define DB_CREATE QStringLiteral("CREATE TABLE package("        \
                                 "name TEXT PRIMARY KEY,"        \
                                 "maintainer TEXT,"              \
                                 "uploader TEXT,"                \
@@ -140,7 +140,7 @@ bool debcreator::db_insert()
         QSqlQuery* query = new QSqlQuery(*m_db);
 
         if(!m_db->tables().contains(DB_TABLE))
-                if(query->exec(DB_CREATE))
+                if(!query->exec(DB_CREATE))
                         return false;
 
         query->prepare(DB_INSERT);
