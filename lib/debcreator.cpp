@@ -1,4 +1,5 @@
 #include "debcreator.h"
+#include "define.h"
 
 #include <QFileDialog>
 #include <QProcess>
@@ -15,50 +16,6 @@
 #include <QDebug>
 #include <QtSql/QSqlError>
 #endif
-
-#define DB_TABLE QStringLiteral("package")
-#define DB_CREATE QStringLiteral("CREATE TABLE package("        \
-                                "name TEXT PRIMARY KEY,"        \
-                                "maintainer TEXT,"              \
-                                "uploader TEXT,"                \
-                                "version TEXT,"                 \
-                                "homepage TEXT,"                \
-                                "source TEXT,"                  \
-                                "arch TEXT,"                    \
-                                "depend TEXT,"                  \
-                                "replace TEXT,"                 \
-                                "section TEXT,"                 \
-                                "title TEXT,"                   \
-                                "body TEXT"                     \
-                                ");")
-
-#define DB_INSERT QStringLiteral("INSERT INTO package ("        \
-                                "name,"                         \
-                                "maintainer,"                   \
-                                "uploader,"                     \
-                                "version,"                      \
-                                "homepage,"                     \
-                                "source,"                       \
-                                "arch,"                         \
-                                "depend,"                       \
-                                "replace,"                      \
-                                "section,"                      \
-                                "title,"                        \
-                                "body"                          \
-                                ") VALUES ("                    \
-                                ":name,"                        \
-                                ":maintainer,"                  \
-                                ":uploader,"                    \
-                                ":version,"                     \
-                                ":homepage,"                    \
-                                ":source,"                      \
-                                ":arch,"                        \
-                                ":depend,"                      \
-                                ":replace,"                     \
-                                ":section,"                     \
-                                ":title,"                       \
-                                ":body"                         \
-                                ");")
 
 debcreator::debcreator(const QString &file, QObject *parent) : QObject(parent)
 {
@@ -139,11 +96,15 @@ bool debcreator::db_insert()
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
-        if(!m_db->tables().contains(DB_TABLE))
-                if(!query->exec(DB_CREATE))
+        if(!m_db->tables().contains(DB_PACKAGE_TABLE))
+                if(!query->exec(DB_PACKAGE_CREATE))
                         return false;
 
-        query->prepare(DB_INSERT);
+        if(!db_exists(m_package))
+                query->prepare(DB_PACKAGE_INSERT);
+        else
+                query->prepare(DB_PACKAGE_UPDATE);
+
         query->bindValue(":name", m_package);
         query->bindValue(":maintainer", m_maintainer);
         query->bindValue(":uploader", m_uploaders);
@@ -167,7 +128,7 @@ bool debcreator::db_insert()
         return offset;
 }
 
-bool debcreator::db_check(const QString &pkg)
+bool debcreator::db_fetch(const QString &pkg)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
@@ -200,4 +161,23 @@ bool debcreator::db_check(const QString &pkg)
 
         query->finish();
         return true;
+}
+
+bool debcreator::db_exists(const QString &pkg)
+{
+        QSqlQuery* query = new QSqlQuery(*m_db);
+
+        query->prepare(QStringLiteral("SELECT EXISTS(SELECT 1 FROM package WHERE name=:name)"));
+        query->bindValue(":name", pkg);
+
+        if(!query->exec()) {
+#ifdef QT_DEBUG
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+                query->finish();
+                return false;
+        }
+
+        if(query->next())
+                return query->value(0).toBool();
 }

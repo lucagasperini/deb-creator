@@ -121,7 +121,7 @@ void MainWindow::output_file()
 
 void MainWindow::check_database()
 {
-        if(!m_api->db_check(ui->ln_projectname->text())) {
+        if(!m_api->db_fetch(ui->ln_projectname->text())) {
                 ui->txt_output->append(ui->ln_projectname->text() + QStringLiteral(" package didn't find!"));
                 return;
         }

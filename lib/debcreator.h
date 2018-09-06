@@ -27,11 +27,17 @@ public:
          */
         bool db_insert();
         /**
-         * @brief db_check check if the package is on the database, if yes it will put all data into the variables in this class.
+         * @brief db_fetch check if the package is on the database, if yes it will put all data into the variables in this class.
          * @param pkg is the name of the package to find
          * @return if package don't exist or something is wrong, it will return false, otherwise true
          */
-        bool db_check(const QString &pkg);
+        bool db_fetch(const QString &pkg);
+        /**
+         * @brief db_exists check if the package is on the database
+         * @param pkg is the name of the package to find
+         * @return if package don't exist it will return false, otherwise true
+         */
+        bool db_exists(const QString &pkg);
 
         QSqlDatabase* m_db;
 
