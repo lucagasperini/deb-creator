@@ -13,7 +13,7 @@
 #include <QDebug>
 #endif
 
-#define DEB_CREATOR_LOCAL       QDir::home().path() + QStringLiteral("/.local/share/deb-creator/")
+#define DEB_CREATOR_LOCAL       QDir::homePath() + QStringLiteral("/.local/share/deb-creator/")
 #define DEB_CREATOR_DB          DEB_CREATOR_LOCAL + QStringLiteral("deb-creator.db")
 
 using namespace std;
@@ -56,17 +56,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::generate_control()
 {
+        if(ui->ln_projectname->text().isEmpty()) {
+                QMessageBox::critical(this, "Control file error", "Package name value is empty!\nPlease add a valid package name.");
+                return;
+        }
+        if (ui->ln_projectname->text().contains(' ')) {
+                QMessageBox::warning(this, "Control file error", "Package name must not contain spaces.");
+                return;
+        }
+
         ui->txt_output->append(QStringLiteral("Generating new control file..."));
 
         m_api->m_package = ui->ln_projectname->text();
         m_api->m_version = ui->ln_version->text();
-        m_api->m_arch = ui->ln_architecture->text();
+        m_api->m_arch = ui->cb_arch->currentText();
         m_api->m_depends = ui->ln_dependancies->text();
         m_api->m_maintainer = ui->ln_maintainer->text();
         m_api->m_desc_title = ui->ln_descriptiontitle->text();
         m_api->m_desc_body = ui->ln_description->text();
-        m_api->m_dir = ui->ln_filesystem->text();
-        m_api->m_outputfile = ui->ln_outputfile->text();
         m_api->m_homepage = ui->ln_homepage->text();
         m_api->m_replace = ui->ln_replace->text();
         m_api->m_section = ui->ln_section->text();
@@ -77,6 +84,9 @@ void MainWindow::generate_control()
                 ui->txt_output->append(QStringLiteral("Added package into database..."));
         else
                 ui->txt_output->append(QStringLiteral("Failed while adding the package to the database!"));
+
+        if(ui->ln_outputfile->text().isEmpty())
+                ui->ln_outputfile->setText(QDir::homePath() + "/" + m_api->m_package + "_" + m_api->m_version + ".deb");
 
         ui->txt_control->setText(m_api->control());
 }
@@ -89,6 +99,9 @@ void MainWindow::generate_changelog()
 
 void MainWindow::create_package()
 {
+        m_api->m_dir = ui->ln_filesystem->text();
+        m_api->m_outputfile = ui->ln_outputfile->text();
+
         QString output = m_api->package(ui->txt_control->toPlainText());
         ui->txt_output->setText(output);
 }
@@ -138,7 +151,7 @@ void MainWindow::check_database()
 
                 ui->ln_projectname->setText(m_api->m_package);
                 ui->ln_version->setText(m_api->m_version);
-                ui->ln_architecture->setText(m_api->m_arch);
+                ui->cb_arch->setCurrentText(m_api->m_arch);
                 ui->ln_dependancies->setText(m_api->m_depends);
                 ui->ln_maintainer->setText(m_api->m_maintainer);
                 ui->ln_descriptiontitle->setText(m_api->m_desc_title);

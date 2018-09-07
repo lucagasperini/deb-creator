@@ -5,7 +5,6 @@
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
-#include <QMessageBox>
 #include <QDateTime>
 
 #include <QtSql/QSqlQuery>
@@ -27,11 +26,6 @@ debcreator::debcreator(const QString &file, QObject *parent) : QObject(parent)
 QString debcreator::control()
 {
         QString offset;
-
-        if (m_package.contains(' ')) {
-                QMessageBox::warning(nullptr, "Control file error", "Package name must not contain spaces.");
-                return "";
-        }
 
         offset += ("Package: " + m_package);
         offset += ("\nMaintainer: " + m_maintainer);
@@ -87,7 +81,7 @@ QString debcreator::package(const QString& control)
         if(!m_changelog.isEmpty()) {
         QFile changelog_file(m_dir + "/DEBIAN/changelog");
 
-        changelog_file.open(QIODevice::WriteOnly | QIODevice::Text);
+        changelog_file.open(QIODevice::Append | QIODevice::Text);
         out.setDevice(&changelog_file);
 
         out << m_changelog;
