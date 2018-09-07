@@ -30,6 +30,7 @@ private slots:
         void clear_output();
         void create_package();
         void generate_control();
+        void generate_changelog();
         void check_database();
 };
 

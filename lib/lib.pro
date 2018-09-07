@@ -4,11 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core
+QT       += core sql
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
-TEMPLATE = lib sql
+TEMPLATE = lib
 
 TARGET = debcreator
 

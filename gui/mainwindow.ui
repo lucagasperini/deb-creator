@@ -311,6 +311,68 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Changelog</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="1">
+         <widget class="QLabel" name="lbl_urgency">
+          <property name="text">
+           <string>Urgency Level</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLineEdit" name="ln_status"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="lbl_status">
+          <property name="text">
+           <string>Status</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="QTextEdit" name="txt_changelog"/>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="cb_urgency">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>low</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>medium</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>high</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="3" column="0" colspan="2">
+         <widget class="QPushButton" name="btn_changelog">
+          <property name="text">
+           <string>Create changelog</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
     <item>

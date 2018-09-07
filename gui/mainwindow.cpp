@@ -24,12 +24,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
         ui->setupUi(this);
 
+        ui->tabWidget->setCurrentIndex(0);
+
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &MainWindow::generate_control);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
         connect(ui->btn_clear, &QPushButton::clicked, this, &MainWindow::clear_output);
         connect(ui->btn_filesystem, &QPushButton::clicked, this, &MainWindow::working_dir);
         connect(ui->btn_output_file, &QPushButton::clicked, this, &MainWindow::output_file);
         connect(ui->btn_check, &QPushButton::clicked, this, &MainWindow::check_database);
+        connect(ui->btn_changelog, &QPushButton::clicked, this, &MainWindow::generate_changelog);
+
         connect(ui->a_create_package, &QAction::triggered, this, &MainWindow::create_package);
         connect(ui->a_generate_control, &QAction::triggered, this, &MainWindow::generate_control);
         connect(ui->a_quit, &QAction::triggered, qApp, &QApplication::quit);
@@ -75,6 +79,12 @@ void MainWindow::generate_control()
                 ui->txt_output->append(QStringLiteral("Failed while adding the package to the database!"));
 
         ui->txt_control->setText(m_api->control());
+}
+
+void MainWindow::generate_changelog()
+{
+        m_api->changelog(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
+        ui->txt_changelog->setText(m_api->m_changelog);
 }
 
 void MainWindow::create_package()

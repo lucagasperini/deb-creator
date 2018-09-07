@@ -1,13 +1,13 @@
 #include "debcreator.h"
 #include "define.h"
 
-#include <QFileDialog>
 #include <QProcess>
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
 #include <QMessageBox>
-#include <QPushButton>
+#include <QDateTime>
+
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlDriver>
 #include <QtSql/QSqlRecord>
@@ -57,21 +57,45 @@ QString debcreator::control()
         return offset;
 }
 
+bool debcreator::changelog(const QString &text, const QString &status, const QString &urgency)
+{
+        m_changelog = (m_package + " (" + m_version + ") " + status + "; urgency=" + urgency + "\n\n" +
+                       text + "\n\n" +
+                       " -- " + git_fetch_user() + " " + date_fetch());
+        return true;
+}
+
 QString debcreator::package(const QString& control)
 {
         QProcess dpkg(this);
+        QTextStream out;
         QDir debian_dir(m_dir + "/DEBIAN/");
-        debian_dir.mkdir(m_dir + "/DEBIAN/");
+        if(!debian_dir.exists())
+                debian_dir.mkdir(m_dir + "/DEBIAN/");
+
         QFile control_file(m_dir + "/DEBIAN/control");
 
         control_file.open(QIODevice::WriteOnly | QIODevice::Text);
-        QTextStream out(&control_file);
+        out.setDevice(&control_file);
 
         out << control;
         out << "\n";
 
         control_file.flush();
         control_file.close();
+
+        if(!m_changelog.isEmpty()) {
+        QFile changelog_file(m_dir + "/DEBIAN/changelog");
+
+        changelog_file.open(QIODevice::WriteOnly | QIODevice::Text);
+        out.setDevice(&changelog_file);
+
+        out << m_changelog;
+        out << "\n";
+
+        control_file.flush();
+        control_file.close();
+        }
 
         QString cmd = "dpkg -b " + m_dir + " " + m_outputfile;
 
@@ -180,4 +204,32 @@ bool debcreator::db_exists(const QString &pkg)
 
         if(query->next())
                 return query->value(0).toBool();
+}
+
+
+QString debcreator::git_fetch_user()
+{
+        QProcess git;
+        QString name;
+        QString mail;
+
+        git.start(QStringLiteral("git config --get user.name"));
+        git.waitForReadyRead();
+        name = git.readAll().trimmed();
+
+        git.close();
+
+        git.start(QStringLiteral("git config --get user.email"));
+        git.waitForReadyRead();
+        mail = git.readAll().trimmed();
+
+        git.close();
+
+        return name + " " + "<" + mail + ">";
+}
+
+QString debcreator::date_fetch()
+{
+        QDateTime now = QDateTime::currentDateTime();
+        return now.toString(QStringLiteral("ddd, dd MMM yyyy hh:mm:ss t"));
 }

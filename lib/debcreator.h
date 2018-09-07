@@ -15,12 +15,17 @@ public:
          */
         QString control();
         /**
+         * @brief changelog generate and store changelog in this class
+         * @param text user log in changelog
+         * @return if changelog is created correctly return true otherwise false
+         */
+        bool changelog(const QString &text, const QString &status, const QString &urgency);
+        /**
          * @brief package create the package using QProcess to dpkg
          * @param control is the control text
          * @return return the text of input stream from dpkg process
          */
-        QString package(const QString& control);
-
+        QString package(const QString &control);
         /**
          * @brief db_insert insert into the database all variables in this class
          * @return if insert routine it's ok will return true otherwise false
@@ -38,6 +43,16 @@ public:
          * @return if package don't exist it will return false, otherwise true
          */
         bool db_exists(const QString &pkg);
+        /**
+         * @brief git_fetch_user fetch user.email and user.name from git config
+         * @return the format from git is user.name <user.email>, empty string if git is not installed or git is not configurated
+         */
+        static QString git_fetch_user();
+        /**
+         * @brief date_fetch fetch date in standard format from locale
+         * @return the formated string of date
+         */
+        static QString date_fetch();
 
         QSqlDatabase* m_db;
 
@@ -54,7 +69,9 @@ public:
         QString m_source;
         QString m_replace;
 
+        QString m_changelog;
         QString m_control;
+
         QString m_dir;
         QString m_outputfile;
 };
