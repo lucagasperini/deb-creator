@@ -110,6 +110,14 @@ QString debcreator::package(const QString& control)
         return data.data();
 }
 
+QStringList debcreator::fetch_changelog()
+{
+        QFile changelog_file(m_dir + "/DEBIAN/changelog");
+        changelog_file.open(QIODevice::ReadOnly | QIODevice::Text);
+        //TODO:....
+
+}
+
 bool debcreator::db_insert()
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
