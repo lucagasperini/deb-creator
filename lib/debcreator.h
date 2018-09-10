@@ -30,7 +30,7 @@ public:
          * @brief fetch_changelog fetch previous changelog
          * @return list of changelogs
          */
-        QStringList fetch_changelog();
+        QStringList fetch_changelog(const QString &file);
         /**
          * @brief db_insert insert into the database all variables in this class
          * @return if insert routine it's ok will return true otherwise false

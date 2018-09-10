@@ -110,12 +110,32 @@ QString debcreator::package(const QString& control)
         return data.data();
 }
 
-QStringList debcreator::fetch_changelog()
+QStringList debcreator::fetch_changelog(const QString &file)
 {
-        QFile changelog_file(m_dir + "/DEBIAN/changelog");
-        changelog_file.open(QIODevice::ReadOnly | QIODevice::Text);
-        //TODO:....
+        if(file.isEmpty())
+                return QStringList();
 
+        QStringList offset;
+        QString buffer;
+        QFile changelog_file(file);
+
+        if(!changelog_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                return QStringList();
+        }
+
+        QTextStream in(&changelog_file);
+
+        while (!in.atEnd()) {
+                QString line = in.readLine();
+                buffer.append(line);
+                if(line.startsWith(" -- ")) {
+                        offset.append(buffer);
+                        buffer.clear();
+                }
+        }
+        changelog_file.close();
+
+        return offset;
 }
 
 bool debcreator::db_insert()

@@ -338,9 +338,6 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="ln_status"/>
-        </item>
         <item row="0" column="1">
          <widget class="QLabel" name="lbl_status">
           <property name="text">
@@ -379,15 +376,18 @@
           </item>
          </widget>
         </item>
-        <item row="3" column="1" colspan="2">
+        <item row="2" column="0">
+         <widget class="QListWidget" name="lsw_changelog"/>
+        </item>
+        <item row="3" column="0" colspan="3">
          <widget class="QPushButton" name="btn_changelog">
           <property name="text">
            <string>Create changelog</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="0" rowspan="4">
-         <widget class="QTreeView" name="trv_changelog"/>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="ln_status"/>
         </item>
        </layout>
       </widget>

@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->a_about, &QAction::triggered, &about, &about::show);
         connect(ui->a_aboutqt, &QAction::triggered, qApp, &QApplication::aboutQt);
         connect(ui->ck_dependency, &QCheckBox::toggled, ui->ln_dependancies, &QLineEdit::setEnabled);
+        connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::fetch_changelog);
         // connect(ui->a_manual) TODO: Add a manual?
 
         QDir local(DEB_CREATOR_LOCAL);
@@ -163,4 +164,21 @@ void MainWindow::check_database()
                 ui->ln_section->setText(m_api->m_section);
                 ui->ln_source->setText(m_api->m_source);
                 ui->ln_uploaders->setText(m_api->m_uploaders);
+}
+
+void MainWindow::fetch_changelog(int i)
+{
+        if(i != 1)
+                return;
+
+        QStringList list = m_api->fetch_changelog(ui->ln_filesystem->text() + "/DEBIAN/changelog");
+
+        if(list.isEmpty()) {
+                ui->lsw_changelog->hide();
+                return;
+        }
+
+        ui->lsw_changelog->show();
+        ui->lsw_changelog->addItems(list);
+
 }

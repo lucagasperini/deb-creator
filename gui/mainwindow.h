@@ -32,6 +32,7 @@ private slots:
         void generate_control();
         void generate_changelog();
         void check_database();
+        void fetch_changelog(int i);
 };
 
 #endif // MAINWINDOW_H
