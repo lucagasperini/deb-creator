@@ -108,7 +108,7 @@ bool control::db_fetch(const QString &pkg)
 {
         QSqlQuery* query = new QSqlQuery(*debcreator::m_db);
 
-        query->prepare(QStringLiteral("SELECT * FROM package WHERE name = :name"));
+        query->prepare(QSL("SELECT * FROM package WHERE name = :name"));
         query->bindValue(":name", pkg);
 
         if(!query->exec()) {
@@ -143,7 +143,7 @@ bool control::db_exists(const QString &pkg)
 {
         QSqlQuery* query = new QSqlQuery(*debcreator::m_db);
 
-        query->prepare(QStringLiteral("SELECT EXISTS(SELECT 1 FROM package WHERE name=:name)"));
+        query->prepare(QSL("SELECT EXISTS(SELECT 1 FROM package WHERE name=:name)"));
         query->bindValue(":name", pkg);
 
         if(!query->exec()) {

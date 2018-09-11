@@ -1,8 +1,10 @@
 #ifndef DEFINE_H
 #define DEFINE_H
 
-#define DB_PACKAGE_TABLE QStringLiteral("package")
-#define DB_PACKAGE_CREATE QStringLiteral("CREATE TABLE package("\
+#define QSL(t) QStringLiteral(t)
+
+#define DB_PACKAGE_TABLE QSL("package")
+#define DB_PACKAGE_CREATE QSL("CREATE TABLE package("\
                                 "name TEXT PRIMARY KEY,"        \
                                 "maintainer TEXT,"              \
                                 "uploader TEXT,"                \
@@ -17,7 +19,7 @@
                                 "body TEXT"                     \
                                 ");")
 
-#define DB_PACKAGE_INSERT QStringLiteral("INSERT INTO package ("\
+#define DB_PACKAGE_INSERT QSL("INSERT INTO package ("\
                                 "name,"                         \
                                 "maintainer,"                   \
                                 "uploader,"                     \
@@ -45,7 +47,7 @@
                                 ":body"                         \
                                 ");")
 
-#define DB_PACKAGE_UPDATE QStringLiteral("UPDATE package SET "  \
+#define DB_PACKAGE_UPDATE QSL("UPDATE package SET "  \
                                 "maintainer=:maintainer,"       \
                                 "uploader=:uploader,"           \
                                 "version=:version,"             \

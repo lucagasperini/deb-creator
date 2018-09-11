@@ -31,13 +31,13 @@ QString debcreator::git_fetch_user()
         QString name;
         QString mail;
 
-        git.start(QStringLiteral("git config --get user.name"));
+        git.start(QSL("git config --get user.name"));
         git.waitForReadyRead();
         name = git.readAll().trimmed();
 
         git.close();
 
-        git.start(QStringLiteral("git config --get user.email"));
+        git.start(QSL("git config --get user.email"));
         git.waitForReadyRead();
         mail = git.readAll().trimmed();
 
@@ -49,7 +49,7 @@ QString debcreator::git_fetch_user()
 QString debcreator::date_fetch()
 {
         QDateTime now = QDateTime::currentDateTime();
-        return now.toString(QStringLiteral("ddd, dd MMM yyyy hh:mm:ss t"));
+        return now.toString(QSL("ddd, dd MMM yyyy hh:mm:ss t"));
 }
 
 bool debcreator::package()

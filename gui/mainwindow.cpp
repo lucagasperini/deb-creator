@@ -13,8 +13,8 @@
 #include <QDebug>
 #endif
 
-#define DEB_CREATOR_LOCAL       QDir::homePath() + QStringLiteral("/.local/share/deb-creator/")
-#define DEB_CREATOR_DB          DEB_CREATOR_LOCAL + QStringLiteral("deb-creator.db")
+#define DEB_CREATOR_LOCAL       QDir::homePath() + QSL("/.local/share/deb-creator/")
+#define DEB_CREATOR_DB          DEB_CREATOR_LOCAL + QSL("deb-creator.db")
 
 using namespace std;
 
@@ -70,7 +70,7 @@ void MainWindow::generate_control()
                 return;
         }
 
-        ui->txt_output->append(QStringLiteral("Generating new control file..."));
+        ui->txt_output->append(QSL("Generating new control file..."));
 
 
         m_control->m_arch = ui->cb_arch->currentText();
@@ -85,9 +85,9 @@ void MainWindow::generate_control()
         m_control->m_uploaders = ui->ln_uploaders->text();
 
         if(m_control->db_insert())
-                ui->txt_output->append(QStringLiteral("Added package into database..."));
+                ui->txt_output->append(QSL("Added package into database..."));
         else
-                ui->txt_output->append(QStringLiteral("Failed while adding the package to the database!"));
+                ui->txt_output->append(QSL("Failed while adding the package to the database!"));
 
         if(ui->ln_outputfile->text().isEmpty())
                 ui->ln_outputfile->setText(QDir::homePath() + "/" + m_api->m_package + "_" + m_api->m_version + ".deb");
@@ -146,7 +146,7 @@ void MainWindow::output_file()
 void MainWindow::check_database()
 {
         if(!m_control->db_fetch(ui->ln_projectname->text())) {
-                ui->txt_output->append(ui->ln_projectname->text() + QStringLiteral(" package didn't find!"));
+                ui->txt_output->append(ui->ln_projectname->text() + QSL(" package didn't find!"));
                 return;
         }
 
@@ -185,6 +185,11 @@ void MainWindow::fetch_changelog(int i)
 
 void MainWindow::save_project()
 {
+        if(ui->ln_projectname->text().isEmpty() || ui->ln_filesystem->text().isEmpty()){
+                QMessageBox::warning(this, "Saving package", "Package name and directory is needed in order to work.");
+                return;
+        }
+
         m_api->m_package = ui->ln_projectname->text();
         m_api->m_version = ui->ln_version->text();
         m_api->m_dir = ui->ln_filesystem->text();
