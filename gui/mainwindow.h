@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <debcreator.h>
+#include <changelog.h>
+#include <control.h>
 
 #include "about.h"
 
@@ -20,11 +22,14 @@ public:
         ~MainWindow();
 
         debcreator *m_api;
+        changelog *m_changelog;
+        control *m_control;
 private:
         Ui::MainWindow *ui;
         about about;
 
 private slots:
+        void save_project();
         void output_file();
         void working_dir();
         void clear_output();

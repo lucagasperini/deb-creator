@@ -23,9 +23,11 @@ MainWindow::MainWindow(QWidget *parent) :
         ui(new Ui::MainWindow)
 {
         ui->setupUi(this);
-
+        ui->tab_control->setEnabled(false);
+        ui->tab_changelog->setEnabled(false);
         ui->tabWidget->setCurrentIndex(0);
 
+        connect(ui->btn_save, &QPushButton::clicked, this, &MainWindow::save_project);
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &MainWindow::generate_control);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
         connect(ui->btn_clear, &QPushButton::clicked, this, &MainWindow::clear_output);
@@ -48,6 +50,8 @@ MainWindow::MainWindow(QWidget *parent) :
                 local.mkdir(DEB_CREATOR_LOCAL);
 
         m_api = new debcreator(DEB_CREATOR_DB);
+        m_changelog = new changelog;
+        m_control = new control;
 }
 
 MainWindow::~MainWindow()
@@ -68,20 +72,19 @@ void MainWindow::generate_control()
 
         ui->txt_output->append(QStringLiteral("Generating new control file..."));
 
-        m_api->m_package = ui->ln_projectname->text();
-        m_api->m_version = ui->ln_version->text();
-        m_api->m_arch = ui->cb_arch->currentText();
-        m_api->m_depends = ui->ln_dependancies->text();
-        m_api->m_maintainer = ui->ln_maintainer->text();
-        m_api->m_desc_title = ui->ln_descriptiontitle->text();
-        m_api->m_desc_body = ui->ln_description->text();
-        m_api->m_homepage = ui->ln_homepage->text();
-        m_api->m_replace = ui->ln_replace->text();
-        m_api->m_section = ui->ln_section->text();
-        m_api->m_source = ui->ln_source->text();
-        m_api->m_uploaders = ui->ln_uploaders->text();
 
-        if(m_api->db_insert())
+        m_control->m_arch = ui->cb_arch->currentText();
+        m_control->m_depends = ui->ln_dependancies->text();
+        m_control->m_maintainer = ui->ln_maintainer->text();
+        m_control->m_desc_title = ui->ln_descriptiontitle->text();
+        m_control->m_desc_body = ui->ln_description->text();
+        m_control->m_homepage = ui->ln_homepage->text();
+        m_control->m_replace = ui->ln_replace->text();
+        m_control->m_section = ui->ln_section->text();
+        m_control->m_source = ui->ln_source->text();
+        m_control->m_uploaders = ui->ln_uploaders->text();
+
+        if(m_control->db_insert())
                 ui->txt_output->append(QStringLiteral("Added package into database..."));
         else
                 ui->txt_output->append(QStringLiteral("Failed while adding the package to the database!"));
@@ -89,22 +92,19 @@ void MainWindow::generate_control()
         if(ui->ln_outputfile->text().isEmpty())
                 ui->ln_outputfile->setText(QDir::homePath() + "/" + m_api->m_package + "_" + m_api->m_version + ".deb");
 
-        ui->txt_control->setText(m_api->control());
+        m_control->generate();
+        ui->txt_control->setText(m_control->m_text);
 }
 
 void MainWindow::generate_changelog()
 {
-        m_api->changelog(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
-        ui->txt_changelog->setText(m_api->m_changelog);
+        QString changelog = m_changelog->generate(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
+        ui->txt_changelog->setText(changelog);
 }
 
 void MainWindow::create_package()
 {
-        m_api->m_dir = ui->ln_filesystem->text();
-        m_api->m_outputfile = ui->ln_outputfile->text();
-
-        QString output = m_api->package(ui->txt_control->toPlainText());
-        ui->txt_output->setText(output);
+        m_api->package();
 }
 
 void MainWindow::clear_output()
@@ -145,25 +145,25 @@ void MainWindow::output_file()
 
 void MainWindow::check_database()
 {
-        if(!m_api->db_fetch(ui->ln_projectname->text())) {
+        if(!m_control->db_fetch(ui->ln_projectname->text())) {
                 ui->txt_output->append(ui->ln_projectname->text() + QStringLiteral(" package didn't find!"));
                 return;
         }
 
                 ui->ln_projectname->setText(m_api->m_package);
                 ui->ln_version->setText(m_api->m_version);
-                ui->cb_arch->setCurrentText(m_api->m_arch);
-                ui->ln_dependancies->setText(m_api->m_depends);
-                ui->ln_maintainer->setText(m_api->m_maintainer);
-                ui->ln_descriptiontitle->setText(m_api->m_desc_title);
-                ui->ln_description->setText(m_api->m_desc_body);
+                ui->cb_arch->setCurrentText(m_control->m_arch);
+                ui->ln_dependancies->setText(m_control->m_depends);
+                ui->ln_maintainer->setText(m_control->m_maintainer);
+                ui->ln_descriptiontitle->setText(m_control->m_desc_title);
+                ui->ln_description->setText(m_control->m_desc_body);
                 ui->ln_filesystem->setText(m_api->m_dir);
                 ui->ln_outputfile->setText(m_api->m_outputfile);
-                ui->ln_homepage->setText(m_api->m_homepage);
-                ui->ln_replace->setText(m_api->m_replace);
-                ui->ln_section->setText(m_api->m_section);
-                ui->ln_source->setText(m_api->m_source);
-                ui->ln_uploaders->setText(m_api->m_uploaders);
+                ui->ln_homepage->setText(m_control->m_homepage);
+                ui->ln_replace->setText(m_control->m_replace);
+                ui->ln_section->setText(m_control->m_section);
+                ui->ln_source->setText(m_control->m_source);
+                ui->ln_uploaders->setText(m_control->m_uploaders);
 }
 
 void MainWindow::fetch_changelog(int i)
@@ -171,7 +171,7 @@ void MainWindow::fetch_changelog(int i)
         if(i != 1)
                 return;
 
-        QStringList list = m_api->fetch_changelog(ui->ln_filesystem->text() + "/DEBIAN/changelog");
+        QStringList list = m_changelog->fetch(ui->ln_filesystem->text() + "/DEBIAN/changelog");
 
         if(list.isEmpty()) {
                 ui->lsw_changelog->hide();
@@ -181,4 +181,14 @@ void MainWindow::fetch_changelog(int i)
         ui->lsw_changelog->show();
         ui->lsw_changelog->addItems(list);
 
+}
+
+void MainWindow::save_project()
+{
+        m_api->m_package = ui->ln_projectname->text();
+        m_api->m_version = ui->ln_version->text();
+        m_api->m_dir = ui->ln_filesystem->text();
+        m_api->m_outputfile = ui->ln_outputfile->text();
+        ui->tab_control->setEnabled(true);
+        ui->tab_changelog->setEnabled(true);
 }
