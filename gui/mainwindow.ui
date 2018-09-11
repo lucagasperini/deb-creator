@@ -228,9 +228,6 @@
               </property>
              </widget>
             </item>
-            <item row="11" column="1" colspan="2">
-             <widget class="QLineEdit" name="ln_description"/>
-            </item>
             <item row="18" column="0" colspan="3">
              <widget class="QPushButton" name="btn_gencontrol">
               <property name="text">
@@ -314,6 +311,9 @@
                </property>
               </item>
              </widget>
+            </item>
+            <item row="11" column="1">
+             <widget class="QTextEdit" name="txt_description"/>
             </item>
            </layout>
           </widget>

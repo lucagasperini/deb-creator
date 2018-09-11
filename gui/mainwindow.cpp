@@ -77,7 +77,7 @@ void MainWindow::generate_control()
         m_control->m_depends = ui->ln_dependancies->text();
         m_control->m_maintainer = ui->ln_maintainer->text();
         m_control->m_desc_title = ui->ln_descriptiontitle->text();
-        m_control->m_desc_body = ui->ln_description->text();
+        m_control->m_desc_body = ui->txt_description->toPlainText();
         m_control->m_homepage = ui->ln_homepage->text();
         m_control->m_replace = ui->ln_replace->text();
         m_control->m_section = ui->ln_section->text();
@@ -156,7 +156,7 @@ void MainWindow::check_database()
                 ui->ln_dependancies->setText(m_control->m_depends);
                 ui->ln_maintainer->setText(m_control->m_maintainer);
                 ui->ln_descriptiontitle->setText(m_control->m_desc_title);
-                ui->ln_description->setText(m_control->m_desc_body);
+                ui->txt_description->setText(m_control->m_desc_body);
                 ui->ln_filesystem->setText(m_api->m_dir);
                 ui->ln_outputfile->setText(m_api->m_outputfile);
                 ui->ln_homepage->setText(m_control->m_homepage);
