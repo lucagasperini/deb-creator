@@ -2,7 +2,6 @@
 #define CONTROL_H
 
 #include <QObject>
-#include <debcreator.h>
 
 class control : public QObject
 {
@@ -25,6 +24,7 @@ public:
          * @return if insert routine it's ok will return true otherwise false
          */
         bool db_insert();
+        QStringList db_fetch();
         /**
          * @brief db_fetch check if the package is on the database, if yes it will put all data into the variables in this class.
          * @param pkg is the name of the package to find

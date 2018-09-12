@@ -1,8 +1,6 @@
 #ifndef CHANGELOG_H
 #define CHANGELOG_H
 
-#include "debcreator.h"
-
 #include <QObject>
 #include <QString>
 
@@ -26,7 +24,6 @@ public:
         QString save();
 
         QString m_text;
-
 };
 
 #endif // CHANGELOG_H

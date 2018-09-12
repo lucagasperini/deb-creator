@@ -52,6 +52,16 @@ MainWindow::MainWindow(QWidget *parent) :
         m_api = new debcreator(DEB_CREATOR_DB);
         m_changelog = new changelog;
         m_control = new control;
+
+        QStringList list = m_control->db_fetch();
+
+        if(list.isEmpty()) {
+                ui->lsw_welcome->hide();
+                return;
+        }
+
+        ui->lsw_welcome->show();
+        ui->lsw_welcome->addItems(list);
 }
 
 MainWindow::~MainWindow()
@@ -90,7 +100,7 @@ void MainWindow::generate_control()
                 ui->txt_output->append(QSL("Failed while adding the package to the database!"));
 
         if(ui->ln_outputfile->text().isEmpty())
-                ui->ln_outputfile->setText(QDir::homePath() + "/" + m_api->m_package + "_" + m_api->m_version + ".deb");
+                ui->ln_outputfile->setText(QDir::homePath() + "/" + package_name + "_" + package_version + ".deb");
 
         m_control->generate();
         ui->txt_control->setText(m_control->m_text);
@@ -150,15 +160,15 @@ void MainWindow::check_database()
                 return;
         }
 
-                ui->ln_projectname->setText(m_api->m_package);
-                ui->ln_version->setText(m_api->m_version);
+                ui->ln_projectname->setText(package_name);
+                ui->ln_version->setText(package_version);
                 ui->cb_arch->setCurrentText(m_control->m_arch);
                 ui->ln_dependancies->setText(m_control->m_depends);
                 ui->ln_maintainer->setText(m_control->m_maintainer);
                 ui->ln_descriptiontitle->setText(m_control->m_desc_title);
                 ui->txt_description->setText(m_control->m_desc_body);
-                ui->ln_filesystem->setText(m_api->m_dir);
-                ui->ln_outputfile->setText(m_api->m_outputfile);
+                ui->ln_filesystem->setText(package_dir);
+                ui->ln_outputfile->setText(package_file);
                 ui->ln_homepage->setText(m_control->m_homepage);
                 ui->ln_replace->setText(m_control->m_replace);
                 ui->ln_section->setText(m_control->m_section);
@@ -190,10 +200,10 @@ void MainWindow::save_project()
                 return;
         }
 
-        m_api->m_package = ui->ln_projectname->text();
-        m_api->m_version = ui->ln_version->text();
-        m_api->m_dir = ui->ln_filesystem->text();
-        m_api->m_outputfile = ui->ln_outputfile->text();
+        package_name = ui->ln_projectname->text();
+        package_version = ui->ln_version->text();
+        package_dir = ui->ln_filesystem->text();
+        package_file = ui->ln_outputfile->text();
         ui->tab_control->setEnabled(true);
         ui->tab_changelog->setEnabled(true);
 }

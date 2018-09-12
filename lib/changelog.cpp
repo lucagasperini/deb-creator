@@ -1,4 +1,6 @@
 #include "changelog.h"
+#include "debcreator.h"
+
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
@@ -10,9 +12,9 @@ changelog::changelog(QObject *parent) : QObject(parent)
 
 QString changelog::generate(const QString &text, const QString &status, const QString &urgency)
 {
-        return (debcreator::m_package + " (" + debcreator::m_version + ") " + status + "; urgency=" + urgency + "\n\n" +
+        return ( package_name + " (" + package_version + ") " + status + "; urgency=" + urgency + "\n\n" +
                        text + "\n\n" +
-                       " -- " + debcreator::git_fetch_user() + " " + debcreator::date_fetch());
+                       " -- " + git_fetch_user() + " " + date_fetch() );
 }
 
 QStringList changelog::fetch(const QString &file)
@@ -46,13 +48,13 @@ QStringList changelog::fetch(const QString &file)
 QString changelog::save()
 {
         QTextStream out;
-        QDir debian_dir(debcreator::m_dir + "/DEBIAN/");
+        QDir debian_dir(package_dir + "/DEBIAN/");
         if(!debian_dir.exists())
-                debian_dir.mkdir(debcreator::m_dir + "/DEBIAN/");
+                debian_dir.mkdir(package_dir + "/DEBIAN/");
 
 
         if(!m_text.isEmpty()) {
-        QFile changelog_file(debcreator::m_dir + "/DEBIAN/changelog");
+        QFile changelog_file(package_dir + "/DEBIAN/changelog");
 
         changelog_file.open(QIODevice::Append | QIODevice::Text);
         out.setDevice(&changelog_file);

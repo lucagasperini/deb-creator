@@ -1,5 +1,6 @@
 #include "control.h"
 #include "define.h"
+#include "debcreator.h"
 
 #include <QFile>
 #include <QDir>
@@ -22,10 +23,10 @@ bool control::generate()
 {
         QString offset;
 
-        offset += ("Package: " + debcreator::m_package);
+        offset += ("Package: " + package_name);
         offset += ("\nMaintainer: " + m_maintainer);
         offset += ("\nUploaders: " + m_uploaders);
-        offset += ("\nVersion: " + debcreator::m_version);
+        offset += ("\nVersion: " + package_version);
         offset += ("\nHomepage: " + m_homepage);
         offset += ("\nSource: " + m_source);
 
@@ -50,11 +51,11 @@ bool control::generate()
 bool control::save()
 {
         QTextStream out;
-        QDir debian_dir(debcreator::m_dir + "/DEBIAN/");
+        QDir debian_dir(package_dir + "/DEBIAN/");
         if(!debian_dir.exists())
-                debian_dir.mkdir(debcreator::m_dir + "/DEBIAN/");
+                debian_dir.mkdir(package_dir + "/DEBIAN/");
 
-        QFile control_file(debcreator::m_dir + "/DEBIAN/control");
+        QFile control_file(package_dir + "/DEBIAN/control");
 
         control_file.open(QIODevice::WriteOnly | QIODevice::Text);
         out.setDevice(&control_file);
@@ -70,21 +71,23 @@ bool control::save()
 
 bool control::db_insert()
 {
-        QSqlQuery* query = new QSqlQuery(*debcreator::m_db);
+        QSqlQuery* query = new QSqlQuery(*package_database);
 
-        if(!debcreator::m_db->tables().contains(DB_PACKAGE_TABLE))
+        if(!package_database->tables().contains(DB_PACKAGE_TABLE))
                 if(!query->exec(DB_PACKAGE_CREATE))
                         return false;
 
-        if(!db_exists(debcreator::m_package))
+        if(!db_exists(package_name))
                 query->prepare(DB_PACKAGE_INSERT);
         else
                 query->prepare(DB_PACKAGE_UPDATE);
 
-        query->bindValue(":name", debcreator::m_package);
+        query->bindValue(":name", package_name);
+        query->bindValue(":directory", package_dir);
+        query->bindValue(":output", package_file);
         query->bindValue(":maintainer", m_maintainer);
         query->bindValue(":uploader", m_uploaders);
-        query->bindValue(":version", debcreator::m_version);
+        query->bindValue(":version", package_version);
         query->bindValue(":homepage", m_homepage);
         query->bindValue(":source", m_source);
         query->bindValue(":arch", m_arch);
@@ -104,9 +107,31 @@ bool control::db_insert()
         return offset;
 }
 
+QStringList control::db_fetch()
+{
+        QStringList offset;
+        QSqlQuery* query = new QSqlQuery(*package_database);
+
+        query->prepare(QSL("SELECT name FROM package"));
+
+        if(!query->exec()) {
+#ifdef QT_DEBUG
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+                query->finish();
+                return offset;
+        }
+
+        while(query->next())
+                offset.append(query->value(0).toString());
+
+        query->finish();
+        return offset;
+}
+
 bool control::db_fetch(const QString &pkg)
 {
-        QSqlQuery* query = new QSqlQuery(*debcreator::m_db);
+        QSqlQuery* query = new QSqlQuery(*package_database);
 
         query->prepare(QSL("SELECT * FROM package WHERE name = :name"));
         query->bindValue(":name", pkg);
@@ -120,11 +145,13 @@ bool control::db_fetch(const QString &pkg)
         }
 
 
-        debcreator::m_package = pkg;
+        package_name = pkg;
         while (query->next()) {
+        package_dir = query->value(query->record().indexOf("directory")).toString();
+        package_file = query->value(query->record().indexOf("output")).toString();
         m_maintainer = query->value(query->record().indexOf("maintainer")).toString();
         m_uploaders = query->value(query->record().indexOf("uploader")).toString();
-        debcreator::m_version = query->value(query->record().indexOf("version")).toString();
+        package_version = query->value(query->record().indexOf("version")).toString();
         m_homepage = query->value(query->record().indexOf("homepage")).toString();
         m_source = query->value(query->record().indexOf("source")).toString();
         m_arch = query->value(query->record().indexOf("arch")).toString();
@@ -141,7 +168,7 @@ bool control::db_fetch(const QString &pkg)
 
 bool control::db_exists(const QString &pkg)
 {
-        QSqlQuery* query = new QSqlQuery(*debcreator::m_db);
+        QSqlQuery* query = new QSqlQuery(*package_database);
 
         query->prepare(QSL("SELECT EXISTS(SELECT 1 FROM package WHERE name=:name)"));
         query->bindValue(":name", pkg);
