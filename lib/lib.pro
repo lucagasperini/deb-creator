@@ -23,11 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     debcreator.h \
-    define.h \
-    changelog.h \
-    control.h
+    define.h
 
 SOURCES += \
-    debcreator.cpp \
-    changelog.cpp \
-    control.cpp
+    debcreator.cpp
