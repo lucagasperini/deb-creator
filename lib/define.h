@@ -6,6 +6,8 @@
 #define DB_PACKAGE_TABLE QSL("package")
 #define DB_PACKAGE_CREATE QSL("CREATE TABLE package("\
                                 "name TEXT PRIMARY KEY,"        \
+                                "directory TEXT,"               \
+                                "output TEXT,"                  \
                                 "maintainer TEXT,"              \
                                 "uploader TEXT,"                \
                                 "version TEXT,"                 \
@@ -21,6 +23,8 @@
 
 #define DB_PACKAGE_INSERT QSL("INSERT INTO package ("\
                                 "name,"                         \
+                                "directory,"                    \
+                                "output,"                       \
                                 "maintainer,"                   \
                                 "uploader,"                     \
                                 "version,"                      \
@@ -34,6 +38,8 @@
                                 "body"                          \
                                 ") VALUES ("                    \
                                 ":name,"                        \
+                                ":directory,"                   \
+                                ":output,"                      \
                                 ":maintainer,"                  \
                                 ":uploader,"                    \
                                 ":version,"                     \
@@ -60,5 +66,6 @@
                                 "title=:title,"                 \
                                 "body=:body"                    \
                                 " WHERE name=:name;")
+
 
 #endif // DEFINE_H

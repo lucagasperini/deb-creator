@@ -1,9 +1,6 @@
 #include "debcreator.h"
 
 #include <QProcess>
-#include <QFile>
-#include <QDir>
-#include <QTextStream>
 #include <QDateTime>
 
 #include <QtSql/QSqlQuery>
@@ -17,80 +14,16 @@
 
 debcreator::debcreator(const QString &file, QObject *parent) : QObject(parent)
 {
-        m_db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", "deb-creator-socket"));
-        m_db->setDatabaseName(file);
-        m_db->open();
+        package_database = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", "deb-creator-socket"));
+        package_database->setDatabaseName(file);
+        package_database->open();
 }
 
-QString debcreator::control()
-{
-        QString offset;
-
-        offset += ("Package: " + m_package);
-        offset += ("\nMaintainer: " + m_maintainer);
-        offset += ("\nUploaders: " + m_uploaders);
-        offset += ("\nVersion: " + m_version);
-        offset += ("\nHomepage: " + m_homepage);
-        offset += ("\nSource: " + m_source);
-
-        if (m_arch.isEmpty())
-                offset += "\nArchitecture: all";
-        else
-                offset += ("\nArchitecture: " + m_arch);
-
-        if (!m_depends.isEmpty())
-                offset += ("\nDepends: " + m_depends);
-
-        offset += ("\nReplace: " + m_replace);
-        offset += ("\nSection: " + m_section);
-        offset += ("\nDescription: " + m_desc_title);
-        if (m_desc_body != "")
-                offset += "\n             " + m_desc_body;
-
-        return offset;
-}
-
-bool debcreator::changelog(const QString &text, const QString &status, const QString &urgency)
-{
-        m_changelog = (m_package + " (" + m_version + ") " + status + "; urgency=" + urgency + "\n\n" +
-                       text + "\n\n" +
-                       " -- " + git_fetch_user() + " " + date_fetch());
-        return true;
-}
-
-QString debcreator::package(const QString& control)
+bool debcreator::package()
 {
         QProcess dpkg(this);
-        QTextStream out;
-        QDir debian_dir(m_dir + "/DEBIAN/");
-        if(!debian_dir.exists())
-                debian_dir.mkdir(m_dir + "/DEBIAN/");
 
-        QFile control_file(m_dir + "/DEBIAN/control");
-
-        control_file.open(QIODevice::WriteOnly | QIODevice::Text);
-        out.setDevice(&control_file);
-
-        out << control;
-        out << "\n";
-
-        control_file.flush();
-        control_file.close();
-
-        if(!m_changelog.isEmpty()) {
-        QFile changelog_file(m_dir + "/DEBIAN/changelog");
-
-        changelog_file.open(QIODevice::Append | QIODevice::Text);
-        out.setDevice(&changelog_file);
-
-        out << m_changelog;
-        out << "\n";
-
-        control_file.flush();
-        control_file.close();
-        }
-
-        QString cmd = "dpkg -b " + m_dir + " " + m_outputfile;
+        QString cmd = "dpkg -b " + package_dir + " " + package_file;
 
 #ifdef QT_DEBUG
         qDebug() << "Executing: " << cmd;
