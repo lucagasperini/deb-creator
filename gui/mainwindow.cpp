@@ -82,19 +82,20 @@ void MainWindow::generate_control()
 
         ui->txt_output->append(QSL("Generating new control file..."));
 
+        m_api->m_package = ui->ln_projectname->text();
+        m_api->m_version = ui->ln_version->text();
+        m_api->m_arch = ui->cb_arch->currentText();
+        m_api->m_depends = ui->ln_dependancies->text();
+        m_api->m_maintainer = ui->ln_maintainer->text();
+        m_api->m_desc_title = ui->ln_descriptiontitle->text();
+        m_api->m_desc_body = ui->txt_description->toPlainText();
+        m_api->m_homepage = ui->ln_homepage->text();
+        m_api->m_replace = ui->ln_replace->text();
+        m_api->m_section = ui->ln_section->text();
+        m_api->m_source = ui->ln_source->text();
+        m_api->m_uploaders = ui->ln_uploaders->text();
 
-        m_control->m_arch = ui->cb_arch->currentText();
-        m_control->m_depends = ui->ln_dependancies->text();
-        m_control->m_maintainer = ui->ln_maintainer->text();
-        m_control->m_desc_title = ui->ln_descriptiontitle->text();
-        m_control->m_desc_body = ui->txt_description->toPlainText();
-        m_control->m_homepage = ui->ln_homepage->text();
-        m_control->m_replace = ui->ln_replace->text();
-        m_control->m_section = ui->ln_section->text();
-        m_control->m_source = ui->ln_source->text();
-        m_control->m_uploaders = ui->ln_uploaders->text();
-
-        if(m_control->db_insert())
+        if(m_api->db_insert())
                 ui->txt_output->append(QSL("Added package into database..."));
         else
                 ui->txt_output->append(QSL("Failed while adding the package to the database!"));
@@ -155,25 +156,25 @@ void MainWindow::output_file()
 
 void MainWindow::check_database()
 {
-        if(!m_control->db_fetch(ui->ln_projectname->text())) {
+        if(!m_api->db_fetch(ui->ln_projectname->text())) {
                 ui->txt_output->append(ui->ln_projectname->text() + QSL(" package didn't find!"));
                 return;
         }
 
-                ui->ln_projectname->setText(package_name);
-                ui->ln_version->setText(package_version);
-                ui->cb_arch->setCurrentText(m_control->m_arch);
-                ui->ln_dependancies->setText(m_control->m_depends);
-                ui->ln_maintainer->setText(m_control->m_maintainer);
-                ui->ln_descriptiontitle->setText(m_control->m_desc_title);
-                ui->txt_description->setText(m_control->m_desc_body);
-                ui->ln_filesystem->setText(package_dir);
-                ui->ln_outputfile->setText(package_file);
-                ui->ln_homepage->setText(m_control->m_homepage);
-                ui->ln_replace->setText(m_control->m_replace);
-                ui->ln_section->setText(m_control->m_section);
-                ui->ln_source->setText(m_control->m_source);
-                ui->ln_uploaders->setText(m_control->m_uploaders);
+                ui->ln_projectname->setText(m_api->m_package);
+                ui->ln_version->setText(m_api->m_version);
+                ui->cb_arch->setCurrentText(m_api->m_arch);
+                ui->ln_dependancies->setText(m_api->m_depends);
+                ui->ln_maintainer->setText(m_api->m_maintainer);
+                ui->ln_descriptiontitle->setText(m_api->m_desc_title);
+                ui->txt_description->setText(m_api->m_desc_body);
+                ui->ln_filesystem->setText(m_api->m_dir);
+                ui->ln_outputfile->setText(m_api->m_outputfile);
+                ui->ln_homepage->setText(m_api->m_homepage);
+                ui->ln_replace->setText(m_api->m_replace);
+                ui->ln_section->setText(m_api->m_section);
+                ui->ln_source->setText(m_api->m_source);
+                ui->ln_uploaders->setText(m_api->m_uploaders);
 }
 
 void MainWindow::fetch_changelog(int i)

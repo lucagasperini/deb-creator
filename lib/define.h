@@ -53,9 +53,7 @@
                                 ":body"                         \
                                 ");")
 
-#define DB_PACKAGE_UPDATE QSL("UPDATE package SET "             \
-                                "output=:output,"               \
-                                "version=:version"              \
+#define DB_PACKAGE_UPDATE QSL("UPDATE package SET "  \
                                 "maintainer=:maintainer,"       \
                                 "uploader=:uploader,"           \
                                 "version=:version,"             \
