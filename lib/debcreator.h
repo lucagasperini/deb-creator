@@ -1,6 +1,8 @@
 #ifndef DEBCREATOR_H
 #define DEBCREATOR_H
 
+#include "define.h"
+
 #include <QObject>
 #include <QtSql/QSqlDatabase>
 

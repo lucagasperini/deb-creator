@@ -1,5 +1,4 @@
 #include "debcreator.h"
-#include "define.h"
 
 #include <QProcess>
 #include <QFile>
@@ -178,7 +177,7 @@ bool debcreator::db_fetch(const QString &pkg)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
-        query->prepare(QStringLiteral("SELECT * FROM package WHERE name = :name"));
+        query->prepare(QSL("SELECT * FROM package WHERE name = :name"));
         query->bindValue(":name", pkg);
 
         if(!query->exec()) {
@@ -213,7 +212,7 @@ bool debcreator::db_exists(const QString &pkg)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
-        query->prepare(QStringLiteral("SELECT EXISTS(SELECT 1 FROM package WHERE name=:name)"));
+        query->prepare(QSL("SELECT EXISTS(SELECT 1 FROM package WHERE name=:name)"));
         query->bindValue(":name", pkg);
 
         if(!query->exec()) {
@@ -235,13 +234,13 @@ QString debcreator::git_fetch_user()
         QString name;
         QString mail;
 
-        git.start(QStringLiteral("git config --get user.name"));
+        git.start(QSL("git config --get user.name"));
         git.waitForReadyRead();
         name = git.readAll().trimmed();
 
         git.close();
 
-        git.start(QStringLiteral("git config --get user.email"));
+        git.start(QSL("git config --get user.email"));
         git.waitForReadyRead();
         mail = git.readAll().trimmed();
 
@@ -253,5 +252,5 @@ QString debcreator::git_fetch_user()
 QString debcreator::date_fetch()
 {
         QDateTime now = QDateTime::currentDateTime();
-        return now.toString(QStringLiteral("ddd, dd MMM yyyy hh:mm:ss t"));
+        return now.toString(QSL("ddd, dd MMM yyyy hh:mm:ss t"));
 }
