@@ -23,11 +23,9 @@ MainWindow::MainWindow(QWidget *parent) :
         ui(new Ui::MainWindow)
 {
         ui->setupUi(this);
-        ui->tab_control->setEnabled(false);
-        ui->tab_changelog->setEnabled(false);
+
         ui->tabWidget->setCurrentIndex(0);
 
-        connect(ui->btn_save, &QPushButton::clicked, this, &MainWindow::save_project);
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &MainWindow::generate_control);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
         connect(ui->btn_clear, &QPushButton::clicked, this, &MainWindow::clear_output);
@@ -50,18 +48,6 @@ MainWindow::MainWindow(QWidget *parent) :
                 local.mkdir(DEB_CREATOR_LOCAL);
 
         m_api = new debcreator(DEB_CREATOR_DB);
-        m_changelog = new changelog;
-        m_control = new control;
-
-        QStringList list = m_control->db_fetch();
-
-        if(list.isEmpty()) {
-                ui->lsw_welcome->hide();
-                return;
-        }
-
-        ui->lsw_welcome->show();
-        ui->lsw_welcome->addItems(list);
 }
 
 MainWindow::~MainWindow()
@@ -101,21 +87,24 @@ void MainWindow::generate_control()
                 ui->txt_output->append(QSL("Failed while adding the package to the database!"));
 
         if(ui->ln_outputfile->text().isEmpty())
-                ui->ln_outputfile->setText(QDir::homePath() + "/" + package_name + "_" + package_version + ".deb");
+                ui->ln_outputfile->setText(QDir::homePath() + "/" + m_api->m_package + "_" + m_api->m_version + ".deb");
 
-        m_control->generate();
-        ui->txt_control->setText(m_control->m_text);
+        ui->txt_control->setText(m_api->control());
 }
 
 void MainWindow::generate_changelog()
 {
-        QString changelog = m_changelog->generate(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
-        ui->txt_changelog->setText(changelog);
+        m_api->changelog(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
+        ui->txt_changelog->setText(m_api->m_changelog);
 }
 
 void MainWindow::create_package()
 {
-        m_api->package();
+        m_api->m_dir = ui->ln_filesystem->text();
+        m_api->m_outputfile = ui->ln_outputfile->text();
+
+        QString output = m_api->package(ui->txt_control->toPlainText());
+        ui->txt_output->setText(output);
 }
 
 void MainWindow::clear_output()
@@ -182,7 +171,7 @@ void MainWindow::fetch_changelog(int i)
         if(i != 1)
                 return;
 
-        QStringList list = m_changelog->fetch(ui->ln_filesystem->text() + "/DEBIAN/changelog");
+        QStringList list = m_api->fetch_changelog(ui->ln_filesystem->text() + "/DEBIAN/changelog");
 
         if(list.isEmpty()) {
                 ui->lsw_changelog->hide();
@@ -192,19 +181,4 @@ void MainWindow::fetch_changelog(int i)
         ui->lsw_changelog->show();
         ui->lsw_changelog->addItems(list);
 
-}
-
-void MainWindow::save_project()
-{
-        if(ui->ln_projectname->text().isEmpty() || ui->ln_filesystem->text().isEmpty()){
-                QMessageBox::warning(this, "Saving package", "Package name and directory is needed in order to work.");
-                return;
-        }
-
-        package_name = ui->ln_projectname->text();
-        package_version = ui->ln_version->text();
-        package_dir = ui->ln_filesystem->text();
-        package_file = ui->ln_outputfile->text();
-        ui->tab_control->setEnabled(true);
-        ui->tab_changelog->setEnabled(true);
 }
