@@ -24,14 +24,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
         ui->setupUi(this);
 
+        ui->tab_control->setEnabled(false);
+        ui->tab_changelog->setEnabled(false);
         ui->tabWidget->setCurrentIndex(0);
 
+        connect(ui->btn_save, &QPushButton::clicked, this, &MainWindow::save_project);
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &MainWindow::generate_control);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
         connect(ui->btn_clear, &QPushButton::clicked, this, &MainWindow::clear_output);
         connect(ui->btn_filesystem, &QPushButton::clicked, this, &MainWindow::working_dir);
         connect(ui->btn_output_file, &QPushButton::clicked, this, &MainWindow::output_file);
-        connect(ui->btn_check, &QPushButton::clicked, this, &MainWindow::check_database);
         connect(ui->btn_changelog, &QPushButton::clicked, this, &MainWindow::generate_changelog);
 
         connect(ui->a_create_package, &QAction::triggered, this, &MainWindow::create_package);
@@ -41,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->a_aboutqt, &QAction::triggered, qApp, &QApplication::aboutQt);
         connect(ui->ck_dependency, &QCheckBox::toggled, ui->ln_dependancies, &QLineEdit::setEnabled);
         connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::fetch_changelog);
+        connect(ui->lsw_welcome, &QListWidget::currentTextChanged, this, &MainWindow::check_database);
         // connect(ui->a_manual) TODO: Add a manual?
 
         QDir local(DEB_CREATOR_LOCAL);
@@ -48,6 +51,17 @@ MainWindow::MainWindow(QWidget *parent) :
                 local.mkdir(DEB_CREATOR_LOCAL);
 
         m_api = new debcreator(DEB_CREATOR_DB);
+
+        QStringList list = m_api->db_fetch();
+
+        if(list.isEmpty()) {
+                ui->lsw_welcome->hide();
+                return;
+        }
+
+        ui->lsw_welcome->show();
+        ui->lsw_welcome->addItems(list);
+
 }
 
 MainWindow::~MainWindow()
@@ -143,27 +157,27 @@ void MainWindow::output_file()
 }
 
 
-void MainWindow::check_database()
+void MainWindow::check_database(const QString &package)
 {
-        if(!m_api->db_fetch(ui->ln_projectname->text())) {
+        if(!m_api->db_fetch(package)) {
                 ui->txt_output->append(ui->ln_projectname->text() + QSL(" package didn't find!"));
                 return;
         }
 
-                ui->ln_projectname->setText(m_api->m_package);
-                ui->ln_version->setText(m_api->m_version);
-                ui->cb_arch->setCurrentText(m_api->m_arch);
-                ui->ln_dependancies->setText(m_api->m_depends);
-                ui->ln_maintainer->setText(m_api->m_maintainer);
-                ui->ln_descriptiontitle->setText(m_api->m_desc_title);
-                ui->txt_description->setText(m_api->m_desc_body);
-                ui->ln_filesystem->setText(m_api->m_dir);
-                ui->ln_outputfile->setText(m_api->m_outputfile);
-                ui->ln_homepage->setText(m_api->m_homepage);
-                ui->ln_replace->setText(m_api->m_replace);
-                ui->ln_section->setText(m_api->m_section);
-                ui->ln_source->setText(m_api->m_source);
-                ui->ln_uploaders->setText(m_api->m_uploaders);
+        ui->ln_projectname->setText(m_api->m_package);
+        ui->ln_version->setText(m_api->m_version);
+        ui->cb_arch->setCurrentText(m_api->m_arch);
+        ui->ln_dependancies->setText(m_api->m_depends);
+        ui->ln_maintainer->setText(m_api->m_maintainer);
+        ui->ln_descriptiontitle->setText(m_api->m_desc_title);
+        ui->txt_description->setText(m_api->m_desc_body);
+        ui->ln_filesystem->setText(m_api->m_dir);
+        ui->ln_outputfile->setText(m_api->m_outputfile);
+        ui->ln_homepage->setText(m_api->m_homepage);
+        ui->ln_replace->setText(m_api->m_replace);
+        ui->ln_section->setText(m_api->m_section);
+        ui->ln_source->setText(m_api->m_source);
+        ui->ln_uploaders->setText(m_api->m_uploaders);
 }
 
 void MainWindow::fetch_changelog(int i)
@@ -182,3 +196,19 @@ void MainWindow::fetch_changelog(int i)
         ui->lsw_changelog->addItems(list);
 
 }
+
+void MainWindow::save_project()
+{
+        if(ui->ln_projectname->text().isEmpty() || ui->ln_filesystem->text().isEmpty()){
+                QMessageBox::warning(this, "Saving package", "Package name and directory is needed in order to work.");
+                return;
+        }
+
+        m_api->m_package = ui->ln_projectname->text();
+        m_api->m_version = ui->ln_version->text();
+        m_api->m_dir = ui->ln_filesystem->text();
+        m_api->m_outputfile = ui->ln_outputfile->text();
+        ui->tab_control->setEnabled(true);
+        ui->tab_changelog->setEnabled(true);
+}
+

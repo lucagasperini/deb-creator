@@ -4,7 +4,7 @@
 #define QSL(t) QStringLiteral(t)
 
 #define DB_PACKAGE_TABLE QSL("package")
-#define DB_PACKAGE_CREATE QSL("CREATE TABLE package("\
+#define DB_PACKAGE_CREATE QSL("CREATE TABLE package("           \
                                 "name TEXT PRIMARY KEY,"        \
                                 "directory TEXT,"               \
                                 "output TEXT,"                  \
@@ -21,7 +21,7 @@
                                 "body TEXT"                     \
                                 ");")
 
-#define DB_PACKAGE_INSERT QSL("INSERT INTO package ("\
+#define DB_PACKAGE_INSERT QSL("INSERT INTO package ("           \
                                 "name,"                         \
                                 "directory,"                    \
                                 "output,"                       \
@@ -53,8 +53,10 @@
                                 ":body"                         \
                                 ");")
 
-#define DB_PACKAGE_UPDATE QSL("UPDATE package SET "  \
+#define DB_PACKAGE_UPDATE QSL("UPDATE package SET "             \
                                 "maintainer=:maintainer,"       \
+                                "directory=:directory,"         \
+                                "output=:output,"               \
                                 "uploader=:uploader,"           \
                                 "version=:version,"             \
                                 "homepage=:homepage,"           \

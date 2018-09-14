@@ -151,6 +151,8 @@ bool debcreator::db_insert()
                 query->prepare(DB_PACKAGE_UPDATE);
 
         query->bindValue(":name", m_package);
+        query->bindValue(":directory", m_dir);
+        query->bindValue(":output", m_outputfile);
         query->bindValue(":maintainer", m_maintainer);
         query->bindValue(":uploader", m_uploaders);
         query->bindValue(":version", m_version);
@@ -173,6 +175,28 @@ bool debcreator::db_insert()
         return offset;
 }
 
+QStringList debcreator::db_fetch()
+{
+        QStringList offset;
+        QSqlQuery* query = new QSqlQuery(*m_db);
+
+        query->prepare(QSL("SELECT name FROM package"));
+
+        if(!query->exec()) {
+#ifdef QT_DEBUG
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+                query->finish();
+                return offset;
+        }
+
+        while(query->next())
+                offset.append(query->value(0).toString());
+
+        query->finish();
+        return offset;
+}
+
 bool debcreator::db_fetch(const QString &pkg)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
@@ -191,17 +215,19 @@ bool debcreator::db_fetch(const QString &pkg)
 
         m_package = pkg;
         while (query->next()) {
-        m_maintainer = query->value(query->record().indexOf("maintainer")).toString();
-        m_uploaders = query->value(query->record().indexOf("uploader")).toString();
-        m_version = query->value(query->record().indexOf("version")).toString();
-        m_homepage = query->value(query->record().indexOf("homepage")).toString();
-        m_source = query->value(query->record().indexOf("source")).toString();
-        m_arch = query->value(query->record().indexOf("arch")).toString();
-        m_depends = query->value(query->record().indexOf("depend")).toString();
-        m_replace = query->value(query->record().indexOf("replace")).toString();
-        m_section = query->value(query->record().indexOf("section")).toString();
-        m_desc_title = query->value(query->record().indexOf("title")).toString();
-        m_desc_body = query->value(query->record().indexOf("body")).toString();
+                m_dir = query->value(query->record().indexOf("directory")).toString();
+                m_outputfile = query->value(query->record().indexOf("output")).toString();
+                m_maintainer = query->value(query->record().indexOf("maintainer")).toString();
+                m_uploaders = query->value(query->record().indexOf("uploader")).toString();
+                m_version = query->value(query->record().indexOf("version")).toString();
+                m_homepage = query->value(query->record().indexOf("homepage")).toString();
+                m_source = query->value(query->record().indexOf("source")).toString();
+                m_arch = query->value(query->record().indexOf("arch")).toString();
+                m_depends = query->value(query->record().indexOf("depend")).toString();
+                m_replace = query->value(query->record().indexOf("replace")).toString();
+                m_section = query->value(query->record().indexOf("section")).toString();
+                m_desc_title = query->value(query->record().indexOf("title")).toString();
+                m_desc_body = query->value(query->record().indexOf("body")).toString();
         }
 
         query->finish();
