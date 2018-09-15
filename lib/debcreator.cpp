@@ -17,7 +17,7 @@
 
 debcreator::debcreator(const QString &file, QObject *parent) : QObject(parent)
 {
-        m_db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", "deb-creator-socket"));
+        m_db = new QSqlDatabase(QSqlDatabase::addDatabase(QSL("QSQLITE"), QSL("deb-creator-socket")));
         m_db->setDatabaseName(file);
         m_db->open();
 }
@@ -26,26 +26,22 @@ QString debcreator::control()
 {
         QString offset;
 
-        offset += ("Package: " + m_package);
-        offset += ("\nMaintainer: " + m_maintainer);
-        offset += ("\nUploaders: " + m_uploaders);
-        offset += ("\nVersion: " + m_version);
-        offset += ("\nHomepage: " + m_homepage);
-        offset += ("\nSource: " + m_source);
-
-        if (m_arch.isEmpty())
-                offset += "\nArchitecture: all";
-        else
-                offset += ("\nArchitecture: " + m_arch);
+        offset += QSL("Package: ") + m_package;
+        offset += QSL("\nMaintainer: ") + m_maintainer;
+        offset += QSL("\nUploaders: ") + m_uploaders;
+        offset += QSL("\nVersion: ") + m_version;
+        offset += QSL("\nHomepage: ") + m_homepage;
+        offset += QSL("\nSource: ") + m_source;
+        offset += QSL("\nArchitecture: ") + m_arch;
 
         if (!m_depends.isEmpty())
-                offset += ("\nDepends: " + m_depends);
+                offset += QSL("\nDepends: ") + m_depends;
 
-        offset += ("\nReplace: " + m_replace);
-        offset += ("\nSection: " + m_section);
-        offset += ("\nDescription: " + m_desc_title);
+        offset += QSL("\nReplace: ") + m_replace;
+        offset += QSL("\nSection: ") + m_section;
+        offset += QSL("\nDescription: ") + m_desc_title;
         if (m_desc_body != "")
-                offset += "\n             " + m_desc_body;
+                offset += QSL("\n             ") + m_desc_body;
 
         return offset;
 }
@@ -62,11 +58,11 @@ QString debcreator::package(const QString& control)
 {
         QProcess dpkg(this);
         QTextStream out;
-        QDir debian_dir(m_dir + "/DEBIAN/");
+        QDir debian_dir(m_dir + QSL("/DEBIAN/"));
         if(!debian_dir.exists())
-                debian_dir.mkdir(m_dir + "/DEBIAN/");
+                debian_dir.mkdir(m_dir + QSL("/DEBIAN/"));
 
-        QFile control_file(m_dir + "/DEBIAN/control");
+        QFile control_file(m_dir + QSL("/DEBIAN/control"));
 
         control_file.open(QIODevice::WriteOnly | QIODevice::Text);
         out.setDevice(&control_file);
@@ -78,7 +74,7 @@ QString debcreator::package(const QString& control)
         control_file.close();
 
         if(!m_changelog.isEmpty()) {
-        QFile changelog_file(m_dir + "/DEBIAN/changelog");
+        QFile changelog_file(m_dir + QSL("/DEBIAN/changelog"));
 
         changelog_file.open(QIODevice::Append | QIODevice::Text);
         out.setDevice(&changelog_file);
@@ -93,7 +89,7 @@ QString debcreator::package(const QString& control)
         QString cmd = "dpkg -b " + m_dir + " " + m_outputfile;
 
 #ifdef QT_DEBUG
-        qDebug() << "Executing: " << cmd;
+        qDebug() << QSL("Executing: ") << cmd;
 #endif
 
         dpkg.start(cmd, QIODevice::ReadWrite);
@@ -127,7 +123,7 @@ QStringList debcreator::fetch_changelog(const QString &file)
         while (!in.atEnd()) {
                 QString line = in.readLine();
                 buffer.append(line);
-                if(line.startsWith(" -- ")) {
+                if(line.startsWith(QSL(" -- "))) {
                         offset.append(buffer);
                         buffer.clear();
                 }
@@ -150,20 +146,20 @@ bool debcreator::db_insert()
         else
                 query->prepare(DB_PACKAGE_UPDATE);
 
-        query->bindValue(":name", m_package);
-        query->bindValue(":directory", m_dir);
-        query->bindValue(":output", m_outputfile);
-        query->bindValue(":maintainer", m_maintainer);
-        query->bindValue(":uploader", m_uploaders);
-        query->bindValue(":version", m_version);
-        query->bindValue(":homepage", m_homepage);
-        query->bindValue(":source", m_source);
-        query->bindValue(":arch", m_arch);
-        query->bindValue(":depend", m_depends);
-        query->bindValue(":replace", m_replace);
-        query->bindValue(":section", m_section);
-        query->bindValue(":title", m_desc_title);
-        query->bindValue(":body", m_desc_body);
+        query->bindValue(QSL(":name"), m_package);
+        query->bindValue(QSL(":directory"), m_dir);
+        query->bindValue(QSL(":output"), m_outputfile);
+        query->bindValue(QSL(":maintainer"), m_maintainer);
+        query->bindValue(QSL(":uploader"), m_uploaders);
+        query->bindValue(QSL(":version"), m_version);
+        query->bindValue(QSL(":homepage"), m_homepage);
+        query->bindValue(QSL(":source"), m_source);
+        query->bindValue(QSL(":arch"), m_arch);
+        query->bindValue(QSL(":depend"), m_depends);
+        query->bindValue(QSL(":replace"), m_replace);
+        query->bindValue(QSL(":section"), m_section);
+        query->bindValue(QSL(":title"), m_desc_title);
+        query->bindValue(QSL(":body"), m_desc_body);
 
         bool offset = query->exec();
 
@@ -202,7 +198,7 @@ bool debcreator::db_fetch(const QString &pkg)
         QSqlQuery* query = new QSqlQuery(*m_db);
 
         query->prepare(QSL("SELECT * FROM package WHERE name = :name"));
-        query->bindValue(":name", pkg);
+        query->bindValue(QSL(":name"), pkg);
 
         if(!query->exec()) {
 #ifdef QT_DEBUG
@@ -215,19 +211,19 @@ bool debcreator::db_fetch(const QString &pkg)
 
         m_package = pkg;
         while (query->next()) {
-                m_dir = query->value(query->record().indexOf("directory")).toString();
-                m_outputfile = query->value(query->record().indexOf("output")).toString();
-                m_maintainer = query->value(query->record().indexOf("maintainer")).toString();
-                m_uploaders = query->value(query->record().indexOf("uploader")).toString();
-                m_version = query->value(query->record().indexOf("version")).toString();
-                m_homepage = query->value(query->record().indexOf("homepage")).toString();
-                m_source = query->value(query->record().indexOf("source")).toString();
-                m_arch = query->value(query->record().indexOf("arch")).toString();
-                m_depends = query->value(query->record().indexOf("depend")).toString();
-                m_replace = query->value(query->record().indexOf("replace")).toString();
-                m_section = query->value(query->record().indexOf("section")).toString();
-                m_desc_title = query->value(query->record().indexOf("title")).toString();
-                m_desc_body = query->value(query->record().indexOf("body")).toString();
+                m_dir = query->value(query->record().indexOf(QSL("directory"))).toString();
+                m_outputfile = query->value(query->record().indexOf(QSL("output"))).toString();
+                m_maintainer = query->value(query->record().indexOf(QSL("maintainer"))).toString();
+                m_uploaders = query->value(query->record().indexOf(QSL("uploader"))).toString();
+                m_version = query->value(query->record().indexOf(QSL("version"))).toString();
+                m_homepage = query->value(query->record().indexOf(QSL("homepage"))).toString();
+                m_source = query->value(query->record().indexOf(QSL("source"))).toString();
+                m_arch = query->value(query->record().indexOf(QSL("arch"))).toString();
+                m_depends = query->value(query->record().indexOf(QSL("depend"))).toString();
+                m_replace = query->value(query->record().indexOf(QSL("replace"))).toString();
+                m_section = query->value(query->record().indexOf(QSL("section"))).toString();
+                m_desc_title = query->value(query->record().indexOf(QSL("title"))).toString();
+                m_desc_body = query->value(query->record().indexOf(QSL("body"))).toString();
         }
 
         query->finish();

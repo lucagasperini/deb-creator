@@ -72,11 +72,11 @@ MainWindow::~MainWindow()
 void MainWindow::generate_control()
 {
         if(ui->ln_projectname->text().isEmpty()) {
-                QMessageBox::critical(this, "Control file error", "Package name value is empty!\nPlease add a valid package name.");
+                QMessageBox::critical(this, QSL("Control file error"), QSL("Package name value is empty!\nPlease add a valid package name."));
                 return;
         }
         if (ui->ln_projectname->text().contains(' ')) {
-                QMessageBox::warning(this, "Control file error", "Package name must not contain spaces.");
+                QMessageBox::warning(this, QSL("Control file error"), QSL("Package name must not contain spaces."));
                 return;
         }
 
@@ -138,7 +138,7 @@ void MainWindow::clear_output()
 void MainWindow::working_dir()
 {
         QDir dir;
-        dir = QFileDialog::getExistingDirectory(this, "Source file of the package");
+        dir = QFileDialog::getExistingDirectory(this, QSL("Source file of the package"));
         ui->ln_filesystem->setText(dir.absolutePath());
 
         if(!dir.isEmpty() && ui->ln_outputfile->text().isEmpty()) {
@@ -152,7 +152,7 @@ void MainWindow::working_dir()
 void MainWindow::output_file()
 {
         QString file;
-        file = QFileDialog::getSaveFileName(this, "Select where save package", ui->ln_outputfile->text());
+        file = QFileDialog::getSaveFileName(this, QSL("Select where save package"), ui->ln_outputfile->text());
         ui->ln_outputfile->setText(file);
 }
 
@@ -185,7 +185,7 @@ void MainWindow::fetch_changelog(int i)
         if(i != 1)
                 return;
 
-        QStringList list = m_api->fetch_changelog(ui->ln_filesystem->text() + "/DEBIAN/changelog");
+        QStringList list = m_api->fetch_changelog(ui->ln_filesystem->text() + QSL("/DEBIAN/changelog"));
 
         if(list.isEmpty()) {
                 ui->lsw_changelog->hide();
@@ -200,7 +200,7 @@ void MainWindow::fetch_changelog(int i)
 void MainWindow::save_project()
 {
         if(ui->ln_projectname->text().isEmpty() || ui->ln_filesystem->text().isEmpty()){
-                QMessageBox::warning(this, "Saving package", "Package name and directory is needed in order to work.");
+                QMessageBox::warning(this, QSL("Saving package"), QSL("Package name and directory is needed in order to work."));
                 return;
         }
 
