@@ -10,7 +10,12 @@ class debcreator : public QObject
 {
         Q_OBJECT
 public:
-        explicit debcreator(const QString &file, QObject *parent = nullptr);
+        /**
+         * @brief debcreator default constructor
+         * @param file path of SQLITE3 database file
+         * @param parent default qt parent
+         */
+        explicit debcreator(const QString &file_db, QObject *parent = nullptr);
         /**
          * @brief control generate a control file from variables in this class
          * @return return the control text

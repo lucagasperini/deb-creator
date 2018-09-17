@@ -15,10 +15,10 @@
 #include <QtSql/QSqlError>
 #endif
 
-debcreator::debcreator(const QString &file, QObject *parent) : QObject(parent)
+debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent)
 {
         m_db = new QSqlDatabase(QSqlDatabase::addDatabase(QSL("QSQLITE"), QSL("deb-creator-socket")));
-        m_db->setDatabaseName(file);
+        m_db->setDatabaseName(file_db);
         m_db->open();
 }
 

@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab_welcome">
        <attribute name="title">
@@ -70,7 +70,7 @@
           <item row="14" column="1">
            <widget class="QPushButton" name="btn_save">
             <property name="text">
-             <string>Save</string>
+             <string>Save / Edit</string>
             </property>
            </widget>
           </item>
@@ -328,6 +328,83 @@
             </item>
            </layout>
           </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_compile">
+       <attribute name="title">
+        <string>Compile</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="1" column="2" colspan="3">
+         <widget class="QLineEdit" name="ln_sourcecode"/>
+        </item>
+        <item row="2" column="4">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="ln_cmake"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="ln_qmake"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="ln_make_2">
+            <property name="text">
+             <string>Make args:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="lbl_qmake">
+            <property name="text">
+             <string>QMake args:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lbl_cmake">
+            <property name="text">
+             <string>CMake args:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="ln_make"/>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPushButton" name="bnt_compile">
+            <property name="text">
+             <string>Compile</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="bnt_refresh">
+          <property name="text">
+           <string>Refresh</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="lbl_sourcecode">
+          <property name="text">
+           <string>Source Code:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="QTreeWidget" name="tree_source">
+          <column>
+           <property name="text">
+            <string notr="true">1</string>
+           </property>
+          </column>
          </widget>
         </item>
        </layout>

@@ -16,7 +16,7 @@ class MainWindow : public QMainWindow
         Q_OBJECT
 
 public:
-        explicit MainWindow(QWidget *parent = 0);
+        explicit MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
 
         debcreator *m_api;
@@ -32,7 +32,7 @@ private slots:
         void generate_control();
         void generate_changelog();
         void check_database(const QString &package);
-        void fetch_changelog(int i);
+        void fetch_changelog();
         void save_project();
 };
 

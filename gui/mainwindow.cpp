@@ -180,9 +180,9 @@ void MainWindow::check_database(const QString &package)
         ui->ln_uploaders->setText(m_api->m_uploaders);
 }
 
-void MainWindow::fetch_changelog(int i)
+void MainWindow::fetch_changelog()
 {
-        if(i != 1)
+        if(ui->tab_changelog->isVisible())
                 return;
 
         QStringList list = m_api->fetch_changelog(ui->ln_filesystem->text() + QSL("/DEBIAN/changelog"));
