@@ -58,7 +58,8 @@ QString debcreator::package(const QString& control)
 {
         QProcess dpkg(this);
         QTextStream out;
-        if(!m_dir.exists())
+        QDir debian_dir(m_dir.path() + QSL("DEBIAN"));
+        if(!debian_dir.exists())
                 m_dir.mkdir(QSL("DEBIAN"));
 
         QFile control_file(m_dir.path() + QSL("/DEBIAN/control"));
@@ -99,7 +100,7 @@ QString debcreator::package(const QString& control)
                 data.append(dpkg.readAll());
         }
 #ifdef QT_DEBUG
-        qDebug() << data.data();
+        qDebug() << data;
 #endif
         return data.data();
 }
@@ -248,13 +249,61 @@ bool debcreator::db_exists(const QString &pkg)
                 return query->value(0).toBool();
 }
 
+QByteArray debcreator::compile_make(const QString &argument)
+{
+        QProcess app(this);
+        QDir build_dir(m_dir.path() + QSL("/build"));
+        app.setWorkingDirectory(build_dir.path());
+        QString cmd = QSL("make DESTDIR=") + m_dir.path() + QSL(" install") + argument;
+
+#ifdef QT_DEBUG
+        qDebug() << QSL("Executing: ") << cmd;
+#endif
+        app.start(cmd, QIODevice::ReadWrite);
+
+        QByteArray data;
+
+        while(app.waitForReadyRead()) {
+                data.append(app.readAll());
+        }
+
+#ifdef QT_DEBUG
+        qDebug() << data;
+#endif
+        build_dir.removeRecursively();
+        return data;
+}
+
+QByteArray debcreator::compile(const QString &program, const QString &args)
+{
+        QProcess app(this);
+        app.setWorkingDirectory(m_dir.path() + QSL("/build"));
+        QString cmd = program + " " + args;
+
+#ifdef QT_DEBUG
+        qDebug() << QSL("Executing: ") << cmd;
+#endif
+
+        app.start(cmd, QIODevice::ReadWrite);
+
+        QByteArray data;
+
+        while(app.waitForReadyRead()) {
+                data.append(app.readAll());
+        }
+#ifdef QT_DEBUG
+        qDebug() << data;
+#endif
+        return data;
+}
+
 QString debcreator::git_clone(const QString &url)
 {
         QProcess git(this);
         git.setWorkingDirectory(m_dir.path());
         git.start(QSL("git clone ") + url + QSL(" build"));
 #ifdef QT_DEBUG
-        qDebug() << QSL("git clone ") << url << QSL(" build");
+        qDebug() << QSL("Executing: git clone ") << url << QSL(" build");
 #endif
         git.waitForFinished();
 

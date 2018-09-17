@@ -406,7 +406,7 @@
            <widget class="QLineEdit" name="ln_make"/>
           </item>
           <item row="3" column="0" colspan="2">
-           <widget class="QPushButton" name="bnt_compile">
+           <widget class="QPushButton" name="btn_compile">
             <property name="text">
              <string>Compile</string>
             </property>

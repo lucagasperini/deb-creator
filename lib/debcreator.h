@@ -61,6 +61,23 @@ public:
          * @return if package don't exist it will return false, otherwise true
          */
         bool db_exists(const QString &pkg);
+        /**
+         * @brief compile run make into compile directory
+         * @param program directory/name of the program
+         * @param args arguments of the program
+         */
+        QByteArray compile_make(const QString &program = "");
+        /**
+         * @brief compile run @arg program into compile directory
+         * @param program directory/name of the program
+         * @param args arguments of the program
+         */
+        QByteArray compile(const QString &program, const QString &args);
+        /**
+         * @brief git_clone fetch git repo in directory @public m_dir + '/build'
+         * @param url repo git
+         * @return directory of files stored
+         */
         QString git_clone(const QString &url);
         /**
          * @brief git_fetch_user fetch user.email and user.name from git config

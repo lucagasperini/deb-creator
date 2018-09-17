@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->btn_output_file, &QPushButton::clicked, this, &MainWindow::output_file);
         connect(ui->btn_changelog, &QPushButton::clicked, this, &MainWindow::generate_changelog);
         connect(ui->btn_refresh, &QPushButton::clicked, this, &MainWindow::compile_refresh);
+        connect(ui->btn_compile, &QPushButton::clicked, this, &MainWindow::compile);
         connect(ui->bt_sourcecode, &QToolButton::clicked, this, &MainWindow::compile_dir);
 
         connect(ui->a_create_package, &QAction::triggered, this, &MainWindow::create_package);
@@ -244,5 +245,26 @@ void MainWindow::compile_refresh()
         model->setRootPath(path);
         ui->tw_compile->setModel(model);
         ui->tw_compile->setRootIndex(model->index(path));
+}
+
+void MainWindow::compile()
+{
+        QString cmake = ui->ln_cmake->text();
+        QString qmake = ui->ln_qmake->text();
+        QString make = ui->ln_make->text();
+        QByteArray buffer;
+
+        if(qmake.isEmpty() && !cmake.isEmpty()) {
+                buffer = m_api->compile("cmake", cmake);
+                ui->txt_output->append(buffer);
+        }
+        if(!qmake.isEmpty() && cmake.isEmpty()) {
+                buffer = m_api->compile("qmake", qmake);
+                ui->txt_output->append(buffer);
+        }
+
+        buffer = m_api->compile_make(make);
+        ui->txt_output->append(buffer);
+
 }
 
