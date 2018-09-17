@@ -27,6 +27,7 @@ private:
 private slots:
         void output_file();
         void working_dir();
+        void compile_dir();
         void clear_output();
         void create_package();
         void generate_control();

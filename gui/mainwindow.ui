@@ -340,47 +340,6 @@
         <item row="1" column="2" colspan="3">
          <widget class="QLineEdit" name="ln_sourcecode"/>
         </item>
-        <item row="2" column="4">
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="ln_cmake"/>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="ln_qmake"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="ln_make_2">
-            <property name="text">
-             <string>Make args:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="lbl_qmake">
-            <property name="text">
-             <string>QMake args:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="lbl_cmake">
-            <property name="text">
-             <string>CMake args:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="ln_make"/>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QPushButton" name="bnt_compile">
-            <property name="text">
-             <string>Compile</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
         <item row="1" column="0">
          <widget class="QPushButton" name="bnt_refresh">
           <property name="text">
@@ -406,6 +365,63 @@
            </property>
           </column>
          </widget>
+        </item>
+        <item row="1" column="5">
+         <widget class="QToolButton" name="bt_sourcecode">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="4">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="ln_cmake"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="ln_qmake"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="ln_make_2">
+            <property name="text">
+             <string>Make args:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="lbl_qmake">
+            <property name="text">
+             <string>QMake args:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lbl_cmake">
+            <property name="text">
+             <string>CMake args:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="ln_make"/>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPushButton" name="bnt_compile">
+            <property name="text">
+             <string>Compile</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>

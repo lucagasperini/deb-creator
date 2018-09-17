@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->btn_filesystem, &QPushButton::clicked, this, &MainWindow::working_dir);
         connect(ui->btn_output_file, &QPushButton::clicked, this, &MainWindow::output_file);
         connect(ui->btn_changelog, &QPushButton::clicked, this, &MainWindow::generate_changelog);
+        connect(ui->bt_sourcecode, &QToolButton::clicked, this, &MainWindow::compile_dir);
 
         connect(ui->a_create_package, &QAction::triggered, this, &MainWindow::create_package);
         connect(ui->a_generate_control, &QAction::triggered, this, &MainWindow::generate_control);
@@ -149,6 +150,13 @@ void MainWindow::working_dir()
         }
 }
 
+void MainWindow::compile_dir()
+{
+        QDir dir;
+        dir = QFileDialog::getExistingDirectory(this, QSL("Source file of the package"));
+        ui->ln_sourcecode->setText(dir.absolutePath());
+}
+
 void MainWindow::output_file()
 {
         QString file;
@@ -178,6 +186,9 @@ void MainWindow::check_database(const QString &package)
         ui->ln_section->setText(m_api->m_section);
         ui->ln_source->setText(m_api->m_source);
         ui->ln_uploaders->setText(m_api->m_uploaders);
+
+        if(ui->ln_sourcecode->text().isEmpty())
+                ui->ln_sourcecode->setText(m_api->m_source);
 }
 
 void MainWindow::fetch_changelog()
