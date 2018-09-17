@@ -34,7 +34,6 @@ private slots:
         void generate_changelog();
         void check_database(const QString &package);
         void fetch_changelog();
-        void save_project();
         void compile_refresh();
         void compile();
 };

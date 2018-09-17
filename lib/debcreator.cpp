@@ -32,6 +32,7 @@ QString debcreator::control()
         offset += QSL("\nVersion: ") + m_version;
         offset += QSL("\nHomepage: ") + m_homepage;
         offset += QSL("\nSource: ") + m_source;
+        offset += QSL("\nInstalled-Size: ") + QString::number(calc_size(m_dir.path()) / 1000);
         offset += QSL("\nArchitecture: ") + m_arch;
 
         if (!m_depends.isEmpty())
@@ -335,4 +336,29 @@ QString debcreator::date_fetch()
 {
         QDateTime now = QDateTime::currentDateTime();
         return now.toString(QSL("ddd, dd MMM yyyy hh:mm:ss t"));
+}
+
+
+qint64 debcreator::calc_size(const QString &_dir)
+{
+        qint64 sizex = 0;
+        QFileInfo str_info(_dir);
+        if (!str_info.isDir())
+        {
+                return str_info.size();
+        }
+
+        QDir dir(_dir);
+        QFileInfoList list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+        for (int i = 0; i < list.size(); ++i) {
+                QFileInfo fileInfo = list.at(i);
+#ifdef QT_DEBUG
+                qDebug() << fileInfo.absoluteFilePath();
+#endif
+                if(fileInfo.isDir() && fileInfo.baseName() != "DEBIAN")
+                        sizex += calc_size(fileInfo.absoluteFilePath());
+                else if(fileInfo.isFile())
+                        sizex += fileInfo.size();
+        }
+        return sizex;
 }

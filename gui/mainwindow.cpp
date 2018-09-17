@@ -25,11 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
         ui->setupUi(this);
 
-        ui->tab_control->setEnabled(false);
-        ui->tab_changelog->setEnabled(false);
         ui->tabWidget->setCurrentIndex(0);
 
-        connect(ui->btn_save, &QPushButton::clicked, this, &MainWindow::save_project);
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &MainWindow::generate_control);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
         connect(ui->btn_clear, &QPushButton::clicked, this, &MainWindow::clear_output);
@@ -209,21 +206,6 @@ void MainWindow::fetch_changelog()
         ui->lsw_changelog->show();
         ui->lsw_changelog->addItems(list);
 
-}
-
-void MainWindow::save_project()
-{
-        if(ui->ln_projectname->text().isEmpty() || ui->ln_filesystem->text().isEmpty()){
-                QMessageBox::warning(this, QSL("Saving package"), QSL("Package name and directory is needed in order to work."));
-                return;
-        }
-
-        m_api->m_package = ui->ln_projectname->text();
-        m_api->m_version = ui->ln_version->text();
-        m_api->m_dir = ui->ln_filesystem->text();
-        m_api->m_outputfile = ui->ln_outputfile->text();
-        ui->tab_control->setEnabled(true);
-        ui->tab_changelog->setEnabled(true);
 }
 
 void MainWindow::compile_refresh()

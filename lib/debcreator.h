@@ -89,6 +89,7 @@ public:
          * @return the formated string of date
          */
         static QString date_fetch();
+        static qint64 calc_size(const QString &_dir);
 
         QSqlDatabase* m_db;
 
