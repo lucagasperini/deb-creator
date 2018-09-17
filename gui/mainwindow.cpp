@@ -4,10 +4,11 @@
 #include <QFileDialog>
 #include <QProcess>
 #include <QFile>
-#include <QDir>
 #include <QTextStream>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QFileSystemModel>
+#include <QFileInfo>
 
 #ifdef QT_DEBUG
 #include <QDebug>
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->btn_filesystem, &QPushButton::clicked, this, &MainWindow::working_dir);
         connect(ui->btn_output_file, &QPushButton::clicked, this, &MainWindow::output_file);
         connect(ui->btn_changelog, &QPushButton::clicked, this, &MainWindow::generate_changelog);
+        connect(ui->btn_refresh, &QPushButton::clicked, this, &MainWindow::compile_refresh);
         connect(ui->bt_sourcecode, &QToolButton::clicked, this, &MainWindow::compile_dir);
 
         connect(ui->a_create_package, &QAction::triggered, this, &MainWindow::create_package);
@@ -179,7 +181,7 @@ void MainWindow::check_database(const QString &package)
         ui->ln_maintainer->setText(m_api->m_maintainer);
         ui->ln_descriptiontitle->setText(m_api->m_desc_title);
         ui->txt_description->setText(m_api->m_desc_body);
-        ui->ln_filesystem->setText(m_api->m_dir);
+        ui->ln_filesystem->setText(m_api->m_dir.path());
         ui->ln_outputfile->setText(m_api->m_outputfile);
         ui->ln_homepage->setText(m_api->m_homepage);
         ui->ln_replace->setText(m_api->m_replace);
@@ -221,5 +223,26 @@ void MainWindow::save_project()
         m_api->m_outputfile = ui->ln_outputfile->text();
         ui->tab_control->setEnabled(true);
         ui->tab_changelog->setEnabled(true);
+}
+
+void MainWindow::compile_refresh()
+{
+        if(ui->ln_sourcecode->text().isEmpty())
+                return;
+
+        QFileInfo dir(ui->ln_sourcecode->text());
+        QFileSystemModel *model = new QFileSystemModel;
+        QString path;
+
+        if(dir.isDir()) {
+                path = dir.path();
+        }
+        else {
+                path = m_api->git_clone(ui->ln_sourcecode->text());
+        }
+
+        model->setRootPath(path);
+        ui->tw_compile->setModel(model);
+        ui->tw_compile->setRootIndex(model->index(path));
 }
 

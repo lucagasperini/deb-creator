@@ -58,11 +58,10 @@ QString debcreator::package(const QString& control)
 {
         QProcess dpkg(this);
         QTextStream out;
-        QDir debian_dir(m_dir + QSL("/DEBIAN/"));
-        if(!debian_dir.exists())
-                debian_dir.mkdir(m_dir + QSL("/DEBIAN/"));
+        if(!m_dir.exists())
+                m_dir.mkdir(QSL("DEBIAN"));
 
-        QFile control_file(m_dir + QSL("/DEBIAN/control"));
+        QFile control_file(m_dir.path() + QSL("/DEBIAN/control"));
 
         control_file.open(QIODevice::WriteOnly | QIODevice::Text);
         out.setDevice(&control_file);
@@ -74,7 +73,7 @@ QString debcreator::package(const QString& control)
         control_file.close();
 
         if(!m_changelog.isEmpty()) {
-        QFile changelog_file(m_dir + QSL("/DEBIAN/changelog"));
+        QFile changelog_file(m_dir.path() + QSL("/DEBIAN/changelog"));
 
         changelog_file.open(QIODevice::Append | QIODevice::Text);
         out.setDevice(&changelog_file);
@@ -86,7 +85,7 @@ QString debcreator::package(const QString& control)
         control_file.close();
         }
 
-        QString cmd = "dpkg -b " + m_dir + " " + m_outputfile;
+        QString cmd = "dpkg -b " + m_dir.path() + " " + m_outputfile;
 
 #ifdef QT_DEBUG
         qDebug() << QSL("Executing: ") << cmd;
@@ -147,7 +146,7 @@ bool debcreator::db_insert()
                 query->prepare(DB_PACKAGE_UPDATE);
 
         query->bindValue(QSL(":name"), m_package);
-        query->bindValue(QSL(":directory"), m_dir);
+        query->bindValue(QSL(":directory"), m_dir.path());
         query->bindValue(QSL(":output"), m_outputfile);
         query->bindValue(QSL(":maintainer"), m_maintainer);
         query->bindValue(QSL(":uploader"), m_uploaders);
@@ -168,7 +167,7 @@ bool debcreator::db_insert()
                 qDebug() << query->lastQuery() << query->lastError().text();
 #endif
         query->finish();
-        return offset;
+        return offset;        QDir dir(m_dir);
 }
 
 QStringList debcreator::db_fetch()
@@ -249,6 +248,18 @@ bool debcreator::db_exists(const QString &pkg)
                 return query->value(0).toBool();
 }
 
+QString debcreator::git_clone(const QString &url)
+{
+        QProcess git(this);
+        git.setWorkingDirectory(m_dir.path());
+        git.start(QSL("git clone ") + url + QSL(" build"));
+#ifdef QT_DEBUG
+        qDebug() << QSL("git clone ") << url << QSL(" build");
+#endif
+        git.waitForFinished();
+
+        return m_dir.path() + QSL("/build");
+}
 
 QString debcreator::git_fetch_user()
 {

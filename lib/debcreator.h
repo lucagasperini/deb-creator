@@ -5,6 +5,7 @@
 
 #include <QObject>
 #include <QtSql/QSqlDatabase>
+#include <QDir>
 
 class debcreator : public QObject
 {
@@ -60,6 +61,7 @@ public:
          * @return if package don't exist it will return false, otherwise true
          */
         bool db_exists(const QString &pkg);
+        QString git_clone(const QString &url);
         /**
          * @brief git_fetch_user fetch user.email and user.name from git config
          * @return the format from git is user.name <user.email>, empty string if git is not installed or git is not configurated
@@ -89,7 +91,7 @@ public:
         QString m_changelog;
         QString m_control;
 
-        QString m_dir;
+        QDir m_dir;
         QString m_outputfile;
 };
 

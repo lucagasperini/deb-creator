@@ -35,6 +35,7 @@ private slots:
         void check_database(const QString &package);
         void fetch_changelog();
         void save_project();
+        void compile_refresh();
 };
 
 #endif // MAINWINDOW_H

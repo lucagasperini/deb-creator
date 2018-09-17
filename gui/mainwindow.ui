@@ -341,7 +341,7 @@
          <widget class="QLineEdit" name="ln_sourcecode"/>
         </item>
         <item row="1" column="0">
-         <widget class="QPushButton" name="bnt_refresh">
+         <widget class="QPushButton" name="btn_refresh">
           <property name="text">
            <string>Refresh</string>
           </property>
@@ -355,15 +355,6 @@
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
-         </widget>
-        </item>
-        <item row="2" column="0" colspan="2">
-         <widget class="QTreeWidget" name="tree_source">
-          <column>
-           <property name="text">
-            <string notr="true">1</string>
-           </property>
-          </column>
          </widget>
         </item>
         <item row="1" column="5">
@@ -422,6 +413,9 @@
            </widget>
           </item>
          </layout>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="QTreeView" name="tw_compile"/>
         </item>
        </layout>
       </widget>
