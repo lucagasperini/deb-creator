@@ -36,6 +36,9 @@ private slots:
         void fetch_changelog();
         void compile_refresh();
         void compile();
+        void build_add();
+        void build_remove();
+        void build_save();
 };
 
 #endif // MAINWINDOW_H

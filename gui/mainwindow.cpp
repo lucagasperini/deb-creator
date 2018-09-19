@@ -35,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->btn_changelog, &QPushButton::clicked, this, &MainWindow::generate_changelog);
         connect(ui->btn_refresh, &QPushButton::clicked, this, &MainWindow::compile_refresh);
         connect(ui->btn_compile, &QPushButton::clicked, this, &MainWindow::compile);
+        connect(ui->btn_buildadd, &QPushButton::clicked, this, &MainWindow::build_add);
+        connect(ui->btn_buildremove, &QPushButton::clicked, this, &MainWindow::build_remove);
+        connect(ui->btn_buildsave, &QPushButton::clicked, this, &MainWindow::build_save);
         connect(ui->bt_sourcecode, &QToolButton::clicked, this, &MainWindow::compile_dir);
 
         connect(ui->a_create_package, &QAction::triggered, this, &MainWindow::create_package);
@@ -231,9 +234,9 @@ void MainWindow::compile_refresh()
 
 void MainWindow::compile()
 {
-        QString cmake = ui->ln_cmake->text();
-        QString qmake = ui->ln_qmake->text();
-        QString make = ui->ln_make->text();
+        QString cmake = "";
+        QString qmake = "ui->ln_qmake->text()";
+        QString make = "ui->ln_make->text()";
         QByteArray buffer;
 
         if(qmake.isEmpty() && !cmake.isEmpty()) {
@@ -247,6 +250,21 @@ void MainWindow::compile()
 
         buffer = m_api->compile_make(make);
         ui->txt_output->append(buffer);
+
+}
+
+void MainWindow::build_add()
+{
+        ui->tbl_order->insertRow(ui->tbl_order->rowCount());
+}
+
+void MainWindow::build_remove()
+{
+        ui->tbl_order->removeRow(ui->tbl_order->currentRow());
+}
+
+void MainWindow::build_save()
+{
 
 }
 
