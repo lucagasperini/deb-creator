@@ -26,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->setupUi(this);
 
         ui->tabWidget->setCurrentIndex(0);
-        ui->tbl_order->
 
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &MainWindow::generate_control);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
