@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->setupUi(this);
 
         ui->tabWidget->setCurrentIndex(0);
+        ui->tbl_order->
 
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &MainWindow::generate_control);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
@@ -234,28 +235,16 @@ void MainWindow::compile_refresh()
 
 void MainWindow::compile()
 {
-        QString cmake = "";
-        QString qmake = "ui->ln_qmake->text()";
-        QString make = "ui->ln_make->text()";
-        QByteArray buffer;
-
-        if(qmake.isEmpty() && !cmake.isEmpty()) {
-                buffer = m_api->compile("cmake", cmake);
-                ui->txt_output->append(buffer);
-        }
-        if(!qmake.isEmpty() && cmake.isEmpty()) {
-                buffer = m_api->compile("qmake", qmake);
-                ui->txt_output->append(buffer);
-        }
-
-        buffer = m_api->compile_make(make);
-        ui->txt_output->append(buffer);
-
+        ui->txt_output->append(m_api->compile());
 }
 
 void MainWindow::build_add()
 {
-        ui->tbl_order->insertRow(ui->tbl_order->rowCount());
+        int row = ui->tbl_order->rowCount();
+        ui->tbl_order->insertRow(row);
+        ui->tbl_order->setItem(row, 0, new QTableWidgetItem);
+        ui->tbl_order->setItem(row, 1, new QTableWidgetItem);
+        ui->tbl_order->setItem(row, 2, new QTableWidgetItem);
 }
 
 void MainWindow::build_remove()
@@ -265,6 +254,13 @@ void MainWindow::build_remove()
 
 void MainWindow::build_save()
 {
+        m_api->build_clear();
+        for(int i = 0; i < ui->tbl_order->rowCount(); i++) {
+                QString program = ui->tbl_order->item(i, 0)->text();
+                QString args = ui->tbl_order->item(i, 1)->text();
+                QString working_dir = ui->tbl_order->item(i, 2)->text();
 
+                m_api->build_append(program, args.split(" "), working_dir);
+        }
 }
 

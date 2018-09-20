@@ -1,8 +1,6 @@
 #include "debcreator.h"
 
-#include <QProcess>
 #include <QFile>
-#include <QDir>
 #include <QTextStream>
 #include <QDateTime>
 
@@ -20,6 +18,8 @@ debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent
         m_db = new QSqlDatabase(QSqlDatabase::addDatabase(QSL("QSQLITE"), QSL("deb-creator-socket")));
         m_db->setDatabaseName(file_db);
         m_db->open();
+
+        m_build = new QList<QProcess*>;
 }
 
 QString debcreator::control()
@@ -250,47 +250,23 @@ bool debcreator::db_exists(const QString &pkg)
                 return query->value(0).toBool();
 }
 
-QByteArray debcreator::compile_make(const QString &argument)
+QByteArray debcreator::compile()
 {
-        QProcess app(this);
-        QDir build_dir(m_dir.path() + QSL("/build"));
-        app.setWorkingDirectory(build_dir.path());
-        QString cmd = QSL("make DESTDIR=") + m_dir.path() + QSL(" install") + argument;
-
-#ifdef QT_DEBUG
-        qDebug() << QSL("Executing: ") << cmd;
-#endif
-        app.start(cmd, QIODevice::ReadWrite);
-
+        QProcess* buffer = nullptr;
         QByteArray data;
 
-        while(app.waitForReadyRead()) {
-                data.append(app.readAll());
-        }
-
+        for(int i = 0; i < m_build->size(); i++) {
+                buffer = m_build->at(i);
+                if(buffer == nullptr)
+                        return data;
 #ifdef QT_DEBUG
-        qDebug() << data;
+                qDebug() << QSL("Executing: ") << buffer->program() << buffer->arguments() << buffer->workingDirectory();
 #endif
-        build_dir.removeRecursively();
-        return data;
-}
+                buffer->start(QIODevice::ReadWrite);
 
-QByteArray debcreator::compile(const QString &program, const QString &args)
-{
-        QProcess app(this);
-        app.setWorkingDirectory(m_dir.path() + QSL("/build"));
-        QString cmd = program + " " + args;
-
-#ifdef QT_DEBUG
-        qDebug() << QSL("Executing: ") << cmd;
-#endif
-
-        app.start(cmd, QIODevice::ReadWrite);
-
-        QByteArray data;
-
-        while(app.waitForReadyRead()) {
-                data.append(app.readAll());
+                while(buffer->waitForReadyRead()) {
+                        data.append(buffer->readAll());
+                }
         }
 #ifdef QT_DEBUG
         qDebug() << data;
@@ -309,6 +285,24 @@ QString debcreator::git_clone(const QString &url)
         git.waitForFinished();
 
         return m_dir.path() + QSL("/build");
+}
+
+void debcreator::build_append(const QString &program, const QStringList &args, const QString &working_dir)
+{
+        QProcess* step = new QProcess;
+        step->setProgram(program);
+        step->setArguments(args);
+        if(working_dir.isEmpty())
+                step->setWorkingDirectory(m_dir.path() + QSL("/build"));
+        else
+                step->setWorkingDirectory(working_dir);
+
+        m_build->append(step);
+}
+
+void debcreator::build_clear()
+{
+        m_build->clear();
 }
 
 QString debcreator::git_fetch_user()

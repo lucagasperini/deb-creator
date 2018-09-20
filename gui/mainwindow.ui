@@ -370,11 +370,6 @@
            <widget class="QTableWidget" name="tbl_order">
             <column>
              <property name="text">
-              <string>order</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
               <string>program</string>
              </property>
             </column>
@@ -401,7 +396,8 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset theme="insert-table"/>
+               <iconset theme="insert-table">
+                <normaloff>.</normaloff>.</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -420,7 +416,8 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset theme="removecell"/>
+               <iconset theme="removecell">
+                <normaloff>.</normaloff>.</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -439,7 +436,8 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset theme="document-save"/>
+               <iconset theme="document-save">
+                <normaloff>.</normaloff>.</iconset>
               </property>
               <property name="iconSize">
                <size>

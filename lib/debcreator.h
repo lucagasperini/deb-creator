@@ -5,6 +5,7 @@
 
 #include <QObject>
 #include <QtSql/QSqlDatabase>
+#include <QProcess>
 #include <QDir>
 
 class debcreator : public QObject
@@ -61,24 +62,15 @@ public:
          * @return if package don't exist it will return false, otherwise true
          */
         bool db_exists(const QString &pkg);
-        /**
-         * @brief compile run make into compile directory
-         * @param program directory/name of the program
-         * @param args arguments of the program
-         */
-        QByteArray compile_make(const QString &program = "");
-        /**
-         * @brief compile run @arg program into compile directory
-         * @param program directory/name of the program
-         * @param args arguments of the program
-         */
-        QByteArray compile(const QString &program, const QString &args);
+        QByteArray compile();
         /**
          * @brief git_clone fetch git repo in directory @public m_dir + '/build'
          * @param url repo git
          * @return directory of files stored
          */
         QString git_clone(const QString &url);
+        void build_append(const QString &program, const QStringList &args, const QString &working_dir = "");
+        void build_clear();
         /**
          * @brief git_fetch_user fetch user.email and user.name from git config
          * @return the format from git is user.name <user.email>, empty string if git is not installed or git is not configurated
@@ -92,6 +84,7 @@ public:
         static qint64 calc_size(const QString &_dir);
 
         QSqlDatabase* m_db;
+        QList<QProcess*> *m_build;
 
         QString m_package;
         QString m_version;
