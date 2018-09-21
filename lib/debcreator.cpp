@@ -293,7 +293,7 @@ void debcreator::build_append(const QString &program, const QStringList &args, c
         step->setProgram(program);
         step->setArguments(args);
         if(working_dir.isEmpty())
-                step->setWorkingDirectory(m_dir.path() + QSL("/build"));
+                step->setWorkingDirectory(m_build_dir.path());
         else
                 step->setWorkingDirectory(working_dir);
 

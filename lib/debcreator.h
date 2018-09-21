@@ -103,6 +103,7 @@ public:
         QString m_control;
 
         QDir m_dir;
+        QDir m_build_dir;
         QString m_outputfile;
 };
 

@@ -121,7 +121,19 @@ void MainWindow::create_package()
         m_api->m_dir = ui->ln_filesystem->text();
         m_api->m_outputfile = ui->ln_outputfile->text();
 
-        QString output = m_api->package(ui->txt_control->toPlainText());
+        if(m_api->m_dir.isEmpty() || m_api->m_outputfile.isEmpty()) {
+                QMessageBox::warning(this, QSL("Creating Package"), QSL("Package directory or output file path are empty!"));
+                return;
+        }
+
+        QString control = ui->txt_control->toPlainText();
+
+        if(control.isEmpty()) {
+                QMessageBox::warning(this, QSL("Creating Package"), QSL("Control file cannot be empty!\nPlease generate a control file."));
+                return;
+        }
+
+        QString output = m_api->package(control);
         ui->txt_output->setText(output);
 }
 
@@ -157,7 +169,7 @@ void MainWindow::compile_dir()
 {
         QDir dir;
         dir = QFileDialog::getExistingDirectory(this, QSL("Source file of the package"));
-        ui->ln_sourcecode->setText(dir.absolutePath());
+        ui->ln_sourcecode->setText(dir.absolutePath() + QSL("/"));
 }
 
 void MainWindow::output_file()
@@ -218,18 +230,17 @@ void MainWindow::compile_refresh()
 
         QFileInfo dir(ui->ln_sourcecode->text());
         QFileSystemModel *model = new QFileSystemModel;
-        QString path;
 
         if(dir.isDir()) {
-                path = dir.path();
+                m_api->m_build_dir = dir.absoluteDir();
         }
         else {
-                path = m_api->git_clone(ui->ln_sourcecode->text());
+                m_api->m_build_dir  = m_api->git_clone(ui->ln_sourcecode->text());
         }
 
-        model->setRootPath(path);
+        model->setRootPath(m_api->m_build_dir.path());
         ui->tw_compile->setModel(model);
-        ui->tw_compile->setRootIndex(model->index(path));
+        ui->tw_compile->setRootIndex(model->index(m_api->m_build_dir.path()));
 }
 
 void MainWindow::compile()
@@ -244,6 +255,7 @@ void MainWindow::build_add()
         ui->tbl_order->setItem(row, 0, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 1, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 2, new QTableWidgetItem);
+        ui->tbl_order->item(row, 2)->setText(m_api->m_build_dir.path());
 }
 
 void MainWindow::build_remove()
