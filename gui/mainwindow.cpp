@@ -225,37 +225,49 @@ void MainWindow::fetch_changelog()
 
 void MainWindow::compile_refresh()
 {
-        if(ui->ln_sourcecode->text().isEmpty())
+        if(ui->ln_sourcecode->text().isEmpty()) {
+                QMessageBox::warning(this, QSL("Compile Package"), QSL("Source cannot be empty!\nPlease insert a source code directory or git repo."));
                 return;
+        }
 
         QFileInfo dir(ui->ln_sourcecode->text());
         QFileSystemModel *model = new QFileSystemModel;
 
         if(dir.isDir()) {
-                m_api->m_build_dir = dir.absoluteDir();
+                m_api->m_build_dir = dir.absoluteDir().path();
         }
         else {
                 m_api->m_build_dir  = m_api->git_clone(ui->ln_sourcecode->text());
         }
 
-        model->setRootPath(m_api->m_build_dir.path());
+        model->setRootPath(m_api->m_build_dir);
         ui->tw_compile->setModel(model);
-        ui->tw_compile->setRootIndex(model->index(m_api->m_build_dir.path()));
+        ui->tw_compile->setRootIndex(model->index(m_api->m_build_dir));
 }
 
 void MainWindow::compile()
 {
+        if(m_api->build_is_empty()) {
+                QMessageBox::warning(this, QSL("Compile Package"), QSL("Step build are not saved!\nPlease save step build in order to compile source code."));
+                return;
+        }
         ui->txt_output->append(m_api->compile());
 }
 
 void MainWindow::build_add()
 {
-        int row = ui->tbl_order->rowCount();
+        if(m_api->m_build_dir.isEmpty()) {
+                QMessageBox::warning(this, QSL("Compile Package"), QSL("Build directory is not loaded!\nPlease refresh the source code viewer."));
+                return;
+        }
+
+        const int row = ui->tbl_order->rowCount();
+
         ui->tbl_order->insertRow(row);
         ui->tbl_order->setItem(row, 0, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 1, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 2, new QTableWidgetItem);
-        ui->tbl_order->item(row, 2)->setText(m_api->m_build_dir.path());
+        ui->tbl_order->item(row, 2)->setText(m_api->m_build_dir);
 }
 
 void MainWindow::build_remove()
@@ -265,8 +277,14 @@ void MainWindow::build_remove()
 
 void MainWindow::build_save()
 {
+        const int rows = ui->tbl_order->rowCount();
+        if(rows == 0) {
+                QMessageBox::warning(this, QSL("Compile Package"), QSL("Step build table cannot be empty!\nPlease insert a step build in order to compile source code."));
+                return;
+        }
+
         m_api->build_clear();
-        for(int i = 0; i < ui->tbl_order->rowCount(); i++) {
+        for(int i = 0; i < rows; i++) {
                 QString program = ui->tbl_order->item(i, 0)->text();
                 QString args = ui->tbl_order->item(i, 1)->text();
                 QString working_dir = ui->tbl_order->item(i, 2)->text();

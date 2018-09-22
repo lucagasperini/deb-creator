@@ -71,6 +71,7 @@ public:
         QString git_clone(const QString &url);
         void build_append(const QString &program, const QStringList &args, const QString &working_dir = "");
         void build_clear();
+        bool build_is_empty();
         /**
          * @brief git_fetch_user fetch user.email and user.name from git config
          * @return the format from git is user.name <user.email>, empty string if git is not installed or git is not configurated
@@ -103,7 +104,7 @@ public:
         QString m_control;
 
         QDir m_dir;
-        QDir m_build_dir;
+        QString m_build_dir;
         QString m_outputfile;
 };
 

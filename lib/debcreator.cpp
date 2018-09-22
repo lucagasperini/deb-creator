@@ -284,7 +284,7 @@ QString debcreator::git_clone(const QString &url)
 #endif
         git.waitForFinished();
 
-        return m_dir.path() + QSL("/build");
+        return m_dir.path() + QSL("/build"); //compile in /tmp
 }
 
 void debcreator::build_append(const QString &program, const QStringList &args, const QString &working_dir)
@@ -293,7 +293,7 @@ void debcreator::build_append(const QString &program, const QStringList &args, c
         step->setProgram(program);
         step->setArguments(args);
         if(working_dir.isEmpty())
-                step->setWorkingDirectory(m_build_dir.path());
+                step->setWorkingDirectory(m_build_dir);
         else
                 step->setWorkingDirectory(working_dir);
 
@@ -303,6 +303,11 @@ void debcreator::build_append(const QString &program, const QStringList &args, c
 void debcreator::build_clear()
 {
         m_build->clear();
+}
+
+bool debcreator::build_is_empty()
+{
+        return m_build->isEmpty();
 }
 
 QString debcreator::git_fetch_user()
