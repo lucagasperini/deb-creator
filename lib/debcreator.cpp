@@ -22,7 +22,7 @@ debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent
         m_build = new QList<QProcess*>;
 }
 
-QString debcreator::control()
+QString debcreator::control() //QUESTION: Why not QByteArray?
 {
         QString offset;
 

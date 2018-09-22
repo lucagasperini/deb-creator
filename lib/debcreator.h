@@ -62,6 +62,10 @@ public:
          * @return if package don't exist it will return false, otherwise true
          */
         bool db_exists(const QString &pkg);
+        /**
+         * @brief compile source code in @public m_build_dir and using @public m_build processes
+         * @return Processes output stream
+         */
         QByteArray compile();
         /**
          * @brief git_clone fetch git repo in directory @public m_dir + '/build'
@@ -69,8 +73,21 @@ public:
          * @return directory of files stored
          */
         QString git_clone(const QString &url);
+        /**
+         * @brief build_append add a step build in @public m_build
+         * @param program path of the program
+         * @param args arguments of the program
+         * @param working_dir directory where source code is
+         */
         void build_append(const QString &program, const QStringList &args, const QString &working_dir = "");
+        /**
+         * @brief build_clear erase all step build in @public m_build
+         */
         void build_clear();
+        /**
+         * @brief build_is_empty check if @public m_build is empty
+         * @return if there are step build it will return false, otherwise true
+         */
         bool build_is_empty();
         /**
          * @brief git_fetch_user fetch user.email and user.name from git config
@@ -82,6 +99,11 @@ public:
          * @return the formated string of date
          */
         static QString date_fetch();
+        /**
+         * @brief calc_size calculate the size of package directory
+         * @param _dir root directory of the package
+         * @return integer 64 bit of size in byte
+         */
         static qint64 calc_size(const QString &_dir);
 
         QSqlDatabase* m_db;
