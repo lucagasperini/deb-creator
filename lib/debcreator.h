@@ -22,7 +22,7 @@ public:
          * @brief control generate a control file from variables in this class
          * @return return the control text
          */
-        QString control();
+        QByteArray control();
         /**
          * @brief changelog generate and store changelog in this class
          * @param text user log in changelog
@@ -34,7 +34,7 @@ public:
          * @param control is the control text
          * @return return the text of input stream from dpkg process
          */
-        QString package(const QString &control);
+        QString package(const QByteArray &control);
         /**
          * @brief fetch_changelog fetch previous changelog
          * @return list of changelogs

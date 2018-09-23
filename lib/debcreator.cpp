@@ -22,9 +22,9 @@ debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent
         m_build = new QList<QProcess*>;
 }
 
-QString debcreator::control() //QUESTION: Why not QByteArray?
+QByteArray debcreator::control()
 {
-        QString offset;
+        QByteArray offset;
 
         offset += QSL("Package: ") + m_package;
         offset += QSL("\nMaintainer: ") + m_maintainer;
@@ -55,7 +55,7 @@ bool debcreator::changelog(const QString &text, const QString &status, const QSt
         return true;
 }
 
-QString debcreator::package(const QString& control)
+QString debcreator::package(const QByteArray& control)
 {
         QProcess dpkg(this);
         QTextStream out;

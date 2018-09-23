@@ -133,7 +133,7 @@ void MainWindow::create_package()
                 return;
         }
 
-        QString output = m_api->package(control);
+        QString output = m_api->package(control.toUtf8());
         ui->txt_output->setText(output);
 }
 
