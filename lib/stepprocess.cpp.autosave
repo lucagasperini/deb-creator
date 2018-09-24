@@ -1,6 +1,0 @@
-#include "stepprocess.h"
-
-step::step(QObject *parent) : QObject(parent)
-{
-
-}
