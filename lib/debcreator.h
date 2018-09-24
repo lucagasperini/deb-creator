@@ -17,7 +17,7 @@ public:
          * @param file path of SQLITE3 database file
          * @param parent default qt parent
          */
-        explicit debcreator(const QString &file_db, QObject *parent = nullptr);
+        explicit debcreator(const QString &file_db = "", QObject *parent = nullptr);
         /**
          * @brief control generate a control file from variables in this class
          * @return return the control text
@@ -34,12 +34,17 @@ public:
          * @param control is the control text
          * @return return the text of input stream from dpkg process
          */
-        QString package(const QByteArray &control);
+        QString package(const QByteArray &control, const QString &outputfile = "");
         /**
          * @brief fetch_changelog fetch previous changelog
          * @return list of changelogs
          */
         QStringList fetch_changelog(const QString &file);
+        /**
+         * @brief gen_outputfile generate a standard filename for package .deb
+         * @return filename of the package
+         */
+        QString gen_outputfile();
         /**
          * @brief db_insert insert into the database all variables in this class
          * @return if insert routine it's ok will return true otherwise false
@@ -127,7 +132,6 @@ public:
 
         QDir m_dir;
         QString m_build_dir;
-        QString m_outputfile;
 };
 
 #endif // DEBCREATOR_H

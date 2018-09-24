@@ -15,8 +15,17 @@
 
 debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent)
 {
+        QDir local(DEB_CREATOR_LOCAL);
+        if(!local.exists())
+                local.mkdir(DEB_CREATOR_LOCAL);
+
         m_db = new QSqlDatabase(QSqlDatabase::addDatabase(QSL("QSQLITE"), QSL("deb-creator-socket")));
-        m_db->setDatabaseName(file_db);
+
+        if(file_db.isEmpty())
+                m_db->setDatabaseName(DEB_CREATOR_DB);
+        else
+                m_db->setDatabaseName(file_db);
+
         m_db->open();
 
         m_build = new QList<QProcess*>;
@@ -55,7 +64,7 @@ bool debcreator::changelog(const QString &text, const QString &status, const QSt
         return true;
 }
 
-QString debcreator::package(const QByteArray& control)
+QString debcreator::package(const QByteArray& control, const QString &outputfile)
 {
         QProcess dpkg(this);
         QTextStream out;
@@ -87,7 +96,11 @@ QString debcreator::package(const QByteArray& control)
         control_file.close();
         }
 
-        QString cmd = "dpkg -b " + m_dir.path() + " " + m_outputfile;
+        QString cmd;
+        if(outputfile.isEmpty())
+                cmd = "dpkg -b " + m_dir.path() + " " + QDir::homePath() + "/" + gen_outputfile();
+        else
+                cmd = "dpkg -b " + m_dir.path() + " " + outputfile;
 
 #ifdef QT_DEBUG
         qDebug() << QSL("Executing: ") << cmd;
@@ -134,6 +147,11 @@ QStringList debcreator::fetch_changelog(const QString &file)
         return offset;
 }
 
+QString debcreator::gen_outputfile()
+{
+        return m_package + "_" + m_version + ".deb";
+}
+
 bool debcreator::db_insert()
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
@@ -149,7 +167,6 @@ bool debcreator::db_insert()
 
         query->bindValue(QSL(":name"), m_package);
         query->bindValue(QSL(":directory"), m_dir.path());
-        query->bindValue(QSL(":output"), m_outputfile);
         query->bindValue(QSL(":maintainer"), m_maintainer);
         query->bindValue(QSL(":uploader"), m_uploaders);
         query->bindValue(QSL(":version"), m_version);
@@ -213,7 +230,6 @@ bool debcreator::db_fetch(const QString &pkg)
         m_package = pkg;
         while (query->next()) {
                 m_dir = query->value(query->record().indexOf(QSL("directory"))).toString();
-                m_outputfile = query->value(query->record().indexOf(QSL("output"))).toString();
                 m_maintainer = query->value(query->record().indexOf(QSL("maintainer"))).toString();
                 m_uploaders = query->value(query->record().indexOf(QSL("uploader"))).toString();
                 m_version = query->value(query->record().indexOf(QSL("version"))).toString();

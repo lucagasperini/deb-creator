@@ -14,9 +14,6 @@
 #include <QDebug>
 #endif
 
-#define DEB_CREATOR_LOCAL       QDir::homePath() + QSL("/.local/share/deb-creator/")
-#define DEB_CREATOR_DB          DEB_CREATOR_LOCAL + QSL("deb-creator.db")
-
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -31,7 +28,6 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
         connect(ui->btn_clear, &QPushButton::clicked, this, &MainWindow::clear_output);
         connect(ui->btn_filesystem, &QPushButton::clicked, this, &MainWindow::working_dir);
-        connect(ui->btn_output_file, &QPushButton::clicked, this, &MainWindow::output_file);
         connect(ui->btn_changelog, &QPushButton::clicked, this, &MainWindow::generate_changelog);
         connect(ui->btn_refresh, &QPushButton::clicked, this, &MainWindow::compile_refresh);
         connect(ui->btn_compile, &QPushButton::clicked, this, &MainWindow::compile);
@@ -50,11 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->lsw_welcome, &QListWidget::currentTextChanged, this, &MainWindow::check_database);
         // connect(ui->a_manual) TODO: Add a manual?
 
-        QDir local(DEB_CREATOR_LOCAL);
-        if(!local.exists())
-                local.mkdir(DEB_CREATOR_LOCAL);
-
-        m_api = new debcreator(DEB_CREATOR_DB);
+        m_api = new debcreator();
 
         QStringList list = m_api->db_fetch();
 
@@ -65,7 +57,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
         ui->lsw_welcome->show();
         ui->lsw_welcome->addItems(list);
-
 }
 
 MainWindow::~MainWindow()
@@ -104,9 +95,6 @@ void MainWindow::generate_control()
         else
                 ui->txt_output->append(QSL("Failed while adding the package to the database!"));
 
-        if(ui->ln_outputfile->text().isEmpty())
-                ui->ln_outputfile->setText(QDir::homePath() + "/" + m_api->m_package + "_" + m_api->m_version + ".deb");
-
         ui->txt_control->setText(m_api->control());
 }
 
@@ -119,9 +107,11 @@ void MainWindow::generate_changelog()
 void MainWindow::create_package()
 {
         m_api->m_dir = ui->ln_filesystem->text();
-        m_api->m_outputfile = ui->ln_outputfile->text();
 
-        if(m_api->m_dir.isEmpty() || m_api->m_outputfile.isEmpty()) {
+        QString outputfile;
+        outputfile = QFileDialog::getSaveFileName(this, QSL("Select where save package"), QDir::homePath() + "/" + m_api->gen_outputfile());
+
+        if(m_api->m_dir.isEmpty() || outputfile.isEmpty()) {
                 QMessageBox::warning(this, QSL("Creating Package"), QSL("Package directory or output file path are empty!"));
                 return;
         }
@@ -133,7 +123,7 @@ void MainWindow::create_package()
                 return;
         }
 
-        QString output = m_api->package(control.toUtf8());
+        QString output = m_api->package(control.toUtf8(), outputfile);
         ui->txt_output->setText(output);
 }
 
@@ -156,13 +146,6 @@ void MainWindow::working_dir()
         QDir dir;
         dir = QFileDialog::getExistingDirectory(this, QSL("Source file of the package"));
         ui->ln_filesystem->setText(dir.absolutePath());
-
-        if(!dir.isEmpty() && ui->ln_outputfile->text().isEmpty()) {
-                QString name;
-                name = "/" + dir.dirName() + ".deb";
-                dir.cd("..");
-                ui->ln_outputfile->setText(dir.absolutePath() + name);
-        }
 }
 
 void MainWindow::compile_dir()
@@ -171,14 +154,6 @@ void MainWindow::compile_dir()
         dir = QFileDialog::getExistingDirectory(this, QSL("Source file of the package"));
         ui->ln_sourcecode->setText(dir.absolutePath() + QSL("/"));
 }
-
-void MainWindow::output_file()
-{
-        QString file;
-        file = QFileDialog::getSaveFileName(this, QSL("Select where save package"), ui->ln_outputfile->text());
-        ui->ln_outputfile->setText(file);
-}
-
 
 void MainWindow::check_database(const QString &package)
 {
@@ -195,7 +170,6 @@ void MainWindow::check_database(const QString &package)
         ui->ln_descriptiontitle->setText(m_api->m_desc_title);
         ui->txt_description->setText(m_api->m_desc_body);
         ui->ln_filesystem->setText(m_api->m_dir.path());
-        ui->ln_outputfile->setText(m_api->m_outputfile);
         ui->ln_homepage->setText(m_api->m_homepage);
         ui->ln_replace->setText(m_api->m_replace);
         ui->ln_section->setText(m_api->m_section);

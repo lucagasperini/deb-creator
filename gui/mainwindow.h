@@ -25,7 +25,6 @@ private:
         about about;
 
 private slots:
-        void output_file();
         void working_dir();
         void compile_dir();
         void clear_output();

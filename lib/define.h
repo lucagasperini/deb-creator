@@ -3,11 +3,13 @@
 
 #define QSL(t) QStringLiteral(t)
 
+#define DEB_CREATOR_LOCAL       QDir::homePath() + QSL("/.local/share/deb-creator/")
+#define DEB_CREATOR_DB          DEB_CREATOR_LOCAL + QSL("deb-creator.db")
+
 #define DB_PACKAGE_TABLE QSL("package")
 #define DB_PACKAGE_CREATE QSL("CREATE TABLE package("           \
                                 "name TEXT PRIMARY KEY,"        \
                                 "directory TEXT,"               \
-                                "output TEXT,"                  \
                                 "maintainer TEXT,"              \
                                 "uploader TEXT,"                \
                                 "version TEXT,"                 \
@@ -24,7 +26,6 @@
 #define DB_PACKAGE_INSERT QSL("INSERT INTO package ("           \
                                 "name,"                         \
                                 "directory,"                    \
-                                "output,"                       \
                                 "maintainer,"                   \
                                 "uploader,"                     \
                                 "version,"                      \
@@ -39,7 +40,6 @@
                                 ") VALUES ("                    \
                                 ":name,"                        \
                                 ":directory,"                   \
-                                ":output,"                      \
                                 ":maintainer,"                  \
                                 ":uploader,"                    \
                                 ":version,"                     \
@@ -56,7 +56,6 @@
 #define DB_PACKAGE_UPDATE QSL("UPDATE package SET "             \
                                 "maintainer=:maintainer,"       \
                                 "directory=:directory,"         \
-                                "output=:output,"               \
                                 "uploader=:uploader,"           \
                                 "version=:version,"             \
                                 "homepage=:homepage,"           \
