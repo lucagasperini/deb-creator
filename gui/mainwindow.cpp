@@ -206,17 +206,18 @@ void MainWindow::compile_refresh()
 
         QFileInfo dir(ui->ln_sourcecode->text());
         QFileSystemModel *model = new QFileSystemModel;
+        QString src_dir;
 
         if(dir.isDir()) {
-                m_api->m_build_dir = dir.absoluteDir().path();
+                src_dir = dir.absoluteDir().path();
         }
         else {
-                m_api->m_build_dir  = m_api->git_clone(ui->ln_sourcecode->text());
+                src_dir  = m_api->git_clone(ui->ln_sourcecode->text());
         }
 
-        model->setRootPath(m_api->m_build_dir);
+        model->setRootPath(src_dir);
         ui->tw_compile->setModel(model);
-        ui->tw_compile->setRootIndex(model->index(m_api->m_build_dir));
+        ui->tw_compile->setRootIndex(model->index(src_dir));
 }
 
 void MainWindow::compile()
@@ -230,18 +231,13 @@ void MainWindow::compile()
 
 void MainWindow::build_add()
 {
-        if(m_api->m_build_dir.isEmpty()) {
-                QMessageBox::warning(this, QSL("Compile Package"), QSL("Build directory is not loaded!\nPlease refresh the source code viewer."));
-                return;
-        }
-
         const int row = ui->tbl_order->rowCount();
 
         ui->tbl_order->insertRow(row);
         ui->tbl_order->setItem(row, 0, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 1, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 2, new QTableWidgetItem);
-        ui->tbl_order->item(row, 2)->setText(m_api->m_build_dir);
+        ui->tbl_order->item(row, 2)->setText(DEB_CREATOR_SRC);
 }
 
 void MainWindow::build_remove()

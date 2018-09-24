@@ -4,7 +4,9 @@
 #define QSL(t) QStringLiteral(t)
 
 #define DEB_CREATOR_LOCAL       QDir::homePath() + QSL("/.local/share/deb-creator/")
-#define DEB_CREATOR_DB          DEB_CREATOR_LOCAL + QSL("deb-creator.db")
+#define DEB_CREATOR_DB          QDir::homePath() + QSL("/.local/share/deb-creator/deb-creator.db")
+#define DEB_CREATOR_TMP         QDir::tempPath() + QSL("/deb-creator/")
+#define DEB_CREATOR_SRC         QDir::tempPath() + QSL("/deb-creator/src/")
 
 #define DB_PACKAGE_TABLE QSL("package")
 #define DB_PACKAGE_CREATE QSL("CREATE TABLE package("           \

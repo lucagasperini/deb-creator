@@ -290,26 +290,13 @@ QByteArray debcreator::compile()
         return data;
 }
 
-QString debcreator::git_clone(const QString &url)
-{
-        QProcess git(this);
-        git.setWorkingDirectory(m_dir.path());
-        git.start(QSL("git clone ") + url + QSL(" build"));
-#ifdef QT_DEBUG
-        qDebug() << QSL("Executing: git clone ") << url << QSL(" build");
-#endif
-        git.waitForFinished();
-
-        return m_dir.path() + QSL("/build"); //compile in /tmp
-}
-
 void debcreator::build_append(const QString &program, const QStringList &args, const QString &working_dir)
 {
         QProcess* step = new QProcess;
         step->setProgram(program);
         step->setArguments(args);
         if(working_dir.isEmpty())
-                step->setWorkingDirectory(m_build_dir);
+                step->setWorkingDirectory(DEB_CREATOR_TMP);
         else
                 step->setWorkingDirectory(working_dir);
 
@@ -324,6 +311,22 @@ void debcreator::build_clear()
 bool debcreator::build_is_empty()
 {
         return m_build->isEmpty();
+}
+
+QString debcreator::git_clone(const QString &url, QString directory)
+{
+        if(directory.isEmpty())
+                directory = DEB_CREATOR_SRC;
+
+        QProcess git;
+        QString cmd = QSL("git clone ") + url + QSL(" ") + directory;
+        git.start(cmd);
+#ifdef QT_DEBUG
+        qDebug() << QSL("Executing: ") << cmd;
+#endif
+        git.waitForFinished();
+
+        return directory;
 }
 
 QString debcreator::git_fetch_user()

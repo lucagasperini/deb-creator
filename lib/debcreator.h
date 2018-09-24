@@ -73,12 +73,6 @@ public:
          */
         QByteArray compile();
         /**
-         * @brief git_clone fetch git repo in directory @public m_dir + '/build'
-         * @param url repo git
-         * @return directory of files stored
-         */
-        QString git_clone(const QString &url);
-        /**
          * @brief build_append add a step build in @public m_build
          * @param program path of the program
          * @param args arguments of the program
@@ -94,6 +88,12 @@ public:
          * @return if there are step build it will return false, otherwise true
          */
         bool build_is_empty();
+        /**
+         * @brief git_clone fetch git repo in directory @public m_dir + '/build'
+         * @param url repo git
+         * @return directory of files stored
+         */
+        static QString git_clone(const QString &url, QString directory = "");
         /**
          * @brief git_fetch_user fetch user.email and user.name from git config
          * @return the format from git is user.name <user.email>, empty string if git is not installed or git is not configurated
@@ -131,7 +131,6 @@ public:
         QString m_control;
 
         QDir m_dir;
-        QString m_build_dir;
 };
 
 #endif // DEBCREATOR_H
