@@ -23,7 +23,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     debcreator.h \
-    define.h
+    define.h \
+    multiprocess.h
 
 SOURCES += \
-    debcreator.cpp
+    debcreator.cpp \
+    multiprocess.cpp

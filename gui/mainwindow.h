@@ -27,6 +27,7 @@ private:
 private slots:
         void working_dir();
         void compile_dir();
+        void append_output(const QByteArray &text);
         void clear_output();
         void create_package();
         void generate_control();

@@ -8,11 +8,6 @@
 #include <QtSql/QSqlDriver>
 #include <QtSql/QSqlRecord>
 
-#ifdef QT_DEBUG
-#include <QDebug>
-#include <QtSql/QSqlError>
-#endif
-
 debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent)
 {
         QDir local(DEB_CREATOR_LOCAL);
@@ -28,7 +23,7 @@ debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent
 
         m_db->open();
 
-        m_build = new QList<QProcess*>;
+        m_process = new multiprocess;
 }
 
 QByteArray debcreator::control()
@@ -264,53 +259,6 @@ bool debcreator::db_exists(const QString &pkg)
 
         if(query->next())
                 return query->value(0).toBool();
-}
-
-QByteArray debcreator::compile()
-{
-        QProcess* buffer = nullptr;
-        QByteArray data;
-
-        for(int i = 0; i < m_build->size(); i++) {
-                buffer = m_build->at(i);
-                if(buffer == nullptr)
-                        return data;
-#ifdef QT_DEBUG
-                qDebug() << QSL("Executing: ") << buffer->program() << buffer->arguments() << buffer->workingDirectory();
-#endif
-                buffer->start(QIODevice::ReadWrite);
-
-                while(buffer->waitForReadyRead()) {
-                        data.append(buffer->readAll());
-                }
-        }
-#ifdef QT_DEBUG
-        qDebug() << data;
-#endif
-        return data;
-}
-
-void debcreator::build_append(const QString &program, const QStringList &args, const QString &working_dir)
-{
-        QProcess* step = new QProcess;
-        step->setProgram(program);
-        step->setArguments(args);
-        if(working_dir.isEmpty())
-                step->setWorkingDirectory(DEB_CREATOR_TMP);
-        else
-                step->setWorkingDirectory(working_dir);
-
-        m_build->append(step);
-}
-
-void debcreator::build_clear()
-{
-        m_build->clear();
-}
-
-bool debcreator::build_is_empty()
-{
-        return m_build->isEmpty();
 }
 
 QString debcreator::git_clone(const QString &url, QString directory)

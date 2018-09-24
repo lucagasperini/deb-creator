@@ -1,12 +1,10 @@
 #ifndef DEBCREATOR_H
 #define DEBCREATOR_H
 
+#include "multiprocess.h"
 #include "define.h"
 
-#include <QObject>
 #include <QtSql/QSqlDatabase>
-#include <QProcess>
-#include <QDir>
 
 class debcreator : public QObject
 {
@@ -68,27 +66,6 @@ public:
          */
         bool db_exists(const QString &pkg);
         /**
-         * @brief compile source code in @public m_build_dir and using @public m_build processes
-         * @return Processes output stream
-         */
-        QByteArray compile();
-        /**
-         * @brief build_append add a step build in @public m_build
-         * @param program path of the program
-         * @param args arguments of the program
-         * @param working_dir directory where source code is
-         */
-        void build_append(const QString &program, const QStringList &args, const QString &working_dir = "");
-        /**
-         * @brief build_clear erase all step build in @public m_build
-         */
-        void build_clear();
-        /**
-         * @brief build_is_empty check if @public m_build is empty
-         * @return if there are step build it will return false, otherwise true
-         */
-        bool build_is_empty();
-        /**
          * @brief git_clone fetch git repo in directory @public m_dir + '/build'
          * @param url repo git
          * @return directory of files stored
@@ -111,8 +88,9 @@ public:
          */
         static qint64 calc_size(const QString &_dir);
 
+        multiprocess* m_process;
+
         QSqlDatabase* m_db;
-        QList<QProcess*> *m_build;
 
         QString m_package;
         QString m_version;

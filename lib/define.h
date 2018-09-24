@@ -1,6 +1,14 @@
 #ifndef DEFINE_H
 #define DEFINE_H
 
+#ifdef QT_DEBUG
+#include <QDebug>
+#include <QtSql/QSqlError>
+#endif
+
+#include <QObject>
+#include <QDir>
+
 #define QSL(t) QStringLiteral(t)
 
 #define DEB_CREATOR_LOCAL       QDir::homePath() + QSL("/.local/share/deb-creator/")

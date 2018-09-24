@@ -10,10 +10,6 @@
 #include <QFileSystemModel>
 #include <QFileInfo>
 
-#ifdef QT_DEBUG
-#include <QDebug>
-#endif
-
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -47,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent) :
         // connect(ui->a_manual) TODO: Add a manual?
 
         m_api = new debcreator();
+
+        connect(m_api->m_process, &multiprocess::read, this, &MainWindow::append_output);
 
         QStringList list = m_api->db_fetch();
 
@@ -125,6 +123,14 @@ void MainWindow::create_package()
 
         QString output = m_api->package(control.toUtf8(), outputfile);
         ui->txt_output->setText(output);
+}
+
+void MainWindow::append_output(const QByteArray &text)
+{
+#ifdef QT_DEBUG
+        qDebug() << text;
+#endif
+        ui->txt_output->insertPlainText(text);
 }
 
 void MainWindow::clear_output()
@@ -222,11 +228,11 @@ void MainWindow::compile_refresh()
 
 void MainWindow::compile()
 {
-        if(m_api->build_is_empty()) {
+        if(m_api->m_process->build_is_empty()) {
                 QMessageBox::warning(this, QSL("Compile Package"), QSL("Step build are not saved!\nPlease save step build in order to compile source code."));
                 return;
         }
-        ui->txt_output->append(m_api->compile());
+        m_api->m_process->start();
 }
 
 void MainWindow::build_add()
@@ -253,13 +259,13 @@ void MainWindow::build_save()
                 return;
         }
 
-        m_api->build_clear();
+        m_api->m_process->build_clear();
         for(int i = 0; i < rows; i++) {
                 QString program = ui->tbl_order->item(i, 0)->text();
                 QString args = ui->tbl_order->item(i, 1)->text();
                 QString working_dir = ui->tbl_order->item(i, 2)->text();
 
-                m_api->build_append(program, args.split(" "), working_dir);
+                m_api->m_process->build_append(program, args.split(" "), working_dir);
         }
 }
 
