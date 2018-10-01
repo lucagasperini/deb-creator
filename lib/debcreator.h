@@ -30,9 +30,8 @@ public:
         /**
          * @brief package create the package using QProcess to dpkg
          * @param control is the control text
-         * @return return the text of input stream from dpkg process
          */
-        QString package(const QByteArray &control, const QString &outputfile = "");
+        QByteArray package(const QByteArray &control, const QString &outputfile = "");
         /**
          * @brief fetch_changelog fetch previous changelog
          * @return list of changelogs

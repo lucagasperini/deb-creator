@@ -121,8 +121,7 @@ void MainWindow::create_package()
                 return;
         }
 
-        QString output = m_api->package(control.toUtf8(), outputfile);
-        ui->txt_output->setText(output);
+        append_output(m_api->package(control.toUtf8(), outputfile));
 }
 
 void MainWindow::append_output(const QByteArray &text)
@@ -228,7 +227,7 @@ void MainWindow::compile_refresh()
 
 void MainWindow::compile()
 {
-        if(m_api->m_process->build_is_empty()) {
+        if(m_api->m_process->is_empty()) {
                 QMessageBox::warning(this, QSL("Compile Package"), QSL("Step build are not saved!\nPlease save step build in order to compile source code."));
                 return;
         }
@@ -259,13 +258,13 @@ void MainWindow::build_save()
                 return;
         }
 
-        m_api->m_process->build_clear();
+        m_api->m_process->clear();
         for(int i = 0; i < rows; i++) {
                 QString program = ui->tbl_order->item(i, 0)->text();
                 QString args = ui->tbl_order->item(i, 1)->text();
                 QString working_dir = ui->tbl_order->item(i, 2)->text();
 
-                m_api->m_process->build_append(program, args.split(" "), working_dir);
+                m_api->m_process->append(program, args.split(" "), working_dir);
         }
 }
 

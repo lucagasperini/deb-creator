@@ -3,28 +3,45 @@
 
 multiprocess::multiprocess(QObject *parent) : QThread(parent)
 {
-        m_build = new QList<QProcess*>;
+        m_pro = new QList<QProcess*>;
 }
 
 void multiprocess::run()
 {
         QProcess* buffer = nullptr;
 
-        for(int i = 0; i < m_build->size(); i++) {
-                buffer = m_build->at(i);
+        for(int i = 0; i < m_pro->size(); i++) {
+                buffer = m_pro->at(i);
                 if(buffer == nullptr)
                         return;
 #ifdef QT_DEBUG
                 qDebug() << QSL("Executing: ") << buffer->program() << buffer->arguments() << buffer->workingDirectory();
 #endif
                 buffer->start(QIODevice::ReadWrite);
+                while(buffer->waitForReadyRead()){
+                        emit read(buffer->readAll());
+                }
 
                 buffer->waitForFinished();
-                emit read(buffer->readAll());
         }
 }
 
-void multiprocess::build_append(const QString &program, const QStringList &args, const QString &working_dir)
+void multiprocess::append(const QString &program)
+{
+        QProcess* step = new QProcess;
+        step->setProgram(program);
+        m_pro->append(step);
+}
+
+void multiprocess::append(const QString &program, const QStringList &args)
+{
+        QProcess* step = new QProcess;
+        step->setProgram(program);
+        step->setArguments(args);
+        m_pro->append(step);
+}
+
+void multiprocess::append(const QString &program, const QStringList &args, const QString &working_dir)
 {
         QProcess* step = new QProcess;
         step->setProgram(program);
@@ -34,15 +51,15 @@ void multiprocess::build_append(const QString &program, const QStringList &args,
         else
                 step->setWorkingDirectory(working_dir);
 
-        m_build->append(step);
+        m_pro->append(step);
 }
 
-void multiprocess::build_clear()
+void multiprocess::clear()
 {
-        m_build->clear();
+        m_pro->clear();
 }
 
-bool multiprocess::build_is_empty()
+bool multiprocess::is_empty()
 {
-        return m_build->isEmpty();
+        return m_pro->isEmpty();
 }

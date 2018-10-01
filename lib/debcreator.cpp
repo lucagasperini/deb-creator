@@ -59,7 +59,7 @@ bool debcreator::changelog(const QString &text, const QString &status, const QSt
         return true;
 }
 
-QString debcreator::package(const QByteArray& control, const QString &outputfile)
+QByteArray debcreator::package(const QByteArray& control, const QString &outputfile)
 {
         QProcess dpkg(this);
         QTextStream out;
@@ -108,10 +108,7 @@ QString debcreator::package(const QByteArray& control, const QString &outputfile
         while(dpkg.waitForReadyRead()) {
                 data.append(dpkg.readAll());
         }
-#ifdef QT_DEBUG
-        qDebug() << data;
-#endif
-        return data.data();
+        return data;
 }
 
 QStringList debcreator::fetch_changelog(const QString &file)
