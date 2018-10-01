@@ -34,7 +34,7 @@ QByteArray package::control()
         offset += QSL("\nHomepage: ") + m_homepage;
         offset += QSL("\nSource: ") + m_source;
         offset += QSL("\nInstalled-Size: ") + QString::number(calc_size(m_dir.path()) / 1000);
-        offset += QSL("\nArchitecture: ") + m_arch;
+        offset += QSL("\nArchitecture: ") + architecture_name(m_arch);
 
         if (!m_depends.isEmpty())
                 offset += QSL("\nDepends: ") + m_depends;
@@ -71,3 +71,28 @@ qint64 package::calc_size(const QString &_dir)
         return sizex;
 }
 
+QString package::architecture_name(const arch_t &arch)
+{
+        switch (arch) {
+        case arch_t::all:
+                return QSL("all");
+        case arch_t::amd64:
+                return QSL("amd64");
+        case arch_t::i386:
+                return QSL("i386");
+        default:
+                return "";
+        }
+}
+
+arch_t package::architecture_value(const QString &arch)
+{
+        if(arch.compare(QSL("all"), Qt::CaseInsensitive))
+                return arch_t::all;
+        else if(arch.compare(QSL("amd64"), Qt::CaseInsensitive))
+                return arch_t::amd64;
+        else if(arch.compare(QSL("i386"), Qt::CaseInsensitive))
+                return arch_t::i386;
+        else
+                return arch_t::error;
+}

@@ -205,7 +205,7 @@ bool debcreator::db_fetch(const QString &pkg)
                 m_pkg->m_version = query->value(query->record().indexOf(QSL("version"))).toString();
                 m_pkg->m_homepage = query->value(query->record().indexOf(QSL("homepage"))).toString();
                 m_pkg->m_source = query->value(query->record().indexOf(QSL("source"))).toString();
-                //m_pkg->m_arch = query->value(query->record().indexOf(QSL("arch"))).toString();
+                m_pkg->m_arch = (arch_t)query->value(query->record().indexOf(QSL("arch"))).toInt();
                 m_pkg->m_depends = query->value(query->record().indexOf(QSL("depend"))).toString();
                 m_pkg->m_replace = query->value(query->record().indexOf(QSL("replace"))).toString();
                 m_pkg->m_section = query->value(query->record().indexOf(QSL("section"))).toString();

@@ -15,7 +15,7 @@ void widget_package::load(const package &pkg)
 {
         ln_name->setText(pkg.m_name);
         ln_version->setText(pkg.m_version);
-        //cb_arch->setCurrentText(pkg.m_arch);
+        cb_arch->setCurrentText(package::architecture_name(pkg.m_arch));
         ln_dependancies->setText(pkg.m_depends);
         ln_maintainer->setText(pkg.m_maintainer);
         ln_descriptiontitle->setText(pkg.m_desc_title);
@@ -35,7 +35,7 @@ package* widget_package::save()
         pkg->m_name = ln_name->text();
         pkg->m_dir = DEB_CREATOR_PKG + pkg->m_name;
         pkg->m_version = ln_version->text();
-        //pkg->m_arch = cb_arch->currentText();
+        pkg->m_arch = package::architecture_value(cb_arch->currentText());
         pkg->m_depends = ln_dependancies->text();
         pkg->m_maintainer = ln_maintainer->text();
         pkg->m_desc_title = ln_descriptiontitle->text();

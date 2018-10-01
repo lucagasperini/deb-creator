@@ -28,7 +28,7 @@
                                 "version TEXT,"                 \
                                 "homepage TEXT,"                \
                                 "source TEXT,"                  \
-                                "arch TEXT,"                    \
+                                "arch INTEGER,"                 \
                                 "depend TEXT,"                  \
                                 "replace TEXT,"                 \
                                 "section TEXT,"                 \

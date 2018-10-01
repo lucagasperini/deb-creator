@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QDir>
 
-enum arch_t { all, i386, amd64 };
+enum arch_t { error = -1, all = 0, i386 = 1, amd64 = 2 };
 
 class package : public QObject
 {
@@ -24,7 +24,8 @@ public:
          * @return integer 64 bit of size in byte
          */
         static qint64 calc_size(const QString &_dir);
-
+        static QString architecture_name(const arch_t &arch);
+        static arch_t architecture_value(const QString &arch);
 
         QString m_name;
         QString m_version;

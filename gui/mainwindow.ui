@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_welcome">
        <attribute name="title">
@@ -44,9 +44,9 @@
            <widget class="widget_package" name="ui_package" native="true"/>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_gencontrol">
+           <widget class="QPushButton" name="pushButton">
             <property name="text">
-             <string>Generate control file</string>
+             <string>Edit Depends</string>
             </property>
            </widget>
           </item>
@@ -70,6 +70,13 @@
              <widget class="QTextEdit" name="txt_control">
               <property name="lineWrapMode">
                <enum>QTextEdit::NoWrap</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_gencontrol">
+              <property name="text">
+               <string>Generate control file</string>
               </property>
              </widget>
             </item>
