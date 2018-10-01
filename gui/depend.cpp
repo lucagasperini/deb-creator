@@ -9,6 +9,7 @@ depend::depend(QWidget *parent) :
         ui->setupUi(this);
 
         connect(ui->btn_search, &QPushButton::clicked, this, &depend::search);
+        connect(ui->list_search, &QListWidget::currentTextChanged, this, &depend::select);
 }
 
 depend::~depend()
@@ -18,7 +19,11 @@ depend::~depend()
 
 void depend::search()
 {
-        QList<package*>* buffer = m_apt->search(ui->ln_search->text());
-        for(int i = 0; i < buffer->size(); i++)
-                ui->list_search->addItem(buffer->at(i)->m_name);
+        QStringList result = m_apt->search(ui->ln_search->text());
+        ui->list_search->addItems(result);
+}
+
+void depend::select(const QString &pkg)
+{
+        ui->ui_package->load(*m_apt->cache(pkg));
 }

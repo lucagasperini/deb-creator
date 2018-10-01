@@ -12,6 +12,7 @@ class package : public QObject
 public:
         explicit package(QObject *parent = nullptr);
         explicit package(const package &pkg);
+        explicit package(const QByteArray &data);
 
         /**
          * @brief control generate a control file from variables in this class
@@ -30,7 +31,7 @@ public:
         QString m_name;
         QString m_version;
         arch_t m_arch;
-        QString m_desc;
+        qint64 m_size;
         QString m_depends;
         QString m_maintainer;
         QString m_desc_title;

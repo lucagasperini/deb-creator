@@ -20,6 +20,7 @@ public:
 
 private slots:
         void search();
+        void select(const QString &pkg);
 private:
         Ui::depend *ui;
         apt* m_apt;

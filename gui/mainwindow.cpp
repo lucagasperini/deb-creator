@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
         ui->tabWidget->setCurrentIndex(0);
 
-        //connect(ui->btn_dependency, &QPushButton::clicked, this, &MainWindow::depend_show);
+        connect(ui->btn_dependency, &QPushButton::clicked, this, &MainWindow::depend_show);
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &MainWindow::generate_control);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
         connect(ui->btn_clear, &QPushButton::clicked, this, &MainWindow::clear_output);

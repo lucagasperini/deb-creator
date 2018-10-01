@@ -44,7 +44,7 @@
            <widget class="widget_package" name="ui_package" native="true"/>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="btn_dependency">
             <property name="text">
              <string>Edit Depends</string>
             </property>

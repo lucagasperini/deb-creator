@@ -11,7 +11,6 @@ package::package(const package &pkg)
         m_name = pkg.m_name;
         m_version = pkg.m_version;
         m_arch = pkg.m_arch;
-        m_desc = pkg.m_desc;
         m_depends = pkg.m_depends;
         m_maintainer = pkg.m_maintainer;
         m_desc_title = pkg.m_desc_title;
@@ -21,6 +20,42 @@ package::package(const package &pkg)
         m_section = pkg.m_section;
         m_source = pkg.m_source;
         m_replace = pkg.m_replace;
+}
+
+package::package(const QByteArray &data)
+{
+        QList<QByteArray> buffer = data.split('\n');
+
+        QString line;
+        for(int i = 0; i < buffer.size(); i++)
+        {
+                line = buffer.at(i);
+
+                if(line.startsWith(QSL("Package: ")))
+                        m_name = line.split(' ').at(1);
+                else if(line.startsWith(QSL("Maintainer: ")))
+                        m_maintainer = line.split(' ').at(1);
+                else if(line.startsWith(QSL("Uploaders: ")))
+                        m_uploaders = line.split(' ').at(1);
+                else if(line.startsWith(QSL("Version: ")))
+                        m_version = line.split(' ').at(1);
+                else if(line.startsWith(QSL("Homepage: ")))
+                        m_homepage = line.split(' ').at(1);
+                else if(line.startsWith(QSL("Source: ")))
+                        m_source = line.split(' ').at(1);
+                else if(line.startsWith(QSL("Installed-Size: ")))
+                        m_size = line.split(' ').at(1).toInt();
+                else if(line.startsWith(QSL("Architecture: ")))
+                        m_arch = package::architecture_value(line.split(' ').at(1));
+                else if(line.startsWith(QSL("Depends: ")))
+                        m_depends = line.split(' ').at(1);
+                else if(line.startsWith(QSL("Replace: ")))
+                        m_replace = line.split(' ').at(1);
+                else if(line.startsWith(QSL("Section: ")))
+                        m_section = line.split(' ').at(1);
+                else if(line.startsWith(QSL("Description: ")))
+                        m_desc_body = line.split(' ').at(1);
+        }
 }
 
 QByteArray package::control()
@@ -47,6 +82,7 @@ QByteArray package::control()
 
         return offset;
 }
+
 
 qint64 package::calc_size(const QString &_dir)
 {
