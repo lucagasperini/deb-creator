@@ -12,7 +12,6 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QWidget>
 
@@ -47,7 +46,7 @@ public:
         QLineEdit *ln_source;
         QLabel *lbl_architecture;
         QComboBox *cb_arch;
-        QPushButton *btn_dependency;
+        QLabel *lbl_dependency;
         QLineEdit *ln_dependancies;
         QLabel *lbl_replace;
         QLineEdit *ln_replace;

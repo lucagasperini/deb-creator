@@ -134,10 +134,10 @@ void widget_package::setupUi()
 
     formLayout->setWidget(6, QFormLayout::FieldRole, cb_arch);
 
-    btn_dependency = new QPushButton(this);
-    btn_dependency->setObjectName(QStringLiteral("btn_dependency"));
+    lbl_dependency = new QLabel(this);
+    lbl_dependency->setObjectName(QStringLiteral("lbl_dependency"));
 
-    formLayout->setWidget(7, QFormLayout::LabelRole, btn_dependency);
+    formLayout->setWidget(7, QFormLayout::LabelRole, lbl_dependency);
 
     ln_dependancies = new QLineEdit(this);
     ln_dependancies->setObjectName(QStringLiteral("ln_dependancies"));
@@ -213,7 +213,7 @@ void widget_package::retranslateUi()
      << QApplication::translate("widget_package", "amd64", Q_NULLPTR)
      << QApplication::translate("widget_package", "i386", Q_NULLPTR)
     );
-    btn_dependency->setText(QApplication::translate("widget_package", "Dependency", Q_NULLPTR));
+    lbl_dependency->setText(QApplication::translate("widget_package", "Dependency", Q_NULLPTR));
     lbl_replace->setText(QApplication::translate("widget_package", "Replace", Q_NULLPTR));
     lbl_section->setText(QApplication::translate("widget_package", "Section", Q_NULLPTR));
     lbl_descriptiontitle->setText(QApplication::translate("widget_package", "Description:  title", Q_NULLPTR));
