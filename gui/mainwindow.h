@@ -5,6 +5,7 @@
 #include <debcreator.h>
 
 #include "about.h"
+#include "depend.h"
 
 namespace Ui
 {
@@ -22,10 +23,11 @@ public:
         debcreator *m_api;
 private:
         Ui::MainWindow *ui;
-        about about;
+        depend* ui_dep;
+        about* ui_about;
 
 private slots:
-        void working_dir();
+        void depend_show();
         void compile_dir();
         void append_output(const QByteArray &text);
         void clear_output();

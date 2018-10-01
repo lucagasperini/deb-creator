@@ -26,14 +26,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    depend.cpp \
+    widget_package.cpp
 
 HEADERS += \
         mainwindow.h \
-        about.h
+        about.h \
+    depend.h \
+    widget_package.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    depend.ui
 
 unix|win32: LIBS += -L$$OUT_PWD/../lib/ -ldebcreator
 

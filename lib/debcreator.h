@@ -3,6 +3,7 @@
 
 #include "multiprocess.h"
 #include "define.h"
+#include "package.h"
 
 #include <QtSql/QSqlDatabase>
 
@@ -17,11 +18,6 @@ public:
          */
         explicit debcreator(const QString &file_db = "", QObject *parent = nullptr);
         /**
-         * @brief control generate a control file from variables in this class
-         * @return return the control text
-         */
-        QByteArray control();
-        /**
          * @brief changelog generate and store changelog in this class
          * @param text user log in changelog
          * @return if changelog is created correctly return true otherwise false
@@ -31,7 +27,7 @@ public:
          * @brief package create the package using QProcess to dpkg
          * @param control is the control text
          */
-        QByteArray package(const QByteArray &control, const QString &outputfile = "");
+        QByteArray pkg_create(const QByteArray &control, const QString &outputfile = "");
         /**
          * @brief fetch_changelog fetch previous changelog
          * @return list of changelogs
@@ -80,34 +76,12 @@ public:
          * @return the formated string of date
          */
         static QString date_fetch();
-        /**
-         * @brief calc_size calculate the size of package directory
-         * @param _dir root directory of the package
-         * @return integer 64 bit of size in byte
-         */
-        static qint64 calc_size(const QString &_dir);
 
         multiprocess* m_process;
 
         QSqlDatabase* m_db;
-
-        QString m_package;
-        QString m_version;
-        QString m_arch;
-        QString m_depends;
-        QString m_maintainer;
-        QString m_desc_title;
-        QString m_desc_body;
-        QString m_homepage;
-        QString m_uploaders;
-        QString m_section;
-        QString m_source;
-        QString m_replace;
-
+        package *m_pkg;
         QString m_changelog;
-        QString m_control;
-
-        QDir m_dir;
 };
 
 #endif // DEBCREATOR_H

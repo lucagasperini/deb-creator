@@ -24,50 +24,27 @@ debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent
         m_db->open();
 
         m_process = new multiprocess;
+        m_pkg = new package;
 }
 
-QByteArray debcreator::control()
-{
-        QByteArray offset;
-
-        offset += QSL("Package: ") + m_package;
-        offset += QSL("\nMaintainer: ") + m_maintainer;
-        offset += QSL("\nUploaders: ") + m_uploaders;
-        offset += QSL("\nVersion: ") + m_version;
-        offset += QSL("\nHomepage: ") + m_homepage;
-        offset += QSL("\nSource: ") + m_source;
-        offset += QSL("\nInstalled-Size: ") + QString::number(calc_size(m_dir.path()) / 1000);
-        offset += QSL("\nArchitecture: ") + m_arch;
-
-        if (!m_depends.isEmpty())
-                offset += QSL("\nDepends: ") + m_depends;
-
-        offset += QSL("\nReplace: ") + m_replace;
-        offset += QSL("\nSection: ") + m_section;
-        offset += QSL("\nDescription: ") + m_desc_title;
-        if (m_desc_body != "")
-                offset += QSL("\n             ") + m_desc_body;
-
-        return offset;
-}
 
 bool debcreator::changelog(const QString &text, const QString &status, const QString &urgency)
 {
-        m_changelog = (m_package + " (" + m_version + ") " + status + "; urgency=" + urgency + "\n\n" +
+        m_changelog = (m_pkg->m_name + " (" + m_pkg->m_version + ") " + status + "; urgency=" + urgency + "\n\n" +
                        text + "\n\n" +
                        " -- " + git_fetch_user() + " " + date_fetch());
         return true;
 }
 
-QByteArray debcreator::package(const QByteArray& control, const QString &outputfile)
+QByteArray debcreator::pkg_create(const QByteArray& control, const QString &outputfile)
 {
         QProcess dpkg(this);
         QTextStream out;
-        QDir debian_dir(m_dir.path() + QSL("DEBIAN"));
+        QDir debian_dir(m_pkg->m_dir.path() + QSL("DEBIAN"));
         if(!debian_dir.exists())
-                m_dir.mkdir(QSL("DEBIAN"));
+                m_pkg->m_dir.mkdir(QSL("DEBIAN"));
 
-        QFile control_file(m_dir.path() + QSL("/DEBIAN/control"));
+        QFile control_file(m_pkg->m_dir.path() + QSL("/DEBIAN/control"));
 
         control_file.open(QIODevice::WriteOnly | QIODevice::Text);
         out.setDevice(&control_file);
@@ -79,7 +56,7 @@ QByteArray debcreator::package(const QByteArray& control, const QString &outputf
         control_file.close();
 
         if(!m_changelog.isEmpty()) {
-        QFile changelog_file(m_dir.path() + QSL("/DEBIAN/changelog"));
+        QFile changelog_file(m_pkg->m_dir.path() + QSL("/DEBIAN/changelog"));
 
         changelog_file.open(QIODevice::Append | QIODevice::Text);
         out.setDevice(&changelog_file);
@@ -93,9 +70,9 @@ QByteArray debcreator::package(const QByteArray& control, const QString &outputf
 
         QString cmd;
         if(outputfile.isEmpty())
-                cmd = "dpkg -b " + m_dir.path() + " " + QDir::homePath() + "/" + gen_outputfile();
+                cmd = "dpkg -b " + m_pkg->m_dir.path() + " " + QDir::homePath() + "/" + gen_outputfile();
         else
-                cmd = "dpkg -b " + m_dir.path() + " " + outputfile;
+                cmd = "dpkg -b " + m_pkg->m_dir.path() + " " + outputfile;
 
 #ifdef QT_DEBUG
         qDebug() << QSL("Executing: ") << cmd;
@@ -141,7 +118,7 @@ QStringList debcreator::fetch_changelog(const QString &file)
 
 QString debcreator::gen_outputfile()
 {
-        return m_package + "_" + m_version + ".deb";
+        return m_pkg->m_name + "_" + m_pkg->m_version + ".deb";
 }
 
 bool debcreator::db_insert()
@@ -152,24 +129,24 @@ bool debcreator::db_insert()
                 if(!query->exec(DB_PACKAGE_CREATE))
                         return false;
 
-        if(!db_exists(m_package))
+        if(!db_exists(m_pkg->m_name))
                 query->prepare(DB_PACKAGE_INSERT);
         else
                 query->prepare(DB_PACKAGE_UPDATE);
 
-        query->bindValue(QSL(":name"), m_package);
-        query->bindValue(QSL(":directory"), m_dir.path());
-        query->bindValue(QSL(":maintainer"), m_maintainer);
-        query->bindValue(QSL(":uploader"), m_uploaders);
-        query->bindValue(QSL(":version"), m_version);
-        query->bindValue(QSL(":homepage"), m_homepage);
-        query->bindValue(QSL(":source"), m_source);
-        query->bindValue(QSL(":arch"), m_arch);
-        query->bindValue(QSL(":depend"), m_depends);
-        query->bindValue(QSL(":replace"), m_replace);
-        query->bindValue(QSL(":section"), m_section);
-        query->bindValue(QSL(":title"), m_desc_title);
-        query->bindValue(QSL(":body"), m_desc_body);
+        query->bindValue(QSL(":name"), m_pkg->m_name);
+        query->bindValue(QSL(":directory"), m_pkg->m_dir.path());
+        query->bindValue(QSL(":maintainer"), m_pkg->m_maintainer);
+        query->bindValue(QSL(":uploader"), m_pkg->m_uploaders);
+        query->bindValue(QSL(":version"), m_pkg->m_version);
+        query->bindValue(QSL(":homepage"), m_pkg->m_homepage);
+        query->bindValue(QSL(":source"), m_pkg->m_source);
+        query->bindValue(QSL(":arch"), m_pkg->m_arch);
+        query->bindValue(QSL(":depend"), m_pkg->m_depends);
+        query->bindValue(QSL(":replace"), m_pkg->m_replace);
+        query->bindValue(QSL(":section"), m_pkg->m_section);
+        query->bindValue(QSL(":title"), m_pkg->m_desc_title);
+        query->bindValue(QSL(":body"), m_pkg->m_desc_body);
 
         bool offset = query->exec();
 
@@ -178,7 +155,7 @@ bool debcreator::db_insert()
                 qDebug() << query->lastQuery() << query->lastError().text();
 #endif
         query->finish();
-        return offset;        QDir dir(m_dir);
+        return offset;        QDir dir(m_pkg->m_dir);
 }
 
 QStringList debcreator::db_fetch()
@@ -219,20 +196,20 @@ bool debcreator::db_fetch(const QString &pkg)
         }
 
 
-        m_package = pkg;
+        m_pkg->m_name = pkg;
         while (query->next()) {
-                m_dir = query->value(query->record().indexOf(QSL("directory"))).toString();
-                m_maintainer = query->value(query->record().indexOf(QSL("maintainer"))).toString();
-                m_uploaders = query->value(query->record().indexOf(QSL("uploader"))).toString();
-                m_version = query->value(query->record().indexOf(QSL("version"))).toString();
-                m_homepage = query->value(query->record().indexOf(QSL("homepage"))).toString();
-                m_source = query->value(query->record().indexOf(QSL("source"))).toString();
-                m_arch = query->value(query->record().indexOf(QSL("arch"))).toString();
-                m_depends = query->value(query->record().indexOf(QSL("depend"))).toString();
-                m_replace = query->value(query->record().indexOf(QSL("replace"))).toString();
-                m_section = query->value(query->record().indexOf(QSL("section"))).toString();
-                m_desc_title = query->value(query->record().indexOf(QSL("title"))).toString();
-                m_desc_body = query->value(query->record().indexOf(QSL("body"))).toString();
+                m_pkg->m_dir = query->value(query->record().indexOf(QSL("directory"))).toString();
+                m_pkg->m_maintainer = query->value(query->record().indexOf(QSL("maintainer"))).toString();
+                m_pkg->m_uploaders = query->value(query->record().indexOf(QSL("uploader"))).toString();
+                m_pkg->m_version = query->value(query->record().indexOf(QSL("version"))).toString();
+                m_pkg->m_homepage = query->value(query->record().indexOf(QSL("homepage"))).toString();
+                m_pkg->m_source = query->value(query->record().indexOf(QSL("source"))).toString();
+                //m_pkg->m_arch = query->value(query->record().indexOf(QSL("arch"))).toString();
+                m_pkg->m_depends = query->value(query->record().indexOf(QSL("depend"))).toString();
+                m_pkg->m_replace = query->value(query->record().indexOf(QSL("replace"))).toString();
+                m_pkg->m_section = query->value(query->record().indexOf(QSL("section"))).toString();
+                m_pkg->m_desc_title = query->value(query->record().indexOf(QSL("title"))).toString();
+                m_pkg->m_desc_body = query->value(query->record().indexOf(QSL("body"))).toString();
         }
 
         query->finish();
@@ -299,29 +276,4 @@ QString debcreator::date_fetch()
 {
         QDateTime now = QDateTime::currentDateTime();
         return now.toString(QSL("ddd, dd MMM yyyy hh:mm:ss t"));
-}
-
-
-qint64 debcreator::calc_size(const QString &_dir)
-{
-        qint64 sizex = 0;
-        QFileInfo str_info(_dir);
-        if (!str_info.isDir())
-        {
-                return str_info.size();
-        }
-
-        QDir dir(_dir);
-        QFileInfoList list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-        for (int i = 0; i < list.size(); ++i) {
-                QFileInfo fileInfo = list.at(i);
-#ifdef QT_DEBUG
-                qDebug() << fileInfo.absoluteFilePath();
-#endif
-                if(fileInfo.isDir() && fileInfo.baseName() != "DEBIAN")
-                        sizex += calc_size(fileInfo.absoluteFilePath());
-                else if(fileInfo.isFile())
-                        sizex += fileInfo.size();
-        }
-        return sizex;
 }
