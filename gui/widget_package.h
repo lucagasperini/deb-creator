@@ -15,7 +15,6 @@
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QWidget>
 
-
 class widget_package : public QWidget
 {
         Q_OBJECT

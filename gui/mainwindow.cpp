@@ -189,8 +189,7 @@ void MainWindow::compile_refresh()
 
         if(dir.isDir()) {
                 src_dir = dir.absoluteDir().path();
-        }
-        else {
+        } else {
                 src_dir  = m_api->git_clone(ui->ln_sourcecode->text());
         }
 

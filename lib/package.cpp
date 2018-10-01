@@ -52,8 +52,7 @@ qint64 package::calc_size(const QString &_dir)
 {
         qint64 sizex = 0;
         QFileInfo str_info(_dir);
-        if (!str_info.isDir())
-        {
+        if (!str_info.isDir()) {
                 return str_info.size();
         }
 

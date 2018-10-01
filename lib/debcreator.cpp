@@ -56,16 +56,16 @@ QByteArray debcreator::pkg_create(const QByteArray& control, const QString &outp
         control_file.close();
 
         if(!m_changelog.isEmpty()) {
-        QFile changelog_file(m_pkg->m_dir.path() + QSL("/DEBIAN/changelog"));
+                QFile changelog_file(m_pkg->m_dir.path() + QSL("/DEBIAN/changelog"));
 
-        changelog_file.open(QIODevice::Append | QIODevice::Text);
-        out.setDevice(&changelog_file);
+                changelog_file.open(QIODevice::Append | QIODevice::Text);
+                out.setDevice(&changelog_file);
 
-        out << m_changelog;
-        out << "\n";
+                out << m_changelog;
+                out << "\n";
 
-        control_file.flush();
-        control_file.close();
+                control_file.flush();
+                control_file.close();
         }
 
         QString cmd;
@@ -155,7 +155,8 @@ bool debcreator::db_insert()
                 qDebug() << query->lastQuery() << query->lastError().text();
 #endif
         query->finish();
-        return offset;        QDir dir(m_pkg->m_dir);
+        return offset;
+        QDir dir(m_pkg->m_dir);
 }
 
 QStringList debcreator::db_fetch()

@@ -18,7 +18,7 @@ void multiprocess::run()
                 qDebug() << QSL("Executing: ") << buffer->program() << buffer->arguments() << buffer->workingDirectory();
 #endif
                 buffer->start(QIODevice::ReadWrite);
-                while(buffer->waitForReadyRead()){
+                while(buffer->waitForReadyRead()) {
                         emit read(buffer->readAll());
                 }
 
