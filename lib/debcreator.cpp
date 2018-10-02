@@ -236,6 +236,23 @@ bool debcreator::db_exists(const QString &pkg)
                 return query->value(0).toBool();
 }
 
+bool debcreator::db_remove(const QString &pkg)
+{
+        QSqlQuery* query = new QSqlQuery(*m_db);
+
+        query->prepare(QSL("DELETE FROM package WHERE name=:name"));
+        query->bindValue(":name", pkg);
+
+        if(!query->exec()) {
+#ifdef QT_DEBUG
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+                query->finish();
+                return false;
+        }
+        return true;
+}
+
 QString debcreator::git_clone(const QString &url, QString directory)
 {
         if(directory.isEmpty())

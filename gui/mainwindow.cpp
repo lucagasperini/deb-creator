@@ -10,6 +10,9 @@
 #include <QFileSystemModel>
 #include <QFileInfo>
 
+#define TAB_WELCOME 0
+#define TAB_CONTROL 1
+
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -20,8 +23,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
         ui->setupUi(this);
 
-        ui->tabWidget->setCurrentIndex(0);
+        ui->tabWidget->setCurrentIndex(TAB_WELCOME);
 
+        connect(ui->btn_reload, &QPushButton::clicked, this, &MainWindow::welcome_reload);
+        connect(ui->btn_add, &QPushButton::clicked, this, &MainWindow::welcome_add);
+        connect(ui->btn_remove, &QPushButton::clicked, this, &MainWindow::welcome_remove);
         connect(ui->btn_dependency, &QPushButton::clicked, this, &MainWindow::depend_show);
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &MainWindow::generate_control);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
@@ -47,6 +53,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
         connect(m_api->m_process, &multiprocess::read, this, &MainWindow::append_output);
 
+        welcome_reload();
+}
+
+MainWindow::~MainWindow()
+{
+        delete ui;
+}
+
+void MainWindow::welcome_reload()
+{
         QStringList list = m_api->db_fetch();
 
         if(list.isEmpty()) {
@@ -54,13 +70,33 @@ MainWindow::MainWindow(QWidget *parent) :
                 return;
         }
 
+        ui->lsw_welcome->clear();
         ui->lsw_welcome->show();
         ui->lsw_welcome->addItems(list);
 }
 
-MainWindow::~MainWindow()
+void MainWindow::welcome_add()
 {
-        delete ui;
+        ui->tabWidget->setCurrentIndex(TAB_CONTROL);
+        if(!m_api->m_pkg->is_empty()) //TODO: Manage multipackaging
+                return;
+
+        QDir dir;
+        dir = QFileDialog::getExistingDirectory(this, QSL("Select package directory")); //TODO: Manage invalid path
+        ui->ln_sourcecode->setText(dir.absolutePath());
+
+        package *tmp = new package;
+        tmp->m_name = QSL("Empty");
+        tmp->m_dir = dir;
+        m_api->m_pkg = tmp;
+        ui->ui_package->load(*tmp);
+
+}
+
+void MainWindow::welcome_remove()
+{
+        m_api->db_remove(ui->lsw_welcome->currentItem()->text());
+        welcome_reload();
 }
 
 void MainWindow::depend_show()

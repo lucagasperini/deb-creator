@@ -61,6 +61,12 @@ public:
          */
         bool db_exists(const QString &pkg);
         /**
+         * @brief db_remove remove the package on the database
+         * @param pkg is the name of the package to find
+         * @return if package don't exist it will return false, otherwise true
+         */
+        bool db_remove(const QString &pkg);
+        /**
          * @brief git_clone fetch git repo in directory @public m_dir + '/build'
          * @param url repo git
          * @return directory of files stored

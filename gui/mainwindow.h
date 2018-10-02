@@ -27,6 +27,9 @@ private:
         about* ui_about;
 
 private slots:
+        void welcome_reload();
+        void welcome_add();
+        void welcome_remove();
         void depend_show();
         void compile_dir();
         void append_output(const QByteArray &text);

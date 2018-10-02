@@ -14,6 +14,7 @@ public:
         explicit package(const package &pkg);
         explicit package(const QByteArray &data);
 
+        bool is_empty();
         /**
          * @brief control generate a control file from variables in this class
          * @return return the control text

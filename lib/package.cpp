@@ -58,6 +58,11 @@ package::package(const QByteArray &data)
         }
 }
 
+bool package::is_empty()
+{
+        return m_name.isEmpty();
+}
+
 QByteArray package::control()
 {
         QByteArray offset;
