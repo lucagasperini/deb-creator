@@ -32,7 +32,7 @@ private slots:
         void welcome_remove();
         void depend_show();
         void compile_dir();
-        void append_output(const QByteArray &text);
+        void append_output(const QString &text);
         void clear_output();
         void create_package();
         void generate_control();

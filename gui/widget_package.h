@@ -27,6 +27,8 @@ public:
 
         package *save();
 
+        bool check();
+
         void setupUi();
         void retranslateUi();
 

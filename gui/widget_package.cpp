@@ -1,6 +1,8 @@
 #include "widget_package.h"
 #include <define.h>
 
+#include <QMessageBox>
+
 widget_package::widget_package(QWidget *parent) :
         QWidget(parent)
 {
@@ -47,6 +49,19 @@ package* widget_package::save()
         pkg->m_uploaders = ln_uploaders->text();
 
         return pkg;
+}
+
+bool widget_package::check()
+{
+        if(ln_name->text().isEmpty()) {
+                QMessageBox::critical(this, QSL("Control file error"), QSL("Package name value is empty!\nPlease add a valid package name."));
+                return false;
+        }
+        if (ln_name->text().contains(' ')) {
+                QMessageBox::warning(this, QSL("Control file error"), QSL("Package name must not contain spaces."));
+                return false;
+        }
+        return true;
 }
 
 void widget_package::setupUi()

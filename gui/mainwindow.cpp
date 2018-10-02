@@ -17,6 +17,7 @@ using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent),
+        m_api(new debcreator),
         ui(new Ui::MainWindow),
         ui_dep(nullptr),
         ui_about(new about)
@@ -45,11 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->a_quit, &QAction::triggered, qApp, &QApplication::quit);
         connect(ui->a_about, &QAction::triggered, ui_about, &about::show);
         connect(ui->a_aboutqt, &QAction::triggered, qApp, &QApplication::aboutQt);
-        connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::fetch_changelog);
+        //connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::fetch_changelog);
         connect(ui->lsw_welcome, &QListWidget::currentTextChanged, this, &MainWindow::check_database);
         // connect(ui->a_manual) TODO: Add a manual?
-
-        m_api = new debcreator();
 
         connect(m_api->m_process, &multiprocess::read, this, &MainWindow::append_output);
 
@@ -64,14 +63,7 @@ MainWindow::~MainWindow()
 void MainWindow::welcome_reload()
 {
         QStringList list = m_api->db_fetch();
-
-        if(list.isEmpty()) {
-                ui->lsw_welcome->hide();
-                return;
-        }
-
         ui->lsw_welcome->clear();
-        ui->lsw_welcome->show();
         ui->lsw_welcome->addItems(list);
 }
 
@@ -108,26 +100,20 @@ void MainWindow::depend_show()
 
 void MainWindow::generate_control()
 {
-        if(ui->ui_package->ln_name->text().isEmpty()) {
-                QMessageBox::critical(this, QSL("Control file error"), QSL("Package name value is empty!\nPlease add a valid package name."));
+        if(!ui->ui_package->check())
                 return;
-        }
-        if (ui->ui_package->ln_name->text().contains(' ')) {
-                QMessageBox::warning(this, QSL("Control file error"), QSL("Package name must not contain spaces."));
-                return;
-        }
 
-        ui->txt_output->append(QSL("Generating new control file..."));
+        append_output(QSL("Generating new control file..."));
 
         if(m_api->db_insert())
-                ui->txt_output->append(QSL("Added package into database..."));
+                append_output(QSL("Added package into database..."));
         else
-                ui->txt_output->append(QSL("Failed while adding the package to the database!"));
+                append_output(QSL("Failed while adding the package to the database!"));
 
         ui->txt_control->setText(m_api->m_pkg->control());
 }
 
-void MainWindow::generate_changelog()
+void MainWindow::generate_changelog() //TODO: REWORK ON CHANGELOG
 {
         m_api->changelog(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
         ui->txt_changelog->setText(m_api->m_changelog);
@@ -135,8 +121,7 @@ void MainWindow::generate_changelog()
 
 void MainWindow::create_package()
 {
-        QString outputfile;
-        outputfile = QFileDialog::getSaveFileName(this, QSL("Select where save package"), QDir::homePath() + "/" + m_api->gen_outputfile());
+        QString outputfile = QFileDialog::getSaveFileName(this, QSL("Select where save package"), QDir::homePath() + "/" + m_api->gen_outputfile());
 
         if(m_api->m_pkg->m_dir.isEmpty() || outputfile.isEmpty()) {
                 QMessageBox::warning(this, QSL("Creating Package"), QSL("Package directory or output file path are empty!"));
@@ -153,7 +138,7 @@ void MainWindow::create_package()
         append_output(m_api->pkg_create(control.toUtf8(), outputfile));
 }
 
-void MainWindow::append_output(const QByteArray &text)
+void MainWindow::append_output(const QString &text)
 {
 #ifdef QT_DEBUG
         qDebug() << text;
@@ -163,16 +148,7 @@ void MainWindow::append_output(const QByteArray &text)
 
 void MainWindow::clear_output()
 {
-        /*QMessageBox msg_clear;
-        QPushButton all;
-        QPushButton output;
-
-        all.setText("Clear all");
-        output.setText("Only output");
-
-        //msg_clear.addButton();
-        msg_clear.addButton("Only output", QMessageBox::ButtonRole );*/
-        ui->txt_output->setText("");
+        ui->txt_output->clear();
 }
 
 void MainWindow::compile_dir()
@@ -190,16 +166,11 @@ void MainWindow::check_database(const QString &package)
         }
 
         ui->ui_package->load(*m_api->m_pkg);
-
-        if(ui->ln_sourcecode->text().isEmpty())
-                ui->ln_sourcecode->setText(m_api->m_pkg->m_source);
+        ui->ln_sourcecode->setText(m_api->m_pkg->m_source);
 }
 
-void MainWindow::fetch_changelog()
+void MainWindow::fetch_changelog() //TODO: ADD A REFRESH BUTTON
 {
-        if(ui->tab_changelog->isVisible())
-                return;
-
         QStringList list = m_api->fetch_changelog(m_api->m_pkg->m_dir.path() + QSL("/DEBIAN/changelog"));
 
         if(list.isEmpty()) {
