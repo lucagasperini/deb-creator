@@ -33,7 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &MainWindow::generate_control);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
         connect(ui->btn_clear, &QPushButton::clicked, this, &MainWindow::clear_output);
-        connect(ui->btn_changelog, &QPushButton::clicked, this, &MainWindow::generate_changelog);
+        connect(ui->btn_changelog_create, &QPushButton::clicked, this, &MainWindow::changelog_generate);
+        connect(ui->btn_changelog_refresh, &QPushButton::clicked, this, &MainWindow::changelog_refresh);
         connect(ui->btn_refresh, &QPushButton::clicked, this, &MainWindow::compile_refresh);
         connect(ui->btn_compile, &QPushButton::clicked, this, &MainWindow::compile);
         connect(ui->btn_buildadd, &QPushButton::clicked, this, &MainWindow::build_add);
@@ -113,10 +114,21 @@ void MainWindow::generate_control()
         ui->txt_control->setText(m_api->m_pkg->control());
 }
 
-void MainWindow::generate_changelog() //TODO: REWORK ON CHANGELOG
+void MainWindow::changelog_generate()
 {
-        m_api->m_changelog->generate(m_api->m_pkg, ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
+        m_api->m_changelog->generate(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
         ui->txt_changelog->setText(m_api->m_changelog->m_text);
+        m_api->m_changelog->save();
+}
+
+void MainWindow::changelog_refresh()
+{
+        QStringList list = m_api->m_changelog->fetch();
+
+        ui->lsw_changelog->show();
+        ui->lsw_changelog->clear();
+        ui->lsw_changelog->addItems(list);
+
 }
 
 void MainWindow::create_package()
@@ -167,20 +179,6 @@ void MainWindow::check_database(const QString &package)
 
         ui->ui_package->load(*m_api->m_pkg);
         ui->ln_sourcecode->setText(m_api->m_pkg->m_source);
-}
-
-void MainWindow::fetch_changelog() //TODO: ADD A REFRESH BUTTON
-{
-        QStringList list = m_api->m_changelog->fetch();
-
-        if(list.isEmpty()) {
-                ui->lsw_changelog->hide();
-                return;
-        }
-
-        ui->lsw_changelog->show();
-        ui->lsw_changelog->addItems(list);
-
 }
 
 void MainWindow::compile_refresh()

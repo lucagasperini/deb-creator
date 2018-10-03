@@ -30,7 +30,7 @@ debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent
 
         m_process = new multiprocess;
         m_pkg = new package;
-        m_changelog = new changelog;
+        m_changelog = new changelog(m_pkg);
         m_git = new git;
 }
 

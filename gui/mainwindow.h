@@ -36,9 +36,9 @@ private slots:
         void clear_output();
         void create_package();
         void generate_control();
-        void generate_changelog();
+        void changelog_generate();
+        void changelog_refresh();
         void check_database(const QString &package);
-        void fetch_changelog();
         void compile_refresh();
         void compile();
         void build_add();
