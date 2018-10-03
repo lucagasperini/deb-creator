@@ -26,10 +26,14 @@ HEADERS += \
     define.h \
     multiprocess.h \
     apt.h \
-    package.h
+    package.h \
+    changelog.h \
+    git.h
 
 SOURCES += \
     debcreator.cpp \
     multiprocess.cpp \
     apt.cpp \
-    package.cpp
+    package.cpp \
+    changelog.cpp \
+    git.cpp

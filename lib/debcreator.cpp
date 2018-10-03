@@ -2,7 +2,6 @@
 
 #include <QFile>
 #include <QTextStream>
-#include <QDateTime>
 
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlDriver>
@@ -13,6 +12,12 @@ debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent
         QDir local(DEB_CREATOR_LOCAL);
         if(!local.exists())
                 local.mkdir(DEB_CREATOR_LOCAL);
+        QDir tmp(DEB_CREATOR_TMP);
+        if(!tmp.exists())
+                tmp.mkdir(DEB_CREATOR_TMP);
+        QDir src(DEB_CREATOR_SRC);
+        if(!src.exists())
+                src.mkdir(DEB_CREATOR_SRC);
 
         m_db = new QSqlDatabase(QSqlDatabase::addDatabase(QSL("QSQLITE"), QSL("deb-creator-socket")));
 
@@ -25,16 +30,10 @@ debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent
 
         m_process = new multiprocess;
         m_pkg = new package;
+        m_changelog = new changelog;
+        m_git = new git;
 }
 
-
-bool debcreator::changelog(const QString &text, const QString &status, const QString &urgency)
-{
-        m_changelog = (m_pkg->m_name + " (" + m_pkg->m_version + ") " + status + "; urgency=" + urgency + "\n\n" +
-                       text + "\n\n" +
-                       " -- " + git_fetch_user() + " " + date_fetch());
-        return true;
-}
 
 QByteArray debcreator::pkg_create(const QByteArray& control, const QString &outputfile)
 {
@@ -55,19 +54,6 @@ QByteArray debcreator::pkg_create(const QByteArray& control, const QString &outp
         control_file.flush();
         control_file.close();
 
-        if(!m_changelog.isEmpty()) {
-                QFile changelog_file(m_pkg->m_dir.path() + QSL("/DEBIAN/changelog"));
-
-                changelog_file.open(QIODevice::Append | QIODevice::Text);
-                out.setDevice(&changelog_file);
-
-                out << m_changelog;
-                out << "\n";
-
-                control_file.flush();
-                control_file.close();
-        }
-
         QString cmd;
         if(outputfile.isEmpty())
                 cmd = "dpkg -b " + m_pkg->m_dir.path() + " " + QDir::homePath() + "/" + gen_outputfile();
@@ -86,34 +72,6 @@ QByteArray debcreator::pkg_create(const QByteArray& control, const QString &outp
                 data.append(dpkg.readAll());
         }
         return data;
-}
-
-QStringList debcreator::fetch_changelog(const QString &file)
-{
-        if(file.isEmpty())
-                return QStringList();
-
-        QStringList offset;
-        QString buffer;
-        QFile changelog_file(file);
-
-        if(!changelog_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-                return QStringList();
-        }
-
-        QTextStream in(&changelog_file);
-
-        while (!in.atEnd()) {
-                QString line = in.readLine();
-                buffer.append(line);
-                if(line.startsWith(QSL(" -- "))) {
-                        offset.append(buffer);
-                        buffer.clear();
-                }
-        }
-        changelog_file.close();
-
-        return offset;
 }
 
 QString debcreator::gen_outputfile()
@@ -251,47 +209,4 @@ bool debcreator::db_remove(const QString &pkg)
                 return false;
         }
         return true;
-}
-
-QString debcreator::git_clone(const QString &url, QString directory)
-{
-        if(directory.isEmpty())
-                directory = DEB_CREATOR_SRC;
-
-        QProcess git;
-        QString cmd = QSL("git clone ") + url + QSL(" ") + directory;
-        git.start(cmd);
-#ifdef QT_DEBUG
-        qDebug() << QSL("Executing: ") << cmd;
-#endif
-        git.waitForFinished();
-
-        return directory;
-}
-
-QString debcreator::git_fetch_user()
-{
-        QProcess git;
-        QString name;
-        QString mail;
-
-        git.start(QSL("git config --get user.name"));
-        git.waitForReadyRead();
-        name = git.readAll().trimmed();
-
-        git.close();
-
-        git.start(QSL("git config --get user.email"));
-        git.waitForReadyRead();
-        mail = git.readAll().trimmed();
-
-        git.close();
-
-        return name + " " + "<" + mail + ">";
-}
-
-QString debcreator::date_fetch()
-{
-        QDateTime now = QDateTime::currentDateTime();
-        return now.toString(QSL("ddd, dd MMM yyyy hh:mm:ss t"));
 }

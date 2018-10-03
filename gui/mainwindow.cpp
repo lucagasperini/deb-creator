@@ -115,8 +115,8 @@ void MainWindow::generate_control()
 
 void MainWindow::generate_changelog() //TODO: REWORK ON CHANGELOG
 {
-        m_api->changelog(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
-        ui->txt_changelog->setText(m_api->m_changelog);
+        m_api->m_changelog->generate(m_api->m_pkg, ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
+        ui->txt_changelog->setText(m_api->m_changelog->m_text);
 }
 
 void MainWindow::create_package()
@@ -171,7 +171,7 @@ void MainWindow::check_database(const QString &package)
 
 void MainWindow::fetch_changelog() //TODO: ADD A REFRESH BUTTON
 {
-        QStringList list = m_api->fetch_changelog(m_api->m_pkg->m_dir.path() + QSL("/DEBIAN/changelog"));
+        QStringList list = m_api->m_changelog->fetch();
 
         if(list.isEmpty()) {
                 ui->lsw_changelog->hide();
@@ -192,17 +192,15 @@ void MainWindow::compile_refresh()
 
         QFileInfo dir(ui->ln_sourcecode->text());
         QFileSystemModel *model = new QFileSystemModel;
-        QString src_dir;
 
-        if(dir.isDir()) {
-                src_dir = dir.absoluteDir().path();
-        } else {
-                src_dir  = m_api->git_clone(ui->ln_sourcecode->text());
-        }
+        if(dir.isDir())
+                m_api->m_build = dir.absoluteDir().path();
+        else
+                m_api->m_build = DEB_CREATOR_SRC + m_api->m_git->clone(ui->ln_sourcecode->text());
 
-        model->setRootPath(src_dir);
+        model->setRootPath(m_api->m_build);
         ui->tw_compile->setModel(model);
-        ui->tw_compile->setRootIndex(model->index(src_dir));
+        ui->tw_compile->setRootIndex(model->index(m_api->m_build));
 }
 
 void MainWindow::compile()
@@ -222,7 +220,7 @@ void MainWindow::build_add()
         ui->tbl_order->setItem(row, 0, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 1, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 2, new QTableWidgetItem);
-        ui->tbl_order->item(row, 2)->setText(DEB_CREATOR_SRC);
+        ui->tbl_order->item(row, 2)->setText(m_api->m_build);
 }
 
 void MainWindow::build_remove()

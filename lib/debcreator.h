@@ -4,6 +4,8 @@
 #include "multiprocess.h"
 #include "define.h"
 #include "package.h"
+#include "changelog.h"
+#include "git.h"
 
 #include <QtSql/QSqlDatabase>
 
@@ -18,21 +20,10 @@ public:
          */
         explicit debcreator(const QString &file_db = "", QObject *parent = nullptr);
         /**
-         * @brief changelog generate and store changelog in this class
-         * @param text user log in changelog
-         * @return if changelog is created correctly return true otherwise false
-         */
-        bool changelog(const QString &text, const QString &status, const QString &urgency);
-        /**
          * @brief package create the package using QProcess to dpkg
          * @param control is the control text
          */
         QByteArray pkg_create(const QByteArray &control, const QString &outputfile = "");
-        /**
-         * @brief fetch_changelog fetch previous changelog
-         * @return list of changelogs
-         */
-        QStringList fetch_changelog(const QString &file);
         /**
          * @brief gen_outputfile generate a standard filename for package .deb
          * @return filename of the package
@@ -66,28 +57,14 @@ public:
          * @return if package don't exist it will return false, otherwise true
          */
         bool db_remove(const QString &pkg);
-        /**
-         * @brief git_clone fetch git repo in directory @public m_dir + '/build'
-         * @param url repo git
-         * @return directory of files stored
-         */
-        static QString git_clone(const QString &url, QString directory = "");
-        /**
-         * @brief git_fetch_user fetch user.email and user.name from git config
-         * @return the format from git is user.name <user.email>, empty string if git is not installed or git is not configurated
-         */
-        static QString git_fetch_user();
-        /**
-         * @brief date_fetch fetch date in standard format from locale
-         * @return the formated string of date
-         */
-        static QString date_fetch();
 
         multiprocess* m_process;
 
         QSqlDatabase* m_db;
         package *m_pkg;
-        QString m_changelog;
+        changelog *m_changelog;
+        git *m_git;
+        QString m_build; //REVIEW?
 };
 
 #endif // DEBCREATOR_H
