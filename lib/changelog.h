@@ -5,6 +5,11 @@
 
 #include <QObject>
 
+struct changelog_t {
+        int index;
+        QByteArray text;
+};
+
 class changelog : public QObject
 {
         Q_OBJECT
@@ -15,16 +20,19 @@ public:
          * @param text user log in changelog
          * @return if changelog is created correctly return true otherwise false
          */
-        bool generate(const QString &text, const QString &status, const QString &urgency);
+        QByteArray generate(const QString &text, const QString &status, const QString &urgency);
         /**
          * @brief fetch_changelog fetch previous changelog
          * @return list of changelogs
          */
-        QStringList fetch();
-        void save();
+        void fetch();
+        void save(const QByteArray &text);
+        void clear();
+        QStringList titles();
+        QByteArray text(int i);
 
-        QByteArray m_text;
-        const package* m_pkg;
+        QList<changelog_t*> m_cl;
+        const package *m_pkg;
 };
 
 #endif // CHANGELOG_H

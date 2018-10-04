@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->a_aboutqt, &QAction::triggered, qApp, &QApplication::aboutQt);
         //connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::fetch_changelog);
         connect(ui->lsw_welcome, &QListWidget::currentTextChanged, this, &MainWindow::check_database);
+        connect(ui->lsw_changelog, &QListWidget::currentTextChanged, this, &MainWindow::changelog_change);
         // connect(ui->a_manual) TODO: Add a manual?
 
         connect(m_api->m_process, &multiprocess::read, this, &MainWindow::append_output);
@@ -116,19 +117,22 @@ void MainWindow::generate_control()
 
 void MainWindow::changelog_generate()
 {
-        m_api->m_changelog->generate(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
-        ui->txt_changelog->setText(m_api->m_changelog->m_text);
-        m_api->m_changelog->save();
+        QByteArray text = m_api->m_changelog->generate(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
+        ui->txt_changelog->setText(text);
+        m_api->m_changelog->save(text);
 }
 
 void MainWindow::changelog_refresh()
 {
-        QStringList list = m_api->m_changelog->fetch();
-
-        ui->lsw_changelog->show();
+        m_api->m_changelog->fetch();
         ui->lsw_changelog->clear();
-        ui->lsw_changelog->addItems(list);
+        ui->lsw_changelog->addItems(m_api->m_changelog->titles());
 
+}
+
+void MainWindow::changelog_change()
+{
+        ui->txt_changelog->setText(m_api->m_changelog->text(ui->lsw_changelog->currentRow()));
 }
 
 void MainWindow::create_package()
