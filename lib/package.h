@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QDir>
+#include <apt-pkg/cachefile.h>
+#include <apt-pkg/pkgcache.h>
 
 enum arch_t { error = -1, all = 0, i386 = 1, amd64 = 2 };
 

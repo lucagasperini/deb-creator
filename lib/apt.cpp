@@ -4,33 +4,32 @@
 apt::apt(QObject *parent) : QProcess(parent)
 {
         m_cache = new QList<package*>;
+        pkgInitConfig(*_config);
+        pkgInitSystem(*_config, _system);
 }
 
 QStringList apt::search(const QString &text)
 {
         QStringList offset;
-        QString cmd = APT_SEARCH + text + QSL(" --full");
+        package* buffer;
 
-#ifdef QT_DEBUG
-        qDebug() << QSL("Executing: ") << cmd;
-#endif
+        pkgCacheFile cache_file;
+        pkgCache* cache = cache_file.GetPkgCache();
+        //qDebug() << cache->FindPkg("steam", "i386").Name();
 
-        start(cmd, QIODevice::ReadWrite);
+        for (pkgCache::PkgIterator pkg = cache->FindPkg(text.toStdString()); !pkg.end(); pkg++) {
+                buffer = new package;
+                buffer->m_arch = package::architecture_value(pkg.Arch());
+                buffer->m_name = pkg.Name();
+                buffer->m_version = pkg.CurVersion();
+                buffer->m_section = pkg.CurrentVer().Section();
 
-        waitForFinished();
-        QString line;
-        QByteArray buffer;
-        package* pkg;
-        while (!atEnd()) {
-                line = readLine();
-                buffer.append(line);
-                if(line == QSL("\n"))
-                {
-                        pkg = new package(buffer);
-                        offset.append(pkg->m_name);
-                        m_cache->append(pkg);
-                }
+                offset << buffer->m_name;
+                m_cache->append(buffer);
         }
+        /*        for (pkgCache::PkgFileIterator package = cache->FileBegin(); !package.end(); package++) {
+                        offset << package.FileName();
+                }*/
         return offset;
 }
 

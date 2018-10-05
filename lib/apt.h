@@ -7,6 +7,9 @@
 #include <QList>
 #include <QProcess>
 
+#include <apt-pkg/cachefile.h>
+#include <apt-pkg/pkgcache.h>
+
 
 class apt : public QProcess
 {
