@@ -3,8 +3,6 @@
 
 #include <QObject>
 #include <QDir>
-#include <apt-pkg/cachefile.h>
-#include <apt-pkg/pkgcache.h>
 
 enum arch_t { error = -1, all = 0, i386 = 1, amd64 = 2 };
 
@@ -14,7 +12,7 @@ class package : public QObject
 public:
         explicit package(QObject *parent = nullptr);
         explicit package(const package &pkg);
-        explicit package(const QByteArray &data);
+        explicit package(const QString &control);
 
         bool is_empty();
         /**

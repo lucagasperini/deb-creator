@@ -38,7 +38,7 @@ SOURCES += \
     changelog.cpp \
     git.cpp
 
-LIBS += -L/usr/lib/x86_64-linux-gnu/ -lapt-pkg
+#LIBS += -L/usr/lib/x86_64-linux-gnu/ -lapt-pkg
 
-INCLUDEPATH += /usr/include/apt-pkg
-DEPENDPATH += /usr/include/apt-pkg
+#INCLUDEPATH += /usr/include/apt-pkg
+#DEPENDPATH += /usr/include/apt-pkg

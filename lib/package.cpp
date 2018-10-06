@@ -17,41 +17,46 @@ package::package(const package &pkg)
         m_desc_body = pkg.m_desc_body;
         m_homepage = pkg.m_homepage;
         m_uploaders = pkg.m_uploaders;
+
         m_section = pkg.m_section;
         m_source = pkg.m_source;
         m_replace = pkg.m_replace;
 }
 
-package::package(const QByteArray &data)
+package::package(const QString &control)
 {
-        QList<QByteArray> buffer = data.split(':');
+        QString buffer = control;
+        buffer.replace(": ", "\n");
+        buffer.replace(",\n", ",");
 
-        for(int i = 0; i < buffer.size(); i+=2) {
-                if(buffer.at(i) == QSL("Package: "))
-                        m_name = buffer.at(i+1);
-                else if(buffer.at(i) == QSL("Maintainer: "))
-                        m_maintainer = buffer.at(i+1);
-                else if(buffer.at(i) == QSL("Uploaders: "))
-                        m_uploaders = buffer.at(i+1);
-                else if(buffer.at(i) == QSL("Version: "))
-                        m_version = buffer.at(i+1);
-                else if(buffer.at(i) == QSL("Homepage: "))
-                        m_homepage = buffer.at(i+1);
-                else if(buffer.at(i) == QSL("Source: "))
-                        m_source = buffer.at(i+1);
-                else if(buffer.at(i) == QSL("Installed-Size: "))
-                        m_size = buffer.at(i+1).toInt();
-                else if(buffer.at(i) == QSL("Architecture: "))
-                        m_arch = package::architecture_value(buffer.at(i+1));
-                else if(buffer.at(i) == QSL("Depends: "))
-                        m_depends = buffer.at(i+1);
-                else if(buffer.at(i) == QSL("Replace: "))
-                        m_replace = buffer.at(i+1);
-                else if(buffer.at(i) == QSL("Section: "))
-                        m_section = buffer.at(i+1);
-                else if(buffer.at(i) == QSL("Description: "))
-                        m_desc_body = buffer.at(i+1);
+        QStringList values = buffer.split('\n');
+        for(int i = 0; i < values.size(); i+=2) {
+                if(values.at(i) == QSL("Package"))
+                        m_name = values.at(i+1);
+                else if(values.at(i) == QSL("Maintainer"))
+                        m_maintainer = values.at(i+1);
+                else if(values.at(i) == QSL("Uploaders"))
+                        m_uploaders = values.at(i+1);
+                else if(values.at(i) == QSL("Version"))
+                        m_version = values.at(i+1);
+                else if(values.at(i) == QSL("Homepage"))
+                        m_homepage = values.at(i+1);
+                else if(values.at(i) == QSL("Source"))
+                        m_source = values.at(i+1);
+                else if(values.at(i) == QSL("Installed-Size"))
+                        m_size = values.at(i+1).toInt();
+                else if(values.at(i) == QSL("Architecture"))
+                        m_arch = package::architecture_value(values.at(i+1));
+                else if(values.at(i) == QSL("Depends"))
+                        m_depends = values.at(i+1);
+                else if(values.at(i) == QSL("Replace"))
+                        m_replace = values.at(i+1);
+                else if(values.at(i) == QSL("Section"))
+                        m_section = values.at(i+1);
+                else if(values.at(i) == QSL("Description-en"))
+                        m_desc_body = values.at(i+1);
         }
+
 }
 
 bool package::is_empty()
