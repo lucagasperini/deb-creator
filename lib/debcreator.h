@@ -22,8 +22,9 @@ public:
         /**
          * @brief package create the package using QProcess to dpkg
          * @param control is the control text
+         * @param outputfile the path where package is created
          */
-        QByteArray pkg_create(const QByteArray &control, const QString &outputfile = "");
+        QByteArray pkg_create(const QByteArray &control, const QString &outputfile);
         /**
          * @brief db_insert insert into the database all variables in this class
          * @return if insert routine it's ok will return true otherwise false

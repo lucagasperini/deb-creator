@@ -59,11 +59,7 @@ QByteArray debcreator::pkg_create(const QByteArray& control, const QString &outp
         control_file.flush();
         control_file.close();
 
-        QString cmd;
-        if(outputfile.isEmpty())
-                cmd = "dpkg -b " + pkg_root + " " + QDir::homePath() + "/" + m_pkg->outputfile();
-        else
-                cmd = "dpkg -b " + pkg_root + " " + outputfile;
+        QString cmd = QSL("dpkg -b ") + pkg_root + QSL(" ") + outputfile;
 
 #ifdef QT_DEBUG
         qDebug() << QSL("Executing: ") << cmd;

@@ -102,12 +102,12 @@ void MainWindow::generate_control()
 
         m_api->m_pkg = ui->ui_package->save();
 
-        append_output(QSL("Generating new control file..."));
+        append_output(QSL("Generating new control file...\n"));
 
         if(m_api->db_insert())
-                append_output(QSL("Added package into database..."));
+                append_output(QSL("Added package into database...\n"));
         else
-                append_output(QSL("Failed while adding the package to the database!"));
+                append_output(QSL("Failed while adding the package to the database!\n"));
 
         ui->txt_control->setText(m_api->m_pkg->control());
 }
