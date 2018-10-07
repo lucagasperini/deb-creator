@@ -14,6 +14,10 @@ public:
         explicit package(const package &pkg);
         explicit package(const QString &control);
 
+        /**
+         * @brief is_empty check if the package is empty
+         * @return if package is empty will return true, otherwise false
+         */
         bool is_empty();
         /**
          * @brief control generate a control file from variables in this class
@@ -36,7 +40,17 @@ public:
          * @return integer 64 bit of size in byte
          */
         static qint64 calc_size(const QString &_dir);
+        /**
+         * @brief architecture_name get the string for architecture from arch_t
+         * @param arch variable of arch_t
+         * @return string of architecture
+         */
         static QString architecture_name(const arch_t &arch);
+        /**
+         * @brief architecture_value get the arch_t for architecture from string
+         * @param arch string of architecture
+         * @return value of arch_t
+         */
         static arch_t architecture_value(const QString &arch);
 
         QString m_name;

@@ -19,22 +19,6 @@
 
 #define APT_SEARCH              QSL("apt-cache search ")
 
-/* TO USE? */
-#define PKG_INDEX_UNDEFINED     0
-#define PKG_INDEX_NAME          1
-#define PKG_INDEX_MAINTAINER    2
-#define PKG_INDEX_UPLOADER      3
-#define PKG_INDEX_VERSION       4
-#define PKG_INDEX_HOMEPAGE      5
-#define PKG_INDEX_SOURCE        6
-#define PKG_INDEX_SIZE          7
-#define PKG_INDEX_ARCH          8
-#define PKG_INDEX_DEPEND        9
-#define PKG_INDEX_REPLACE       10
-#define PKG_INDEX_SECTION       11
-#define PKG_INDEX_DESC          12
-/* TO USE? */
-
 #define DB_PACKAGE_TABLE QSL("package")
 #define DB_PACKAGE_CREATE QSL("CREATE TABLE package("           \
                                 "name TEXT PRIMARY KEY,"        \
