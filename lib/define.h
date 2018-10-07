@@ -19,6 +19,7 @@
 
 #define APT_SEARCH              QSL("apt-cache search ")
 
+/* TO USE? */
 #define PKG_INDEX_UNDEFINED     0
 #define PKG_INDEX_NAME          1
 #define PKG_INDEX_MAINTAINER    2
@@ -32,11 +33,11 @@
 #define PKG_INDEX_REPLACE       10
 #define PKG_INDEX_SECTION       11
 #define PKG_INDEX_DESC          12
+/* TO USE? */
 
 #define DB_PACKAGE_TABLE QSL("package")
 #define DB_PACKAGE_CREATE QSL("CREATE TABLE package("           \
                                 "name TEXT PRIMARY KEY,"        \
-                                "directory TEXT,"               \
                                 "maintainer TEXT,"              \
                                 "uploader TEXT,"                \
                                 "version TEXT,"                 \
@@ -52,7 +53,6 @@
 
 #define DB_PACKAGE_INSERT QSL("INSERT INTO package ("           \
                                 "name,"                         \
-                                "directory,"                    \
                                 "maintainer,"                   \
                                 "uploader,"                     \
                                 "version,"                      \
@@ -66,7 +66,6 @@
                                 "body"                          \
                                 ") VALUES ("                    \
                                 ":name,"                        \
-                                ":directory,"                   \
                                 ":maintainer,"                  \
                                 ":uploader,"                    \
                                 ":version,"                     \
@@ -82,7 +81,6 @@
 
 #define DB_PACKAGE_UPDATE QSL("UPDATE package SET "             \
                                 "maintainer=:maintainer,"       \
-                                "directory=:directory,"         \
                                 "uploader=:uploader,"           \
                                 "version=:version,"             \
                                 "homepage=:homepage,"           \

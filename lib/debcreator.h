@@ -25,11 +25,6 @@ public:
          */
         QByteArray pkg_create(const QByteArray &control, const QString &outputfile = "");
         /**
-         * @brief gen_outputfile generate a standard filename for package .deb
-         * @return filename of the package
-         */
-        QString gen_outputfile();
-        /**
          * @brief db_insert insert into the database all variables in this class
          * @return if insert routine it's ok will return true otherwise false
          */

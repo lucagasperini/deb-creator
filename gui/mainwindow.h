@@ -31,7 +31,7 @@ private slots:
         void welcome_add();
         void welcome_remove();
         void depend_show();
-        void compile_dir();
+        void dir_compile();
         void append_output(const QString &text);
         void clear_output();
         void create_package();

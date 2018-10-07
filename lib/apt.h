@@ -14,6 +14,8 @@ public:
         explicit  apt(QObject *parent = nullptr);
         QStringList search(const QString &text);
         package* cache(const QString &name);
+        void clear();
+
         QList<package*>* m_cache;
 };
 

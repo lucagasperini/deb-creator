@@ -19,11 +19,15 @@ depend::~depend()
 
 void depend::search()
 {
+        ui->list_search->clear();
+        m_apt->clear();
         QStringList result = m_apt->search(ui->ln_search->text());
         ui->list_search->addItems(result);
 }
 
 void depend::select(const QString &pkg)
 {
+        if(pkg.isEmpty())
+                return;
         ui->ui_package->load(*m_apt->cache(pkg));
 }

@@ -17,7 +17,6 @@ package::package(const package &pkg)
         m_desc_body = pkg.m_desc_body;
         m_homepage = pkg.m_homepage;
         m_uploaders = pkg.m_uploaders;
-
         m_section = pkg.m_section;
         m_source = pkg.m_source;
         m_replace = pkg.m_replace;
@@ -79,7 +78,7 @@ QByteArray package::control()
         offset += QSL("\nVersion: ") + m_version;
         offset += QSL("\nHomepage: ") + m_homepage;
         offset += QSL("\nSource: ") + m_source;
-        offset += QSL("\nInstalled-Size: ") + QString::number(calc_size(m_dir.path()) / 1000);
+        offset += QSL("\nInstalled-Size: ") + QString::number(calc_size(root()) / 1000);
         offset += QSL("\nArchitecture: ") + architecture_name(m_arch);
 
         if (!m_depends.isEmpty())
@@ -94,6 +93,18 @@ QByteArray package::control()
         return offset;
 }
 
+QString package::outputfile() const
+{
+        return m_name + "_" + m_version + ".deb";
+}
+
+QString package::root() const
+{
+        QDir dir = DEB_CREATOR_PKG + m_name;
+        if(!dir.exists())
+                dir.mkdir(DEB_CREATOR_PKG + m_name);
+        return dir.path();
+}
 
 qint64 package::calc_size(const QString &_dir)
 {

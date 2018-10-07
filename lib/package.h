@@ -21,6 +21,16 @@ public:
          */
         QByteArray control();
         /**
+         * @brief outputfile generate a standard filename for package .deb
+         * @return filename of the package
+         */
+        QString outputfile() const;
+        /**
+         * @brief root generate a standard directory for package root
+         * @return path of the package root
+         */
+        QString root() const;
+        /**
          * @brief calc_size calculate the size of package directory
          * @param _dir root directory of the package
          * @return integer 64 bit of size in byte
@@ -42,8 +52,6 @@ public:
         QString m_section;
         QString m_source;
         QString m_replace;
-
-        QDir m_dir;
 };
 
 #endif // PACKAGE_H

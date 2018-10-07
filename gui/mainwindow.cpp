@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(ui->btn_buildadd, &QPushButton::clicked, this, &MainWindow::build_add);
         connect(ui->btn_buildremove, &QPushButton::clicked, this, &MainWindow::build_remove);
         connect(ui->btn_buildsave, &QPushButton::clicked, this, &MainWindow::build_save);
-        connect(ui->bt_sourcecode, &QToolButton::clicked, this, &MainWindow::compile_dir);
+        connect(ui->bt_sourcecode, &QToolButton::clicked, this, &MainWindow::dir_compile);
 
         connect(ui->a_create_package, &QAction::triggered, this, &MainWindow::create_package);
         connect(ui->a_generate_control, &QAction::triggered, this, &MainWindow::generate_control);
@@ -75,13 +75,8 @@ void MainWindow::welcome_add()
         if(!m_api->m_pkg->is_empty()) //TODO: Manage multipackaging
                 return;
 
-        QDir dir;
-        dir = QFileDialog::getExistingDirectory(this, QSL("Select package directory")); //TODO: Manage invalid path
-        ui->ln_sourcecode->setText(dir.absolutePath());
-
         package *tmp = new package;
         tmp->m_name = QSL("Empty");
-        tmp->m_dir = dir;
         m_api->m_pkg = tmp;
         ui->ui_package->load(*tmp);
 
@@ -139,10 +134,10 @@ void MainWindow::changelog_change()
 
 void MainWindow::create_package()
 {
-        QString outputfile = QFileDialog::getSaveFileName(this, QSL("Select where save package"), QDir::homePath() + "/" + m_api->gen_outputfile());
+        QString outputfile = QFileDialog::getSaveFileName(this, QSL("Select where save package"), QDir::homePath() + "/" + m_api->m_pkg->outputfile());
 
-        if(m_api->m_pkg->m_dir.isEmpty() || outputfile.isEmpty()) {
-                QMessageBox::warning(this, QSL("Creating Package"), QSL("Package directory or output file path are empty!"));
+        if(outputfile.isEmpty()) {
+                QMessageBox::warning(this, QSL("Creating Package"), QSL("Output file path cannot be empty!"));
                 return;
         }
 
@@ -169,7 +164,7 @@ void MainWindow::clear_output()
         ui->txt_output->clear();
 }
 
-void MainWindow::compile_dir()
+void MainWindow::dir_compile()
 {
         QDir dir;
         dir = QFileDialog::getExistingDirectory(this, QSL("Source file of the package"));

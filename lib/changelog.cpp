@@ -21,13 +21,14 @@ QByteArray changelog::generate(const QString &text, const QString &status, const
 
 void changelog::fetch()
 {
-        if(m_pkg->m_dir.isEmpty())
+        QDir pkg_root = m_pkg->root();
+        if(pkg_root.isEmpty())
                 return;
 
         clear();
         QByteArray buffer;
         QByteArray line;
-        QFile changelog_file(m_pkg->m_dir.path() + QSL("/DEBIAN/changelog"));
+        QFile changelog_file(pkg_root.path() + QSL("/DEBIAN/changelog"));
         changelog_t *cl;
         int i = 0;
 
@@ -55,7 +56,8 @@ void changelog::save(const QByteArray &text)
 {
         if(text.isEmpty())
                 return;
-        QFile changelog_file(m_pkg->m_dir.path() + QSL("/DEBIAN/changelog"));
+        QString pkg_root = m_pkg->root();
+        QFile changelog_file(pkg_root + QSL("/DEBIAN/changelog"));
 
         changelog_file.open(QIODevice::Append | QIODevice::Text);
 

@@ -9,15 +9,19 @@
 
 debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent)
 {
-        QDir local(DEB_CREATOR_LOCAL);
-        if(!local.exists())
-                local.mkdir(DEB_CREATOR_LOCAL);
-        QDir tmp(DEB_CREATOR_TMP);
-        if(!tmp.exists())
-                tmp.mkdir(DEB_CREATOR_TMP);
-        QDir src(DEB_CREATOR_SRC);
-        if(!src.exists())
-                src.mkdir(DEB_CREATOR_SRC);
+        QDir dir;
+        dir = DEB_CREATOR_LOCAL;
+        if(!dir.exists())
+                dir.mkdir(DEB_CREATOR_LOCAL);
+        dir = DEB_CREATOR_TMP;
+        if(!dir.exists())
+                dir.mkdir(DEB_CREATOR_TMP);
+        dir = DEB_CREATOR_SRC;
+        if(!dir.exists())
+                dir.mkdir(DEB_CREATOR_SRC);
+        dir = DEB_CREATOR_PKG;
+        if(!dir.exists())
+                dir.mkdir(DEB_CREATOR_PKG);
 
         m_db = new QSqlDatabase(QSqlDatabase::addDatabase(QSL("QSQLITE"), QSL("deb-creator-socket")));
 
@@ -39,11 +43,12 @@ QByteArray debcreator::pkg_create(const QByteArray& control, const QString &outp
 {
         QProcess dpkg(this);
         QTextStream out;
-        QDir debian_dir(m_pkg->m_dir.path() + QSL("DEBIAN"));
+        QString pkg_root = m_pkg->root();
+        QDir debian_dir(pkg_root + QSL("/DEBIAN"));
         if(!debian_dir.exists())
-                m_pkg->m_dir.mkdir(QSL("DEBIAN"));
+                debian_dir.mkdir(pkg_root + QSL("/DEBIAN"));
 
-        QFile control_file(m_pkg->m_dir.path() + QSL("/DEBIAN/control"));
+        QFile control_file(pkg_root + QSL("/DEBIAN/control"));
 
         control_file.open(QIODevice::WriteOnly | QIODevice::Text);
         out.setDevice(&control_file);
@@ -56,9 +61,9 @@ QByteArray debcreator::pkg_create(const QByteArray& control, const QString &outp
 
         QString cmd;
         if(outputfile.isEmpty())
-                cmd = "dpkg -b " + m_pkg->m_dir.path() + " " + QDir::homePath() + "/" + gen_outputfile();
+                cmd = "dpkg -b " + pkg_root + " " + QDir::homePath() + "/" + m_pkg->outputfile();
         else
-                cmd = "dpkg -b " + m_pkg->m_dir.path() + " " + outputfile;
+                cmd = "dpkg -b " + pkg_root + " " + outputfile;
 
 #ifdef QT_DEBUG
         qDebug() << QSL("Executing: ") << cmd;
@@ -72,11 +77,6 @@ QByteArray debcreator::pkg_create(const QByteArray& control, const QString &outp
                 data.append(dpkg.readAll());
         }
         return data;
-}
-
-QString debcreator::gen_outputfile()
-{
-        return m_pkg->m_name + "_" + m_pkg->m_version + ".deb";
 }
 
 bool debcreator::db_insert()
@@ -93,7 +93,6 @@ bool debcreator::db_insert()
                 query->prepare(DB_PACKAGE_UPDATE);
 
         query->bindValue(QSL(":name"), m_pkg->m_name);
-        query->bindValue(QSL(":directory"), m_pkg->m_dir.path());
         query->bindValue(QSL(":maintainer"), m_pkg->m_maintainer);
         query->bindValue(QSL(":uploader"), m_pkg->m_uploaders);
         query->bindValue(QSL(":version"), m_pkg->m_version);
@@ -114,7 +113,6 @@ bool debcreator::db_insert()
 #endif
         query->finish();
         return offset;
-        QDir dir(m_pkg->m_dir);
 }
 
 QStringList debcreator::db_fetch()
@@ -157,7 +155,6 @@ bool debcreator::db_fetch(const QString &pkg)
 
         m_pkg->m_name = pkg;
         while (query->next()) {
-                m_pkg->m_dir = query->value(query->record().indexOf(QSL("directory"))).toString();
                 m_pkg->m_maintainer = query->value(query->record().indexOf(QSL("maintainer"))).toString();
                 m_pkg->m_uploaders = query->value(query->record().indexOf(QSL("uploader"))).toString();
                 m_pkg->m_version = query->value(query->record().indexOf(QSL("version"))).toString();

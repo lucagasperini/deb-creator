@@ -35,7 +35,6 @@ package* widget_package::save()
         package *pkg = new package;
 
         pkg->m_name = ln_name->text();
-        pkg->m_dir = DEB_CREATOR_PKG + pkg->m_name;
         pkg->m_version = ln_version->text();
         pkg->m_arch = package::architecture_value(cb_arch->currentText());
         pkg->m_depends = ln_dependancies->text();
