@@ -105,6 +105,8 @@ void MainWindow::generate_control()
         if(!ui->ui_package->check())
                 return;
 
+        m_api->m_pkg = ui->ui_package->save();
+
         append_output(QSL("Generating new control file..."));
 
         if(m_api->db_insert())
