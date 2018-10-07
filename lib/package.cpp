@@ -53,8 +53,13 @@ package::package(const QString &control)
                         m_replace = values.at(i+1);
                 else if(values.at(i) == QSL("Section"))
                         m_section = values.at(i+1);
-                else if(values.at(i) == QSL("Description-en"))
-                        m_desc_body = values.at(i+1);
+                else if(values.at(i) == QSL("Description-en")) {
+                        m_desc_title = values.at(i+1);
+                        int k = i + 1;
+                        while(values.at(++k).startsWith(' '))
+                                m_desc_body.append(values.at(k).trimmed());
+                        i = k;
+                }
         }
 
 }
