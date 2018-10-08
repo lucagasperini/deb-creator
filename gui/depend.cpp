@@ -23,9 +23,14 @@ QString depend::ok()
 {
         QString offset = "";
         int size = m_deps.size() - 1;
+
+        if(size < 0)
+                return offset;
+
         for(int i = 0; i < size; i++)
                 offset.append(m_deps.at(i) +  ",");
         offset.append(m_deps.at(size));
+
         return offset;
 }
 
