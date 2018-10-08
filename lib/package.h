@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QDir>
 
-enum arch_t { error = -1, all = 0, i386 = 1, amd64 = 2 };
+enum arch_t { error = 0, all = 1, i386 = 2, amd64 = 3 };
 
 class package : public QObject
 {
@@ -18,12 +18,12 @@ public:
          * @brief is_empty check if the package is empty
          * @return if package is empty will return true, otherwise false
          */
-        bool is_empty();
+        bool is_empty() const;
         /**
          * @brief control generate a control file from variables in this class
          * @return return the control text
          */
-        QByteArray control();
+        QByteArray control() const;
         /**
          * @brief outputfile generate a standard filename for package .deb
          * @return filename of the package
@@ -34,7 +34,12 @@ public:
          * @return path of the package root
          */
         QString root() const;
-        QString format(const QString &str);
+        /**
+         * @brief format generate a formatted string
+         * @param str core string using PKG_* definitions
+         * @return formatted string
+         */
+        QString format(const QString &str) const;
         /**
          * @brief calc_size calculate the size of package directory
          * @param _dir root directory of the package

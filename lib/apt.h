@@ -13,6 +13,11 @@ class apt : public QProcess
 public:
         explicit  apt(QObject *parent = nullptr);
         /**
+         * @brief exec execute apt process with argument and working directory
+         * @return output of apt process
+         */
+        QByteArray exec();
+        /**
          * @brief search start apt-cache process to search a package
          * @param text string to search
          * @return the list of packages

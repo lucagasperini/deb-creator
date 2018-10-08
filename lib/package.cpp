@@ -63,12 +63,12 @@ package::package(const QString &control)
 
 }
 
-bool package::is_empty()
+bool package::is_empty() const
 {
         return m_name.isEmpty();
 }
 
-QByteArray package::control()
+QByteArray package::control() const
 {
         QByteArray offset;
 
@@ -106,7 +106,7 @@ QString package::root() const
         return dir.path();
 }
 
-QString package::format(const QString &str)
+QString package::format(const QString &str) const
 {
         QString offset = str;
         offset.replace(PKG_NAME, m_name);

@@ -1,21 +1,21 @@
 #include "git.h"
 #include "define.h"
 
-git::git(QObject *parent) : QObject(parent), m_git(new QProcess)
+git::git(QObject *parent) : QProcess(parent)
 {
-        m_git->setProgram(QSL("git"));
-        m_git->setWorkingDirectory(DEB_CREATOR_SRC);
+        setProgram(QSL("git"));
+        setWorkingDirectory(DEB_CREATOR_SRC);
 }
 
-QByteArray git::execute()
+QByteArray git::exec()
 {
-        m_git->start(QIODevice::ReadOnly);
+        start(QIODevice::ReadOnly);
 #ifdef QT_DEBUG
-        qDebug() << QSL("Executing: ") << m_git->program() << m_git->arguments() << m_git->workingDirectory();
+        qDebug() << QSL("Executing: ") << program() << arguments() << workingDirectory();
 #endif
-        m_git->waitForFinished();
-        QByteArray offset = m_git->readAll().trimmed();
-        m_git->close();
+        waitForFinished();
+        QByteArray offset = readAll();
+        close();
         return offset;
 }
 
@@ -30,8 +30,8 @@ QString git::clone(const QUrl &url, const QString &directory)
                 args << QSL("clone") << url.toString() << directory;
                 offset = directory; //FIXME: Maybe directory is relative path
         }
-        m_git->setArguments(args);
-        execute();
+        setArguments(args);
+        exec();
         return offset;
 }
 
@@ -42,13 +42,13 @@ QString git::fetch_user()
         QStringList args;
 
         args << QSL("config") << QSL("--get") << QSL("user.name");
-        m_git->setArguments(args);
-        name = execute();
+        setArguments(args);
+        name = exec().trimmed();
         args.clear();
 
         args << QSL("config") << QSL("--get") << QSL("user.email");
-        m_git->setArguments(args);
-        mail = execute();
+        setArguments(args);
+        mail = exec().trimmed();
 
         return name + " " + "<" + mail + ">";
 }

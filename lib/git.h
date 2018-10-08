@@ -5,16 +5,16 @@
 #include <QProcess>
 #include <QUrl>
 
-class git : public QObject
+class git : public QProcess
 {
         Q_OBJECT
 public:
         explicit git(QObject *parent = nullptr);
         /**
-         * @brief execute execute git process with argument and working directory on @var m_git
+         * @brief exec execute git process with argument and working directory
          * @return output of git process
          */
-        QByteArray execute();
+        QByteArray exec();
         /**
          * @brief git_clone fetch git repo in default directory
          * @param url repo git
@@ -26,8 +26,6 @@ public:
          * @return the format from git is user.name <user.email>, empty string if git is not installed or git is not configurated
          */
         QString fetch_user();
-
-        QProcess *m_git;
 
 signals:
 

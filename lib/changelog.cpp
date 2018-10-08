@@ -32,9 +32,8 @@ void changelog::fetch()
         changelog_t *cl;
         int i = 0;
 
-        if(!changelog_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        if(!changelog_file.open(QIODevice::ReadOnly | QIODevice::Text))
                 return;
-        }
 
         while (!changelog_file.atEnd()) {
                 line = changelog_file.readLine();
@@ -48,8 +47,6 @@ void changelog::fetch()
                 }
         }
         changelog_file.close();
-
-        return;
 }
 
 void changelog::save(const QByteArray &text)
@@ -59,7 +56,8 @@ void changelog::save(const QByteArray &text)
         QString pkg_root = m_pkg->root();
         QFile changelog_file(pkg_root + QSL("/DEBIAN/changelog"));
 
-        changelog_file.open(QIODevice::Append | QIODevice::Text);
+        if(!changelog_file.open(QIODevice::Append | QIODevice::Text))
+                return;
 
         changelog_file.write(text);
         changelog_file.write("\n");

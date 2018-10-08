@@ -6,22 +6,32 @@ apt::apt(QObject *parent) : QProcess(parent)
 
 }
 
+QByteArray apt::exec()
+{
+        QByteArray offset;
+        start(QIODevice::ReadWrite);
+#ifdef QT_DEBUG
+        qDebug() << QSL("Executing: ") << program() << arguments() << workingDirectory();
+#endif
+        waitForFinished();
+        offset = readAll();
+        close();
+        return offset;
+}
+
 QList<package*>* apt::search(const QString &text)
 {
         if(text.isEmpty())
                 return nullptr;
 
         QList<package*>* offset = new QList<package*>;
-        QString cmd = APT_SEARCH + text + QSL(" --full");
+        QStringList args;
 
-#ifdef QT_DEBUG
-        qDebug() << QSL("Executing: ") << cmd;
-#endif
+        setProgram(QSL("apt-cache"));
+        args << QSL("search") << text << QSL("--full");
+        setArguments(args);
 
-        start(cmd, QIODevice::ReadWrite);
-
-        waitForFinished();
-        QString input = readAll();
+        QString input = exec();
         QStringList buffer = input.split("\n\n");
         buffer.removeLast();
         package* pkg;
