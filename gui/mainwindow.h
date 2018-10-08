@@ -21,6 +21,9 @@ public:
         ~MainWindow();
 
         debcreator *m_api;
+
+        void load(const package *pkg);
+        package *save();
 private:
         Ui::MainWindow *ui;
         depend* ui_dep;

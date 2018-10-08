@@ -27,14 +27,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    depend.cpp \
-    widget_package.cpp
+    depend.cpp
 
 HEADERS += \
         mainwindow.h \
         about.h \
-    depend.h \
-    widget_package.h
+    depend.h
 
 FORMS += \
         mainwindow.ui \

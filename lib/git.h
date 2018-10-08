@@ -26,10 +26,6 @@ public:
          * @return the format from git is user.name <user.email>, empty string if git is not installed or git is not configurated
          */
         QString fetch_user();
-
-signals:
-
-public slots:
 };
 
 #endif // GIT_H

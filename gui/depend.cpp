@@ -53,7 +53,7 @@ void depend::search()
                 return;
 
         for(int i = 0; i < result->size(); i++)
-                ui->list_search->addItem(result->at(i)->format(PKG_NAME + " " + PKG_VERSION));
+                ui->list_search->addItem(result->at(i)->format(PKG_NAME + " (" + PKG_VERSION + ")"));
 }
 
 void depend::add()

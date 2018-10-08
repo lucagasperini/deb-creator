@@ -62,6 +62,42 @@ MainWindow::~MainWindow()
         delete ui;
 }
 
+void MainWindow::load(const package *pkg)
+{
+        ui->ln_name->setText(pkg->m_name);
+        ui->ln_version->setText(pkg->m_version);
+        ui->cb_arch->setCurrentText(package::architecture_name(pkg->m_arch));
+        ui->ln_dependancy->setText(pkg->m_depends);
+        ui->ln_maintainer->setText(pkg->m_maintainer);
+        ui->ln_descriptiontitle->setText(pkg->m_desc_title);
+        ui->txt_description->setText(pkg->m_desc_body);
+        ui->ln_homepage->setText(pkg->m_homepage);
+        ui->ln_replace->setText(pkg->m_replace);
+        ui->ln_section->setText(pkg->m_section);
+        ui->ln_source->setText(pkg->m_source);
+        ui->ln_uploaders->setText(pkg->m_uploaders);
+}
+
+package* MainWindow::save()
+{
+        package *pkg = new package;
+
+        pkg->m_name = ui->ln_name->text();
+        pkg->m_version = ui->ln_version->text();
+        pkg->m_arch = package::architecture_value(ui->cb_arch->currentText());
+        pkg->m_depends = ui->ln_dependancy->text();
+        pkg->m_maintainer = ui->ln_maintainer->text();
+        pkg->m_desc_title = ui->ln_descriptiontitle->text();
+        pkg->m_desc_body = ui->txt_description->toPlainText();
+        pkg->m_homepage = ui->ln_homepage->text();
+        pkg->m_replace = ui->ln_replace->text();
+        pkg->m_section = ui->ln_section->text();
+        pkg->m_source = ui->ln_source->text();
+        pkg->m_uploaders = ui->ln_uploaders->text();
+
+        return pkg;
+}
+
 void MainWindow::welcome_reload()
 {
         QStringList list = m_api->db_fetch();
@@ -78,8 +114,7 @@ void MainWindow::welcome_add()
         package *tmp = new package;
         tmp->m_name = QSL("Empty");
         m_api->m_pkg = tmp;
-        ui->ui_package->load(*tmp);
-
+        load(tmp);
 }
 
 void MainWindow::welcome_remove()
@@ -93,15 +128,21 @@ void MainWindow::depend_show()
         if(ui_dep == nullptr)
                 ui_dep = new depend;
         if(ui_dep->exec() == QDialog::Accepted)
-                ui->ui_package->ln_dependancies->setText(ui_dep->ok());
+                ui->ln_dependancy->setText(ui_dep->ok());
 }
 
 void MainWindow::generate_control()
 {
-        if(!ui->ui_package->check())
+        if(ui->ln_name->text().isEmpty()) {
+                QMessageBox::critical(this, QSL("Control file error"), QSL("Package name value is empty!\nPlease add a valid package name."));
                 return;
+        }
+        if (ui->ln_name->text().contains(' ')) {
+                QMessageBox::warning(this, QSL("Control file error"), QSL("Package name must not contain spaces."));
+                return;
+        }
 
-        m_api->m_pkg = ui->ui_package->save();
+        m_api->m_pkg = save();
 
         append_output(QSL("Generating new control file...\n"));
 
@@ -175,11 +216,11 @@ void MainWindow::dir_compile()
 void MainWindow::check_database(const QString &package)
 {
         if(!m_api->db_fetch(package)) {
-                ui->txt_output->append(ui->ui_package->ln_name->text() + QSL(" package didn't find!"));
+                ui->txt_output->append(ui->ln_name->text() + QSL(" package didn't find!"));
                 return;
         }
 
-        ui->ui_package->load(*m_api->m_pkg);
+        load(m_api->m_pkg);
         ui->ln_sourcecode->setText(m_api->m_pkg->m_source);
 }
 
