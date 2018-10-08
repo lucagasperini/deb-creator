@@ -19,6 +19,20 @@
 
 #define APT_SEARCH              QSL("apt-cache search ")
 
+#define PKG_NAME                QSL(":name")
+#define PKG_MAINTAINER          QSL(":maintainer")
+#define PKG_UPLOADER            QSL(":uploader")
+#define PKG_VERSION             QSL(":version")
+#define PKG_HOMEPAGE            QSL(":homepage")
+#define PKG_SOURCE              QSL(":source")
+#define PKG_SIZE                QSL(":size")
+#define PKG_ARCH                QSL(":arch")
+#define PKG_DEPEND              QSL(":depend")
+#define PKG_REPLACE             QSL(":replace")
+#define PKG_SECTION             QSL(":section")
+#define PKG_DESC_TITLE          QSL(":title")
+#define PKG_DESC_BODY           QSL(":body")
+
 #define DB_PACKAGE_TABLE QSL("package")
 #define DB_PACKAGE_CREATE QSL("CREATE TABLE package("           \
                                 "name TEXT PRIMARY KEY,"        \

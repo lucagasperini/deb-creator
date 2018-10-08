@@ -1,5 +1,6 @@
 #include "depend.h"
 #include "ui_depend.h"
+#include "define.h"
 
 depend::depend(QWidget *parent) :
         QDialog(parent),
@@ -41,13 +42,13 @@ int depend::contains(const QString &text)
 void depend::search()
 {
         QString search_text = ui->ln_search->text();
-        if(search_text.isEmpty())
+        ui->list_search->clear();
+        QList<package*>* result = m_apt->search(search_text);
+        if(result == nullptr)
                 return;
 
-        ui->list_search->clear();
-        m_apt->clear();
-        QStringList result = m_apt->search(search_text);
-        ui->list_search->addItems(result);
+        for(int i = 0; i < result->size(); i++)
+                ui->list_search->addItem(result->at(i)->format(PKG_NAME + " " + PKG_VERSION));
 }
 
 void depend::add()

@@ -88,18 +88,18 @@ bool debcreator::db_insert()
         else
                 query->prepare(DB_PACKAGE_UPDATE);
 
-        query->bindValue(QSL(":name"), m_pkg->m_name);
-        query->bindValue(QSL(":maintainer"), m_pkg->m_maintainer);
-        query->bindValue(QSL(":uploader"), m_pkg->m_uploaders);
-        query->bindValue(QSL(":version"), m_pkg->m_version);
-        query->bindValue(QSL(":homepage"), m_pkg->m_homepage);
-        query->bindValue(QSL(":source"), m_pkg->m_source);
-        query->bindValue(QSL(":arch"), m_pkg->m_arch);
-        query->bindValue(QSL(":depend"), m_pkg->m_depends);
-        query->bindValue(QSL(":replace"), m_pkg->m_replace);
-        query->bindValue(QSL(":section"), m_pkg->m_section);
-        query->bindValue(QSL(":title"), m_pkg->m_desc_title);
-        query->bindValue(QSL(":body"), m_pkg->m_desc_body);
+        query->bindValue(PKG_NAME, m_pkg->m_name);
+        query->bindValue(PKG_MAINTAINER, m_pkg->m_maintainer);
+        query->bindValue(PKG_UPLOADER, m_pkg->m_uploaders);
+        query->bindValue(PKG_VERSION, m_pkg->m_version);
+        query->bindValue(PKG_HOMEPAGE, m_pkg->m_homepage);
+        query->bindValue(PKG_SOURCE, m_pkg->m_source);
+        query->bindValue(PKG_ARCH, m_pkg->m_arch);
+        query->bindValue(PKG_DEPEND, m_pkg->m_depends);
+        query->bindValue(PKG_REPLACE, m_pkg->m_replace);
+        query->bindValue(PKG_SECTION, m_pkg->m_section);
+        query->bindValue(PKG_DESC_TITLE, m_pkg->m_desc_title);
+        query->bindValue(PKG_DESC_BODY, m_pkg->m_desc_body);
 
         bool offset = query->exec();
 

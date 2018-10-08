@@ -106,6 +106,25 @@ QString package::root() const
         return dir.path();
 }
 
+QString package::format(const QString &str)
+{
+        QString offset = str;
+        offset.replace(PKG_NAME, m_name);
+        offset.replace(PKG_MAINTAINER, m_maintainer);
+        offset.replace(PKG_UPLOADER, m_uploaders);
+        offset.replace(PKG_VERSION, m_version);
+        offset.replace(PKG_HOMEPAGE, m_homepage);
+        offset.replace(PKG_SOURCE, m_source);
+        offset.replace(PKG_SIZE, QString::number(m_size));
+        offset.replace(PKG_ARCH, architecture_name(m_arch));
+        offset.replace(PKG_DEPEND, m_depends);
+        offset.replace(PKG_REPLACE, m_replace);
+        offset.replace(PKG_SECTION, m_section);
+        offset.replace(PKG_DESC_TITLE, m_desc_title);
+        offset.replace(PKG_DESC_BODY, m_desc_body);
+        return offset;
+}
+
 qint64 package::calc_size(const QString &_dir)
 {
         qint64 sizex = 0;

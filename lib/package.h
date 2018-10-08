@@ -34,6 +34,7 @@ public:
          * @return path of the package root
          */
         QString root() const;
+        QString format(const QString &str);
         /**
          * @brief calc_size calculate the size of package directory
          * @param _dir root directory of the package
