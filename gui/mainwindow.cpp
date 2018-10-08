@@ -92,7 +92,8 @@ void MainWindow::depend_show()
 {
         if(ui_dep == nullptr)
                 ui_dep = new depend;
-        ui_dep->show();
+        if(ui_dep->exec() == QDialog::Accepted)
+                ui->ui_package->ln_dependancies->setText(ui_dep->ok());
 }
 
 void MainWindow::generate_control()
