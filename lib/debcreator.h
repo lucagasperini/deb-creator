@@ -59,7 +59,6 @@ public:
         QSqlDatabase* m_db;
         package *m_pkg;
         changelog *m_changelog;
-        git *m_git;
         QString m_build; //REVIEW?
 };
 

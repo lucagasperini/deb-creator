@@ -233,11 +233,12 @@ void mainwindow::compile_refresh()
 
         QFileInfo dir(ui->ln_sourcecode->text());
         QFileSystemModel *model = new QFileSystemModel;
+        git* proc = new git;
 
         if(dir.isDir())
                 m_api->m_build = dir.absoluteDir().path();
         else
-                m_api->m_build = DEB_CREATOR_SRC + m_api->m_git->clone(ui->ln_sourcecode->text());
+                m_api->m_build = DEB_CREATOR_SRC + proc->clone(ui->ln_sourcecode->text());
 
         model->setRootPath(m_api->m_build);
         ui->tw_compile->setModel(model);

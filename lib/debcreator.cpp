@@ -7,7 +7,11 @@
 #include <QtSql/QSqlDriver>
 #include <QtSql/QSqlRecord>
 
-debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent)
+debcreator::debcreator(const QString &file_db, QObject *parent) :
+        QObject(parent),
+        m_process(new multiprocess),
+        m_pkg(new package),
+        m_changelog(new changelog(m_pkg))
 {
         QDir dir;
         dir = DEB_CREATOR_LOCAL;
@@ -31,11 +35,6 @@ debcreator::debcreator(const QString &file_db, QObject *parent) : QObject(parent
                 m_db->setDatabaseName(file_db);
 
         m_db->open();
-
-        m_process = new multiprocess;
-        m_pkg = new package;
-        m_changelog = new changelog(m_pkg);
-        m_git = new git;
 }
 
 
