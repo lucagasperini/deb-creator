@@ -11,7 +11,7 @@ QByteArray git::exec()
 {
         start(QIODevice::ReadOnly);
 #ifdef QT_DEBUG
-        qDebug() << QSL("Executing: ") << program() << arguments() << workingDirectory();
+        qDebug() << QSL("Executing:") << program() << arguments() << workingDirectory();
 #endif
         waitForFinished();
         QByteArray offset = readAll();

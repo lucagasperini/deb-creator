@@ -11,7 +11,7 @@ QByteArray apt::exec()
         QByteArray offset;
         start(QIODevice::ReadWrite);
 #ifdef QT_DEBUG
-        qDebug() << QSL("Executing: ") << program() << arguments() << workingDirectory();
+        qDebug() << QSL("Executing:") << program() << arguments() << workingDirectory();
 #endif
         waitForFinished();
         offset = readAll();

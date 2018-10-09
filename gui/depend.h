@@ -3,6 +3,8 @@
 
 #include <apt.h>
 
+#include "depend_add.h"
+
 #include <QDialog>
 
 namespace Ui
@@ -28,7 +30,8 @@ private slots:
 private:
         Ui::depend *ui;
         apt* m_apt;
-        QStringList m_deps;
+        QList<package*>* m_search;
+        depend_add *ui_add;
 };
 
 #endif // DEPEND_H

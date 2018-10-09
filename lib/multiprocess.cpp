@@ -15,7 +15,7 @@ void multiprocess::run()
                 if(buffer == nullptr)
                         return;
 #ifdef QT_DEBUG
-                qDebug() << QSL("Executing: ") << buffer->program() << buffer->arguments() << buffer->workingDirectory();
+                qDebug() << QSL("Executing:") << buffer->program() << buffer->arguments() << buffer->workingDirectory();
 #endif
                 buffer->start(QIODevice::ReadWrite);
                 while(buffer->waitForReadyRead()) {

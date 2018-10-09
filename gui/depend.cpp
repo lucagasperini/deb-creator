@@ -5,7 +5,8 @@
 depend::depend(QWidget *parent) :
         QDialog(parent),
         ui(new Ui::depend),
-        m_apt(new apt)
+        m_apt(new apt),
+        ui_add(new depend_add)
 {
         ui->setupUi(this);
 
@@ -22,14 +23,14 @@ depend::~depend()
 QString depend::ok()
 {
         QString offset = "";
-        int size = m_deps.size() - 1;
+        int size = ui->list_dependency->count() - 1;
 
         if(size < 0)
                 return offset;
 
         for(int i = 0; i < size; i++)
-                offset.append(m_deps.at(i) +  ",");
-        offset.append(m_deps.at(size));
+                offset.append(ui->list_dependency->item(i)->text() +  ",");
+        offset.append(ui->list_dependency->item(size)->text());
 
         return offset;
 }
@@ -48,27 +49,36 @@ void depend::search()
 {
         QString search_text = ui->ln_search->text();
         ui->list_search->clear();
-        QList<package*>* result = m_apt->search(search_text);
-        if(result == nullptr)
+        m_search = m_apt->search(search_text);
+        if(m_search == nullptr)
                 return;
 
-        for(int i = 0; i < result->size(); i++)
-                ui->list_search->addItem(result->at(i)->format(PKG_NAME + " (" + PKG_VERSION + ")"));
+        for(int i = 0; i < m_search->size(); i++)
+                ui->list_search->addItem(m_search->at(i)->format(PKG_NAME + " (" + PKG_VERSION + ")"));
 }
 
 void depend::add()
 {
-        QString text = ui->list_search->currentItem()->text();
-        if(contains(text) == -1) {
-                m_deps.append(text);
-                ui->list_dependency->addItem(text);
-        }
+        package* current = m_search->at(ui->list_search->currentRow());
+        ui_add->setup(current->m_name, current->m_version);
+        if(ui_add->exec() == QDialog::Rejected)
+                return;
+
+        QString version = ui_add->ok();
+        QString str;
+
+        if(version.isEmpty())
+                str = current->m_name;
+        else
+                str = current->m_name + " (" + version + ")";
+
+        if(contains(str) == -1)
+                ui->list_dependency->addItem(str);
 }
 
 void depend::remove()
 {
         QListWidgetItem *item = ui->list_dependency->currentItem();
-        m_deps.removeOne(item->text());
         ui->list_dependency->removeItemWidget(item);
         delete item;
 }
