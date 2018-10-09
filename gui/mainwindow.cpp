@@ -15,10 +15,10 @@
 
 using namespace std;
 
-MainWindow::MainWindow(QWidget *parent) :
+mainwindow::mainwindow(QWidget *parent) :
         QMainWindow(parent),
         m_api(new debcreator),
-        ui(new Ui::MainWindow),
+        ui(new Ui::mainwindow),
         ui_dep(nullptr),
         ui_about(new about)
 {
@@ -26,43 +26,43 @@ MainWindow::MainWindow(QWidget *parent) :
 
         ui->tabWidget->setCurrentIndex(TAB_WELCOME);
 
-        connect(ui->btn_reload, &QPushButton::clicked, this, &MainWindow::welcome_reload);
-        connect(ui->btn_add, &QPushButton::clicked, this, &MainWindow::welcome_add);
-        connect(ui->btn_remove, &QPushButton::clicked, this, &MainWindow::welcome_remove);
-        connect(ui->btn_dependency, &QPushButton::clicked, this, &MainWindow::depend_show);
-        connect(ui->btn_gencontrol, &QPushButton::clicked, this, &MainWindow::generate_control);
-        connect(ui->btn_createpackage, &QPushButton::clicked, this, &MainWindow::create_package);
-        connect(ui->btn_clear, &QPushButton::clicked, this, &MainWindow::clear_output);
-        connect(ui->btn_changelog_create, &QPushButton::clicked, this, &MainWindow::changelog_generate);
-        connect(ui->btn_changelog_refresh, &QPushButton::clicked, this, &MainWindow::changelog_refresh);
-        connect(ui->btn_refresh, &QPushButton::clicked, this, &MainWindow::compile_refresh);
-        connect(ui->btn_compile, &QPushButton::clicked, this, &MainWindow::compile);
-        connect(ui->btn_buildadd, &QPushButton::clicked, this, &MainWindow::build_add);
-        connect(ui->btn_buildremove, &QPushButton::clicked, this, &MainWindow::build_remove);
-        connect(ui->btn_buildsave, &QPushButton::clicked, this, &MainWindow::build_save);
-        connect(ui->bt_sourcecode, &QToolButton::clicked, this, &MainWindow::dir_compile);
+        connect(ui->btn_reload, &QPushButton::clicked, this, &mainwindow::welcome_reload);
+        connect(ui->btn_add, &QPushButton::clicked, this, &mainwindow::welcome_add);
+        connect(ui->btn_remove, &QPushButton::clicked, this, &mainwindow::welcome_remove);
+        connect(ui->btn_dependency, &QPushButton::clicked, this, &mainwindow::depend_show);
+        connect(ui->btn_gencontrol, &QPushButton::clicked, this, &mainwindow::generate_control);
+        connect(ui->btn_createpackage, &QPushButton::clicked, this, &mainwindow::create_package);
+        connect(ui->btn_clear, &QPushButton::clicked, this, &mainwindow::clear_output);
+        connect(ui->btn_changelog_create, &QPushButton::clicked, this, &mainwindow::changelog_generate);
+        connect(ui->btn_changelog_refresh, &QPushButton::clicked, this, &mainwindow::changelog_refresh);
+        connect(ui->btn_refresh, &QPushButton::clicked, this, &mainwindow::compile_refresh);
+        connect(ui->btn_compile, &QPushButton::clicked, this, &mainwindow::compile);
+        connect(ui->btn_buildadd, &QPushButton::clicked, this, &mainwindow::build_add);
+        connect(ui->btn_buildremove, &QPushButton::clicked, this, &mainwindow::build_remove);
+        connect(ui->btn_buildsave, &QPushButton::clicked, this, &mainwindow::build_save);
+        connect(ui->bt_sourcecode, &QToolButton::clicked, this, &mainwindow::dir_compile);
 
-        connect(ui->a_create_package, &QAction::triggered, this, &MainWindow::create_package);
-        connect(ui->a_generate_control, &QAction::triggered, this, &MainWindow::generate_control);
+        connect(ui->a_create_package, &QAction::triggered, this, &mainwindow::create_package);
+        connect(ui->a_generate_control, &QAction::triggered, this, &mainwindow::generate_control);
         connect(ui->a_quit, &QAction::triggered, qApp, &QApplication::quit);
         connect(ui->a_about, &QAction::triggered, ui_about, &about::show);
         connect(ui->a_aboutqt, &QAction::triggered, qApp, &QApplication::aboutQt);
-        //connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::fetch_changelog);
-        connect(ui->lsw_welcome, &QListWidget::currentTextChanged, this, &MainWindow::check_database);
-        connect(ui->lsw_changelog, &QListWidget::currentTextChanged, this, &MainWindow::changelog_change);
+        //connect(ui->tabWidget, &QTabWidget::currentChanged, this, &mainwindow::fetch_changelog);
+        connect(ui->lsw_welcome, &QListWidget::currentTextChanged, this, &mainwindow::check_database);
+        connect(ui->lsw_changelog, &QListWidget::currentTextChanged, this, &mainwindow::changelog_change);
         // connect(ui->a_manual) TODO: Add a manual?
 
-        connect(m_api->m_process, &multiprocess::read, this, &MainWindow::append_output);
+        connect(m_api->m_process, &multiprocess::read, this, &mainwindow::append_output);
 
         welcome_reload();
 }
 
-MainWindow::~MainWindow()
+mainwindow::~mainwindow()
 {
         delete ui;
 }
 
-void MainWindow::load(const package *pkg)
+void mainwindow::load(const package *pkg)
 {
         ui->ln_name->setText(pkg->m_name);
         ui->ln_version->setText(pkg->m_version);
@@ -78,7 +78,7 @@ void MainWindow::load(const package *pkg)
         ui->ln_uploaders->setText(pkg->m_uploaders);
 }
 
-package* MainWindow::save()
+package* mainwindow::save()
 {
         package *pkg = new package;
 
@@ -98,14 +98,14 @@ package* MainWindow::save()
         return pkg;
 }
 
-void MainWindow::welcome_reload()
+void mainwindow::welcome_reload()
 {
         QStringList list = m_api->db_fetch();
         ui->lsw_welcome->clear();
         ui->lsw_welcome->addItems(list);
 }
 
-void MainWindow::welcome_add()
+void mainwindow::welcome_add()
 {
         ui->tabWidget->setCurrentIndex(TAB_CONTROL);
         if(!m_api->m_pkg->is_empty()) //TODO: Manage multipackaging
@@ -117,13 +117,13 @@ void MainWindow::welcome_add()
         load(tmp);
 }
 
-void MainWindow::welcome_remove()
+void mainwindow::welcome_remove()
 {
         m_api->db_remove(ui->lsw_welcome->currentItem()->text());
         welcome_reload();
 }
 
-void MainWindow::depend_show()
+void mainwindow::depend_show()
 {
         if(ui_dep == nullptr)
                 ui_dep = new depend;
@@ -131,7 +131,7 @@ void MainWindow::depend_show()
                 ui->ln_dependancy->setText(ui_dep->ok());
 }
 
-void MainWindow::generate_control()
+void mainwindow::generate_control()
 {
         if(ui->ln_name->text().isEmpty()) {
                 QMessageBox::critical(this, QSL("Control file error"), QSL("Package name value is empty!\nPlease add a valid package name."));
@@ -154,14 +154,14 @@ void MainWindow::generate_control()
         ui->txt_control->setText(m_api->m_pkg->control());
 }
 
-void MainWindow::changelog_generate()
+void mainwindow::changelog_generate()
 {
         QByteArray text = m_api->m_changelog->generate(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
         ui->txt_changelog->setText(text);
         m_api->m_changelog->save(text);
 }
 
-void MainWindow::changelog_refresh()
+void mainwindow::changelog_refresh()
 {
         m_api->m_changelog->fetch();
         ui->lsw_changelog->clear();
@@ -169,12 +169,12 @@ void MainWindow::changelog_refresh()
 
 }
 
-void MainWindow::changelog_change()
+void mainwindow::changelog_change()
 {
         ui->txt_changelog->setText(m_api->m_changelog->text(ui->lsw_changelog->currentRow()));
 }
 
-void MainWindow::create_package()
+void mainwindow::create_package()
 {
         QString outputfile = QFileDialog::getSaveFileName(this, QSL("Select where save package"), QDir::homePath() + "/" + m_api->m_pkg->outputfile());
 
@@ -193,7 +193,7 @@ void MainWindow::create_package()
         append_output(m_api->pkg_create(control.toUtf8(), outputfile));
 }
 
-void MainWindow::append_output(const QString &text)
+void mainwindow::append_output(const QString &text)
 {
 #ifdef QT_DEBUG
         qDebug() << text;
@@ -201,19 +201,19 @@ void MainWindow::append_output(const QString &text)
         ui->txt_output->insertPlainText(text);
 }
 
-void MainWindow::clear_output()
+void mainwindow::clear_output()
 {
         ui->txt_output->clear();
 }
 
-void MainWindow::dir_compile()
+void mainwindow::dir_compile()
 {
         QDir dir;
         dir = QFileDialog::getExistingDirectory(this, QSL("Source file of the package"));
         ui->ln_sourcecode->setText(dir.absolutePath() + QSL("/"));
 }
 
-void MainWindow::check_database(const QString &package)
+void mainwindow::check_database(const QString &package)
 {
         if(!m_api->db_fetch(package)) {
                 ui->txt_output->append(ui->ln_name->text() + QSL(" package didn't find!"));
@@ -224,7 +224,7 @@ void MainWindow::check_database(const QString &package)
         ui->ln_sourcecode->setText(m_api->m_pkg->m_source);
 }
 
-void MainWindow::compile_refresh()
+void mainwindow::compile_refresh()
 {
         if(ui->ln_sourcecode->text().isEmpty()) {
                 QMessageBox::warning(this, QSL("Compile Package"), QSL("Source cannot be empty!\nPlease insert a source code directory or git repo."));
@@ -244,7 +244,7 @@ void MainWindow::compile_refresh()
         ui->tw_compile->setRootIndex(model->index(m_api->m_build));
 }
 
-void MainWindow::compile()
+void mainwindow::compile()
 {
         if(m_api->m_process->is_empty()) {
                 QMessageBox::warning(this, QSL("Compile Package"), QSL("Step build are not saved!\nPlease save step build in order to compile source code."));
@@ -253,7 +253,7 @@ void MainWindow::compile()
         m_api->m_process->start();
 }
 
-void MainWindow::build_add()
+void mainwindow::build_add()
 {
         const int row = ui->tbl_order->rowCount();
 
@@ -264,12 +264,12 @@ void MainWindow::build_add()
         ui->tbl_order->item(row, 2)->setText(m_api->m_build);
 }
 
-void MainWindow::build_remove()
+void mainwindow::build_remove()
 {
         ui->tbl_order->removeRow(ui->tbl_order->currentRow());
 }
 
-void MainWindow::build_save()
+void mainwindow::build_save()
 {
         const int rows = ui->tbl_order->rowCount();
         if(rows == 0) {

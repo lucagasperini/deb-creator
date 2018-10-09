@@ -9,23 +9,23 @@
 
 namespace Ui
 {
-class MainWindow;
+class mainwindow;
 }
 
-class MainWindow : public QMainWindow
+class mainwindow : public QMainWindow
 {
         Q_OBJECT
 
 public:
-        explicit MainWindow(QWidget *parent = nullptr);
-        ~MainWindow();
+        explicit mainwindow(QWidget *parent = nullptr);
+        ~mainwindow();
 
         debcreator *m_api;
 
         void load(const package *pkg);
         package *save();
 private:
-        Ui::MainWindow *ui;
+        Ui::mainwindow *ui;
         depend* ui_dep;
         about* ui_about;
 
