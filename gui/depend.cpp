@@ -20,6 +20,23 @@ depend::~depend()
         delete ui;
 }
 
+void depend::setup(const QString &deps)
+{
+        if(deps.isEmpty()) {
+                ui->list_dependency->clear();
+                return;
+        }
+
+        QString str = deps;
+        QStringList buffer = str.split(',');
+        QStringList trimmed;
+
+        for(int i = 0; i < buffer.size(); i++)
+                trimmed << buffer.at(i).trimmed();
+        ui->list_dependency->clear();
+        ui->list_dependency->addItems(trimmed);
+}
+
 QString depend::ok()
 {
         QString offset = "";

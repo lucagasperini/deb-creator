@@ -20,6 +20,8 @@ public:
         explicit depend(QWidget *parent = 0);
         ~depend();
 
+        void setup(const QString &deps);
+
         int contains(const QString &text);
         QString ok();
 
