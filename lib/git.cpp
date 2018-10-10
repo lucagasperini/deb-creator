@@ -25,7 +25,10 @@ QString git::clone(const QUrl &url, const QString &directory)
         QString offset;
         if(directory.isEmpty()) {
                 args << QSL("clone") << url.toString();
-                offset = url.fileName().remove(url.fileName().right(4));
+                if(url.fileName().endsWith(".git"))
+                        offset = url.fileName().remove(url.fileName().right(4));
+                else
+                        offset = url.fileName();
         } else {
                 args << QSL("clone") << url.toString() << directory;
                 offset = directory; //FIXME: Maybe directory is relative path

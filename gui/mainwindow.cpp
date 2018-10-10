@@ -243,6 +243,9 @@ void mainwindow::compile_refresh()
         else
                 m_api->m_build = DEB_CREATOR_SRC + proc->clone(ui->ln_sourcecode->text());
 
+#ifdef QT_DEBUG
+        qDebug() << QSL("Current build path: ") << m_api->m_build;
+#endif
         model->setRootPath(m_api->m_build);
         ui->tw_compile->setModel(model);
         ui->tw_compile->setRootIndex(model->index(m_api->m_build));
