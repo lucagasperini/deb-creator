@@ -325,9 +325,6 @@ void mainwindow::custom_save()
 void mainwindow::custom_load(const QModelIndex &a)
 {
         QString filename = m_model_custom->filePath(a);
-#ifdef QT_DEBUG
-        qDebug() << filename;
-#endif
         QByteArray text = debcreator::file_read(filename);
         ui->txt_code->setText(text);
 }

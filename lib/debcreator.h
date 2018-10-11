@@ -53,7 +53,18 @@ public:
          * @return if package don't exist it will return false, otherwise true
          */
         bool db_remove(const QString &pkg);
+        /**
+         * @brief file_write write data in selected filename
+         * @param filename target file
+         * @param data binary data to write
+         * @return if cannot write in target file it will return false, otherwise true
+         */
         static bool file_write(const QString &filename, const QString &data);
+        /**
+         * @brief file_read read binary data from target file
+         * @param filename file where data is stored
+         * @return data from target file
+         */
         static QByteArray file_read(const QString &filename);
 
         multiprocess* m_process;
