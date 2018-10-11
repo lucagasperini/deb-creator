@@ -6,6 +6,7 @@
 #include "package.h"
 #include "changelog.h"
 #include "git.h"
+#include "filesystem.h"
 
 #include <QtSql/QSqlDatabase>
 

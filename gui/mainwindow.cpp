@@ -245,7 +245,7 @@ void mainwindow::compile_refresh()
         QString build_dir = m_api->build_dir();
 
         if(dir.isDir())
-                dir.absoluteDir(); //FIXME!!!
+                filesystem::cp(dir.absoluteDir().path(), build_dir);
         else
                 proc->clone(ui->ln_sourcecode->text(), build_dir);
 
