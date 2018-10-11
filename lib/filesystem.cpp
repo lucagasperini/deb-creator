@@ -35,6 +35,7 @@ void filesystem::cp(const QString &src, const QString &dest)
         }
 
         QDir dir(src);
+        dir.mkdir(dest);
         QFileInfoList list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
         for (int i = 0; i < list.size(); ++i) {
                 QFileInfo fileInfo = list.at(i);
