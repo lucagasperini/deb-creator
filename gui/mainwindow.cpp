@@ -242,18 +242,19 @@ void mainwindow::compile_refresh()
         if(m_model_compile == nullptr)
                 m_model_compile = new QFileSystemModel;
         git* proc = new git;
+        QString build_dir = m_api->build_dir();
 
         if(dir.isDir())
-                m_api->m_build = dir.absoluteDir().path();
+                dir.absoluteDir(); //FIXME!!!
         else
-                m_api->m_build = DEB_CREATOR_SRC + proc->clone(ui->ln_sourcecode->text());
+                proc->clone(ui->ln_sourcecode->text(), build_dir);
 
 #ifdef QT_DEBUG
-        qDebug() << QSL("Current build path: ") << m_api->m_build;
+        qDebug() << QSL("Current build path: ") << build_dir;
 #endif
-        m_model_compile->setRootPath(m_api->m_build);
+        m_model_compile->setRootPath(build_dir);
         ui->tw_compile->setModel(m_model_compile);
-        ui->tw_compile->setRootIndex(m_model_compile->index(m_api->m_build));
+        ui->tw_compile->setRootIndex(m_model_compile->index(build_dir));
 }
 
 void mainwindow::compile()
@@ -273,7 +274,7 @@ void mainwindow::build_add()
         ui->tbl_order->setItem(row, 0, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 1, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 2, new QTableWidgetItem);
-        ui->tbl_order->item(row, 2)->setText(m_api->m_build);
+        ui->tbl_order->item(row, 2)->setText(m_api->build_dir());
 }
 
 void mainwindow::build_remove()

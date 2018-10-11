@@ -203,6 +203,11 @@ bool debcreator::db_remove(const QString &pkg)
         return true;
 }
 
+QString debcreator::build_dir()
+{
+        return DEB_CREATOR_SRC + m_pkg->m_name;
+}
+
 bool debcreator::file_write(const QString &filename, const QString &data)
 {
         QFile file(filename);
