@@ -50,7 +50,7 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->a_quit, &QAction::triggered, qApp, &QApplication::quit);
         connect(ui->a_about, &QAction::triggered, ui_about, &about::show);
         connect(ui->a_aboutqt, &QAction::triggered, qApp, &QApplication::aboutQt);
-        //connect(ui->tabWidget, &QTabWidget::currentChanged, this, &mainwindow::fetch_changelog);
+        connect(ui->a_loadctrl, &QAction::triggered, this, &mainwindow::control_load);
         connect(ui->lsw_welcome, &QListWidget::currentTextChanged, this, &mainwindow::control_database);
         connect(ui->lsw_changelog, &QListWidget::currentTextChanged, this, &mainwindow::changelog_change);
         connect(ui->tree_filesystem, &QTreeView::clicked, this, &mainwindow::custom_load);
@@ -229,6 +229,17 @@ void mainwindow::control_database(const QString &package)
 
         load(m_api->m_pkg);
         ui->ln_sourcecode->setText(m_api->m_pkg->m_source);
+}
+
+void mainwindow::control_load()
+{
+        QString filename = QFileDialog::getOpenFileName(this, QSL("Select a valid control file"), QDir::homePath());
+        if(filename.isEmpty()) {
+                QMessageBox::warning(this, QSL("Control File"), QSL("File name cannot be empty!"));
+                return;
+        }
+        package *tmp = new package(debcreator::file_read(filename));
+        load(tmp);
 }
 
 void mainwindow::compile_refresh()

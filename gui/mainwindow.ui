@@ -634,6 +634,7 @@
      <string>Fi&amp;le</string>
     </property>
     <addaction name="a_quit"/>
+    <addaction name="a_loadctrl"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -682,6 +683,11 @@
   <action name="a_aboutqt">
    <property name="text">
     <string>About &amp;Qt</string>
+   </property>
+  </action>
+  <action name="a_loadctrl">
+   <property name="text">
+    <string>Load Control</string>
    </property>
   </action>
  </widget>

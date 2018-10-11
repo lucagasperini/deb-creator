@@ -44,6 +44,7 @@ private slots:
         void package_generate();
         void control_generate();
         void control_database(const QString &package);
+        void control_load();
         void changelog_generate();
         void changelog_refresh();
         void changelog_change();
