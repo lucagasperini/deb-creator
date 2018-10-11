@@ -14,6 +14,7 @@ public:
          * @return integer 64 bit of size in byte
          */
         static qint64 size(const QString &_dir);
+        static void cp(const QString &src, const QString &dest);
 
 signals:
 
