@@ -53,6 +53,8 @@ public:
          * @return if package don't exist it will return false, otherwise true
          */
         bool db_remove(const QString &pkg);
+        static bool file_write(const QString &filename, const QString &data);
+        static QByteArray file_read(const QString &filename);
 
         multiprocess* m_process;
 

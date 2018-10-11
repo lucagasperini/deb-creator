@@ -48,6 +48,9 @@ private slots:
         void build_add();
         void build_remove();
         void build_save();
+        void custom_refresh();
+        void custom_save();
+        void custom_load(const QModelIndex &a);
 };
 
 #endif // MAINWINDOW_H

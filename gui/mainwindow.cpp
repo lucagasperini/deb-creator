@@ -40,6 +40,8 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->btn_buildadd, &QPushButton::clicked, this, &mainwindow::build_add);
         connect(ui->btn_buildremove, &QPushButton::clicked, this, &mainwindow::build_remove);
         connect(ui->btn_buildsave, &QPushButton::clicked, this, &mainwindow::build_save);
+        connect(ui->btn_custom_refresh, &QPushButton::clicked, this, &mainwindow::custom_refresh);
+        connect(ui->btn_custom_save, &QPushButton::clicked, this, &mainwindow::custom_save);
         connect(ui->bt_sourcecode, &QToolButton::clicked, this, &mainwindow::dir_compile);
 
         connect(ui->a_create_package, &QAction::triggered, this, &mainwindow::create_package);
@@ -50,6 +52,7 @@ mainwindow::mainwindow(QWidget *parent) :
         //connect(ui->tabWidget, &QTabWidget::currentChanged, this, &mainwindow::fetch_changelog);
         connect(ui->lsw_welcome, &QListWidget::currentTextChanged, this, &mainwindow::check_database);
         connect(ui->lsw_changelog, &QListWidget::currentTextChanged, this, &mainwindow::changelog_change);
+        connect(ui->tree_filesystem, &QTreeView::clicked, this, &mainwindow::custom_load);
         // connect(ui->a_manual) TODO: Add a manual?
 
         connect(m_api->m_process, &multiprocess::read, this, &mainwindow::append_output);
@@ -294,3 +297,36 @@ void mainwindow::build_save()
         }
 }
 
+void mainwindow::custom_refresh()
+{
+        QFileSystemModel *model = new QFileSystemModel;
+
+        model->setRootPath(m_api->m_pkg->root()); //+ DEBIAN/ ?
+        ui->tree_filesystem->setModel(model);
+        ui->tree_filesystem->setRootIndex(model->index(m_api->m_pkg->root()));
+}
+
+void mainwindow::custom_save()
+{
+        QString filename = QFileDialog::getSaveFileName(this, QSL("Select file name"), m_api->m_pkg->root());
+
+        if(filename.isEmpty()) {
+                QMessageBox::warning(this, QSL("Custom File"), QSL("File name cannot be empty!"));
+                return;
+        }
+
+        debcreator::file_write(filename, ui->txt_code->toPlainText());
+}
+
+
+void mainwindow::custom_load(const QModelIndex &a) //FIXME!!!
+{
+        QAbstractItemModel* model = ui->tree_filesystem->model();
+        int row =  ui->tree_filesystem->currentIndex().row();
+        QString filename = model->data(model->index(row, 0)).toString();
+#ifdef QT_DEBUG
+        qDebug() << filename;
+#endif
+        QByteArray text = debcreator::file_read(filename);
+        ui->txt_code->setText(text);
+}
