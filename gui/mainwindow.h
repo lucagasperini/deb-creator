@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QFileSystemModel>
+
 #include <debcreator.h>
 
 #include "about.h"
@@ -28,6 +30,9 @@ private:
         Ui::mainwindow *ui;
         depend* ui_dep;
         about* ui_about;
+
+        QFileSystemModel *m_model_custom;
+        QFileSystemModel *m_model_compile;
 
 private slots:
         void welcome_reload();

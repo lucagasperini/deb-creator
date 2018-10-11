@@ -7,7 +7,6 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QFileSystemModel>
 #include <QFileInfo>
 
 #define TAB_WELCOME 0
@@ -20,7 +19,9 @@ mainwindow::mainwindow(QWidget *parent) :
         m_api(new debcreator),
         ui(new Ui::mainwindow),
         ui_dep(nullptr),
-        ui_about(new about)
+        ui_about(new about),
+        m_model_custom(nullptr),
+        m_model_compile(nullptr)
 {
         ui->setupUi(this);
 
@@ -238,7 +239,8 @@ void mainwindow::compile_refresh()
         }
 
         QFileInfo dir(ui->ln_sourcecode->text());
-        QFileSystemModel *model = new QFileSystemModel;
+        if(m_model_compile == nullptr)
+                m_model_compile = new QFileSystemModel;
         git* proc = new git;
 
         if(dir.isDir())
@@ -249,9 +251,9 @@ void mainwindow::compile_refresh()
 #ifdef QT_DEBUG
         qDebug() << QSL("Current build path: ") << m_api->m_build;
 #endif
-        model->setRootPath(m_api->m_build);
-        ui->tw_compile->setModel(model);
-        ui->tw_compile->setRootIndex(model->index(m_api->m_build));
+        m_model_compile->setRootPath(m_api->m_build);
+        ui->tw_compile->setModel(m_model_compile);
+        ui->tw_compile->setRootIndex(m_model_compile->index(m_api->m_build));
 }
 
 void mainwindow::compile()
@@ -299,11 +301,12 @@ void mainwindow::build_save()
 
 void mainwindow::custom_refresh()
 {
-        QFileSystemModel *model = new QFileSystemModel;
+        if(m_model_custom == nullptr)
+                m_model_custom = new QFileSystemModel;
 
-        model->setRootPath(m_api->m_pkg->root()); //+ DEBIAN/ ?
-        ui->tree_filesystem->setModel(model);
-        ui->tree_filesystem->setRootIndex(model->index(m_api->m_pkg->root()));
+        m_model_custom->setRootPath(m_api->m_pkg->root()); //+ DEBIAN/ ?
+        ui->tree_filesystem->setModel(m_model_custom);
+        ui->tree_filesystem->setRootIndex(m_model_custom->index(m_api->m_pkg->root()));
 }
 
 void mainwindow::custom_save()
@@ -319,11 +322,9 @@ void mainwindow::custom_save()
 }
 
 
-void mainwindow::custom_load(const QModelIndex &a) //FIXME!!!
+void mainwindow::custom_load(const QModelIndex &a)
 {
-        QAbstractItemModel* model = ui->tree_filesystem->model();
-        int row =  ui->tree_filesystem->currentIndex().row();
-        QString filename = model->data(model->index(row, 0)).toString();
+        QString filename = m_model_custom->filePath(a);
 #ifdef QT_DEBUG
         qDebug() << filename;
 #endif
