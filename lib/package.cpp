@@ -1,5 +1,6 @@
 #include "package.h"
 #include "define.h"
+#include "filesystem.h"
 
 package::package(QObject *parent) : QObject(parent)
 {
@@ -78,7 +79,7 @@ QByteArray package::control() const
         offset += QSL("\nVersion: ") + m_version;
         offset += QSL("\nHomepage: ") + m_homepage;
         offset += QSL("\nSource: ") + m_source;
-        offset += QSL("\nInstalled-Size: ") + QString::number(calc_size(root()) / 1000);
+        offset += QSL("\nInstalled-Size: ") + QString::number(filesystem::size(root()) / 1000);
         offset += QSL("\nArchitecture: ") + architecture_name(m_arch);
 
         if (!m_depends.isEmpty())
@@ -123,29 +124,6 @@ QString package::format(const QString &str) const
         offset.replace(PKG_DESC_TITLE, m_desc_title);
         offset.replace(PKG_DESC_BODY, m_desc_body);
         return offset;
-}
-
-qint64 package::calc_size(const QString &_dir)
-{
-        qint64 sizex = 0;
-        QFileInfo str_info(_dir);
-        if (!str_info.isDir()) {
-                return str_info.size();
-        }
-
-        QDir dir(_dir);
-        QFileInfoList list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-        for (int i = 0; i < list.size(); ++i) {
-                QFileInfo fileInfo = list.at(i);
-#ifdef QT_DEBUG
-                qDebug() << fileInfo.absoluteFilePath();
-#endif
-                if(fileInfo.isDir() && fileInfo.baseName() != "DEBIAN")
-                        sizex += calc_size(fileInfo.absoluteFilePath());
-                else if(fileInfo.isFile())
-                        sizex += fileInfo.size();
-        }
-        return sizex;
 }
 
 QString package::architecture_name(const arch_t &arch)

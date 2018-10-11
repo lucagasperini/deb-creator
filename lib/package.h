@@ -2,7 +2,6 @@
 #define PACKAGE_H
 
 #include <QObject>
-#include <QDir>
 
 enum arch_t { error = 0, all = 1, i386 = 2, amd64 = 3 };
 
@@ -40,12 +39,6 @@ public:
          * @return formatted string
          */
         QString format(const QString &str) const;
-        /**
-         * @brief calc_size calculate the size of package directory
-         * @param _dir root directory of the package
-         * @return integer 64 bit of size in byte
-         */
-        static qint64 calc_size(const QString &_dir);
         /**
          * @brief architecture_name get the string for architecture from arch_t
          * @param arch variable of arch_t
