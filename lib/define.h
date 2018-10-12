@@ -28,6 +28,7 @@
 #define PKG_SIZE                QSL(":size")
 #define PKG_ARCH                QSL(":arch")
 #define PKG_DEPEND              QSL(":depend")
+#define PKG_BUILD_DEP           QSL(":build_dep")
 #define PKG_REPLACE             QSL(":replace")
 #define PKG_SECTION             QSL(":section")
 #define PKG_DESC_TITLE          QSL(":title")
@@ -43,6 +44,7 @@
                                 "source TEXT,"                  \
                                 "arch INTEGER,"                 \
                                 "depend TEXT,"                  \
+                                "build_dep TEXT,"               \
                                 "replace TEXT,"                 \
                                 "section TEXT,"                 \
                                 "title TEXT,"                   \
@@ -58,6 +60,7 @@
                                 "source,"                       \
                                 "arch,"                         \
                                 "depend,"                       \
+                                "build_dep,"                    \
                                 "replace,"                      \
                                 "section,"                      \
                                 "title,"                        \
@@ -71,6 +74,7 @@
                                 ":source,"                      \
                                 ":arch,"                        \
                                 ":depend,"                      \
+                                ":build_dep,"                   \
                                 ":replace,"                     \
                                 ":section,"                     \
                                 ":title,"                       \
@@ -85,6 +89,7 @@
                                 "source=:source,"               \
                                 "arch=:arch,"                   \
                                 "depend=:depend,"               \
+                                "build_dep=:build_dep,"         \
                                 "replace=:replace,"             \
                                 "section=:section,"             \
                                 "title=:title,"                 \

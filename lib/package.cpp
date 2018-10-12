@@ -13,6 +13,7 @@ package::package(const package &pkg)
         m_version = pkg.m_version;
         m_arch = pkg.m_arch;
         m_depends = pkg.m_depends;
+        m_build_dep = pkg.m_build_dep;
         m_maintainer = pkg.m_maintainer;
         m_desc_title = pkg.m_desc_title;
         m_desc_body = pkg.m_desc_body;
@@ -49,6 +50,8 @@ package::package(const QString &control)
                         m_arch = package::architecture_value(values.at(i+1));
                 else if(values.at(i) == QSL("Depends"))
                         m_depends = values.at(i+1);
+                else if(values.at(i) == QSL("\nBuild-Depends"))
+                        m_build_dep = values.at(i+1);
                 else if(values.at(i) == QSL("Replace"))
                         m_replace = values.at(i+1);
                 else if(values.at(i) == QSL("Section"))
@@ -84,6 +87,8 @@ QByteArray package::control() const
 
         if (!m_depends.isEmpty())
                 offset += QSL("\nDepends: ") + m_depends;
+        if (!m_build_dep.isEmpty())
+                offset += QSL("\nBuild-Depends: ") + m_build_dep;
 
         offset += QSL("\nReplace: ") + m_replace;
         offset += QSL("\nSection: ") + m_section;
@@ -119,6 +124,7 @@ QString package::format(const QString &str) const
         offset.replace(PKG_SIZE, QString::number(m_size));
         offset.replace(PKG_ARCH, architecture_name(m_arch));
         offset.replace(PKG_DEPEND, m_depends);
+        offset.replace(PKG_BUILD_DEP, m_build_dep);
         offset.replace(PKG_REPLACE, m_replace);
         offset.replace(PKG_SECTION, m_section);
         offset.replace(PKG_DESC_TITLE, m_desc_title);

@@ -57,6 +57,7 @@ public:
         arch_t m_arch;
         qint64 m_size;
         QString m_depends;
+        QString m_build_dep;
         QString m_maintainer;
         QString m_desc_title;
         QString m_desc_body;

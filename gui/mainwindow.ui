@@ -22,7 +22,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_welcome">
        <attribute name="title">
@@ -297,6 +297,26 @@
           </item>
           <item row="0" column="1" colspan="2">
            <widget class="QLineEdit" name="ln_name"/>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="lbl_build_dep">
+            <property name="text">
+             <string>Build Dependency</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="QLineEdit" name="ln_build_dep"/>
+          </item>
+          <item row="8" column="2">
+           <widget class="QPushButton" name="btn_build_dep">
+            <property name="text">
+             <string>Add</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>

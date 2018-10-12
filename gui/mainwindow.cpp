@@ -31,6 +31,7 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->btn_add, &QPushButton::clicked, this, &mainwindow::welcome_add);
         connect(ui->btn_remove, &QPushButton::clicked, this, &mainwindow::welcome_remove);
         connect(ui->btn_dependency, &QPushButton::clicked, this, &mainwindow::depend_show);
+        connect(ui->btn_build_dep, &QPushButton::clicked, this, &mainwindow::depend_build_show);
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &mainwindow::control_generate);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &mainwindow::package_generate);
         connect(ui->btn_clear, &QPushButton::clicked, this, &mainwindow::output_clear);
@@ -72,6 +73,7 @@ void mainwindow::load(const package *pkg)
         ui->ln_version->setText(pkg->m_version);
         ui->cb_arch->setCurrentText(package::architecture_name(pkg->m_arch));
         ui->ln_dependancy->setText(pkg->m_depends);
+        ui->ln_build_dep->setText(pkg->m_build_dep);
         ui->ln_maintainer->setText(pkg->m_maintainer);
         ui->ln_descriptiontitle->setText(pkg->m_desc_title);
         ui->txt_description->setText(pkg->m_desc_body);
@@ -90,6 +92,7 @@ package* mainwindow::save()
         pkg->m_version = ui->ln_version->text();
         pkg->m_arch = package::architecture_value(ui->cb_arch->currentText());
         pkg->m_depends = ui->ln_dependancy->text();
+        pkg->m_build_dep = ui->ln_build_dep->text();
         pkg->m_maintainer = ui->ln_maintainer->text();
         pkg->m_desc_title = ui->ln_descriptiontitle->text();
         pkg->m_desc_body = ui->txt_description->toPlainText();
@@ -136,6 +139,17 @@ void mainwindow::depend_show()
 
         if(ui_dep->exec() == QDialog::Accepted)
                 ui->ln_dependancy->setText(ui_dep->ok());
+}
+
+void mainwindow::depend_build_show()
+{
+        if(ui_dep == nullptr)
+                ui_dep = new depend;
+
+        ui_dep->setup(ui->ln_build_dep->text());
+
+        if(ui_dep->exec() == QDialog::Accepted)
+                ui->ln_build_dep->setText(ui_dep->ok());
 }
 
 void mainwindow::control_generate()

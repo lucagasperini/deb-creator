@@ -39,6 +39,7 @@ private slots:
         void welcome_add();
         void welcome_remove();
         void depend_show();
+        void depend_build_show();
         void output_append(const QString &text);
         void output_clear();
         void package_generate();

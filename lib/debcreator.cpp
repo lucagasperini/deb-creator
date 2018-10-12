@@ -95,6 +95,7 @@ bool debcreator::db_insert()
         query->bindValue(PKG_SOURCE, m_pkg->m_source);
         query->bindValue(PKG_ARCH, m_pkg->m_arch);
         query->bindValue(PKG_DEPEND, m_pkg->m_depends);
+        query->bindValue(PKG_BUILD_DEP, m_pkg->m_build_dep);
         query->bindValue(PKG_REPLACE, m_pkg->m_replace);
         query->bindValue(PKG_SECTION, m_pkg->m_section);
         query->bindValue(PKG_DESC_TITLE, m_pkg->m_desc_title);
@@ -157,6 +158,7 @@ bool debcreator::db_fetch(const QString &pkg)
                 m_pkg->m_source = query->value(query->record().indexOf(QSL("source"))).toString();
                 m_pkg->m_arch = (arch_t)query->value(query->record().indexOf(QSL("arch"))).toInt();
                 m_pkg->m_depends = query->value(query->record().indexOf(QSL("depend"))).toString();
+                m_pkg->m_build_dep = query->value(query->record().indexOf(QSL("build_dep"))).toString();
                 m_pkg->m_replace = query->value(query->record().indexOf(QSL("replace"))).toString();
                 m_pkg->m_section = query->value(query->record().indexOf(QSL("section"))).toString();
                 m_pkg->m_desc_title = query->value(query->record().indexOf(QSL("title"))).toString();
