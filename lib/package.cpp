@@ -93,9 +93,11 @@ QByteArray package::control() const
         offset += QSL("\nReplace: ") + m_replace;
         offset += QSL("\nSection: ") + m_section;
         offset += QSL("\nDescription: ") + m_desc_title;
-        if (m_desc_body != "")
-                offset += QSL("\n             ") + m_desc_body;
-
+        if (!m_desc_body.isEmpty()) {
+                QStringList rows = m_desc_body.split('\n');
+                for(int i = 0; i < rows.size(); i++)
+                        offset += QSL("\n ") + rows.at(i).trimmed();
+        }
         return offset;
 }
 
