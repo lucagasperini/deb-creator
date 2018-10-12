@@ -17,8 +17,6 @@
 #define DEB_CREATOR_SRC         QDir::tempPath() + QSL("/deb-creator/src/")
 #define DEB_CREATOR_PKG         QDir::tempPath() + QSL("/deb-creator/pkg/")
 
-#define APT_SEARCH              QSL("apt-cache search ")
-
 #define PKG_NAME                QSL(":name")
 #define PKG_MAINTAINER          QSL(":maintainer")
 #define PKG_UPLOADER            QSL(":uploader")
