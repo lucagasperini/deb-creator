@@ -210,7 +210,7 @@ void mainwindow::package_generate()
                 return;
         }
 
-        output_append(m_api->pkg_create(control.toUtf8(), outputfile));
+        output_append(m_api->m_pkg->create(control.toUtf8(), outputfile));
 }
 
 void mainwindow::output_append(const QString &text)

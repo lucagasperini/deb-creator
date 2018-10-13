@@ -2,6 +2,8 @@
 #include "define.h"
 #include "filesystem.h"
 
+#include <QProcess>
+
 package::package(QObject *parent) : QObject(parent)
 {
 
@@ -99,6 +101,42 @@ QByteArray package::control() const
                         offset += QSL("\n ") + rows.at(i).trimmed();
         }
         return offset;
+}
+
+QByteArray package::create(const QByteArray& control, const QString &outputfile)
+{
+        QProcess dpkg(this);
+        QTextStream out;
+        QString pkg_root = root();
+        QDir debian_dir(pkg_root + QSL("/DEBIAN"));
+        if(!debian_dir.exists())
+                debian_dir.mkdir(pkg_root + QSL("/DEBIAN"));
+
+        QFile control_file(pkg_root + QSL("/DEBIAN/control"));
+
+        control_file.open(QIODevice::WriteOnly | QIODevice::Text);
+        out.setDevice(&control_file);
+
+        out << control;
+        out << "\n";
+
+        control_file.flush();
+        control_file.close();
+
+        QString cmd = QSL("dpkg -b ") + pkg_root + QSL(" ") + outputfile;
+
+#ifdef QT_DEBUG
+        qDebug() << QSL("Executing: ") << cmd;
+#endif
+
+        dpkg.start(cmd, QIODevice::ReadWrite);
+
+        QByteArray data;
+
+        while(dpkg.waitForReadyRead()) {
+                data.append(dpkg.readAll());
+        }
+        return data;
 }
 
 QString package::outputfile() const

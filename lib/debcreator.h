@@ -18,12 +18,6 @@ public:
          * @param parent default qt parent
          */
         explicit debcreator(QObject *parent = nullptr);
-        /**
-         * @brief package create the package using QProcess to dpkg
-         * @param control is the control text
-         * @param outputfile the path where package is created
-         */
-        QByteArray pkg_create(const QByteArray &control, const QString &outputfile);
 
         multiprocess* m_process;
         package *m_pkg;
