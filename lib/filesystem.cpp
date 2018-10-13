@@ -73,3 +73,20 @@ QByteArray filesystem::file_read(const QString &filename)
         file.close();
         return offset;
 }
+
+void filesystem::debcreator_directory()
+{
+        QDir dir;
+        dir = DEB_CREATOR_LOCAL;
+        if(!dir.exists())
+                dir.mkdir(DEB_CREATOR_LOCAL);
+        dir = DEB_CREATOR_TMP;
+        if(!dir.exists())
+                dir.mkdir(DEB_CREATOR_TMP);
+        dir = DEB_CREATOR_SRC;
+        if(!dir.exists())
+                dir.mkdir(DEB_CREATOR_SRC);
+        dir = DEB_CREATOR_PKG;
+        if(!dir.exists())
+                dir.mkdir(DEB_CREATOR_PKG);
+}

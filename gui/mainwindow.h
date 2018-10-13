@@ -22,7 +22,10 @@ public:
         explicit mainwindow(QWidget *parent = nullptr);
         ~mainwindow();
 
-        debcreator *m_api;
+        package *m_pkg;
+        multiprocess *m_process;
+        changelog *m_changelog;
+        database *m_db;
 
         void load(const package *pkg);
         package *save();

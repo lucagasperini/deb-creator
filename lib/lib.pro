@@ -33,7 +33,6 @@ HEADERS += \
     database.h
 
 SOURCES += \
-    debcreator.cpp \
     multiprocess.cpp \
     apt.cpp \
     package.cpp \

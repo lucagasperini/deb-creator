@@ -16,13 +16,18 @@ using namespace std;
 
 mainwindow::mainwindow(QWidget *parent) :
         QMainWindow(parent),
-        m_api(new debcreator),
         ui(new Ui::mainwindow),
         ui_dep(nullptr),
         ui_about(new about),
         m_model_custom(nullptr),
         m_model_compile(nullptr)
 {
+        m_pkg = new package;
+        m_process = new multiprocess;
+        m_changelog = new changelog(m_pkg);
+        m_db = new database;
+        filesystem::debcreator_directory();
+
         ui->setupUi(this);
 
         ui->tabWidget->setCurrentIndex(TAB_WELCOME);
@@ -57,7 +62,7 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->tree_filesystem, &QTreeView::clicked, this, &mainwindow::custom_load);
         // connect(ui->a_manual) TODO: Add a manual?
 
-        connect(m_api->m_process, &multiprocess::read, this, &mainwindow::output_append);
+        connect(m_process, &multiprocess::read, this, &mainwindow::output_append);
 
         welcome_reload();
 }
@@ -107,7 +112,7 @@ package* mainwindow::save()
 
 void mainwindow::welcome_reload()
 {
-        QStringList list = m_api->m_db->pkg_fetch();
+        QStringList list = m_db->pkg_fetch();
         ui->lsw_welcome->clear();
         ui->lsw_welcome->addItems(list);
 }
@@ -115,18 +120,18 @@ void mainwindow::welcome_reload()
 void mainwindow::welcome_add()
 {
         ui->tabWidget->setCurrentIndex(TAB_CONTROL);
-        if(!m_api->m_pkg->is_empty()) //TODO: Manage multipackaging
+        if(!m_pkg->is_empty()) //TODO: Manage multipackaging
                 return;
 
         package *tmp = new package;
         tmp->m_name = QSL("Empty");
-        m_api->m_pkg = tmp;
+        m_pkg = tmp;
         load(tmp);
 }
 
 void mainwindow::welcome_remove()
 {
-        m_api->m_db->pkg_remove(ui->lsw_welcome->currentItem()->text());
+        m_db->pkg_remove(ui->lsw_welcome->currentItem()->text());
         welcome_reload();
 }
 
@@ -163,40 +168,40 @@ void mainwindow::control_generate()
                 return;
         }
 
-        m_api->m_pkg = save();
+        m_pkg = save();
 
         output_append(QSL("Generating new control file...\n"));
 
-        if(m_api->m_db->pkg_insert(m_api->m_pkg))
+        if(m_db->pkg_insert(m_pkg))
                 output_append(QSL("Added package into database...\n"));
         else
                 output_append(QSL("Failed while adding the package to the database!\n"));
 
-        ui->txt_control->setText(m_api->m_pkg->control());
+        ui->txt_control->setText(m_pkg->control());
 }
 
 void mainwindow::changelog_generate()
 {
-        QByteArray text = m_api->m_changelog->generate(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
+        QByteArray text = m_changelog->generate(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
         ui->txt_changelog->setText(text);
-        m_api->m_changelog->save(text);
+        m_changelog->save(text);
 }
 
 void mainwindow::changelog_refresh()
 {
-        m_api->m_changelog->fetch();
+        m_changelog->fetch();
         ui->lsw_changelog->clear();
-        ui->lsw_changelog->addItems(m_api->m_changelog->titles());
+        ui->lsw_changelog->addItems(m_changelog->titles());
 }
 
 void mainwindow::changelog_change()
 {
-        ui->txt_changelog->setText(m_api->m_changelog->text(ui->lsw_changelog->currentRow()));
+        ui->txt_changelog->setText(m_changelog->text(ui->lsw_changelog->currentRow()));
 }
 
 void mainwindow::package_generate()
 {
-        QString outputfile = QFileDialog::getSaveFileName(this, QSL("Select where save package"), QDir::homePath() + "/" + m_api->m_pkg->outputfile());
+        QString outputfile = QFileDialog::getSaveFileName(this, QSL("Select where save package"), QDir::homePath() + "/" + m_pkg->outputfile());
 
         if(outputfile.isEmpty()) {
                 QMessageBox::warning(this, QSL("Creating Package"), QSL("Output file path cannot be empty!"));
@@ -210,7 +215,7 @@ void mainwindow::package_generate()
                 return;
         }
 
-        output_append(m_api->m_pkg->create(control.toUtf8(), outputfile));
+        output_append(m_pkg->create(control.toUtf8(), outputfile));
 }
 
 void mainwindow::output_append(const QString &text)
@@ -235,7 +240,7 @@ void mainwindow::compile_directory()
 
 void mainwindow::control_database(const QString &str)
 {
-        package* pkg = m_api->m_db->pkg_fetch(str);
+        package* pkg = m_db->pkg_fetch(str);
         if(pkg == nullptr) {
                 ui->txt_output->append(ui->ln_name->text() + QSL(" package didn't find!"));
                 return;
@@ -243,7 +248,7 @@ void mainwindow::control_database(const QString &str)
 
         load(pkg);
         ui->ln_sourcecode->setText(pkg->m_source);
-        m_api->m_pkg = pkg; //REVIEW
+        m_pkg = pkg; //REVIEW
 }
 
 void mainwindow::control_load()
@@ -268,7 +273,7 @@ void mainwindow::compile_refresh()
         if(m_model_compile == nullptr)
                 m_model_compile = new QFileSystemModel;
         git* proc = new git;
-        QString build_dir = m_api->m_pkg->build_dir();
+        QString build_dir = m_pkg->build_dir();
 
         if(dir.isDir())
                 filesystem::cp(dir.absoluteDir().path(), build_dir);
@@ -285,11 +290,11 @@ void mainwindow::compile_refresh()
 
 void mainwindow::compile()
 {
-        if(m_api->m_process->is_empty()) {
+        if(m_process->is_empty()) {
                 QMessageBox::warning(this, QSL("Compile Package"), QSL("Step build are not saved!\nPlease save step build in order to compile source code."));
                 return;
         }
-        m_api->m_process->start();
+        m_process->start();
 }
 
 void mainwindow::build_add()
@@ -300,7 +305,7 @@ void mainwindow::build_add()
         ui->tbl_order->setItem(row, 0, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 1, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 2, new QTableWidgetItem);
-        ui->tbl_order->item(row, 2)->setText(m_api->m_pkg->build_dir());
+        ui->tbl_order->item(row, 2)->setText(m_pkg->build_dir());
 }
 
 void mainwindow::build_remove()
@@ -316,13 +321,13 @@ void mainwindow::build_save()
                 return;
         }
 
-        m_api->m_process->clear();
+        m_process->clear();
         for(int i = 0; i < rows; i++) {
                 QString program = ui->tbl_order->item(i, 0)->text();
                 QString args = ui->tbl_order->item(i, 1)->text();
                 QString working_dir = ui->tbl_order->item(i, 2)->text();
 
-                m_api->m_process->append(program, args.split(" "), working_dir);
+                m_process->append(program, args.split(" "), working_dir);
         }
 }
 
@@ -331,14 +336,14 @@ void mainwindow::custom_refresh()
         if(m_model_custom == nullptr)
                 m_model_custom = new QFileSystemModel;
 
-        m_model_custom->setRootPath(m_api->m_pkg->root()); //+ DEBIAN/ ?
+        m_model_custom->setRootPath(m_pkg->root()); //+ DEBIAN/ ?
         ui->tree_filesystem->setModel(m_model_custom);
-        ui->tree_filesystem->setRootIndex(m_model_custom->index(m_api->m_pkg->root()));
+        ui->tree_filesystem->setRootIndex(m_model_custom->index(m_pkg->root()));
 }
 
 void mainwindow::custom_save()
 {
-        QString filename = QFileDialog::getSaveFileName(this, QSL("Select file name"), m_api->m_pkg->root());
+        QString filename = QFileDialog::getSaveFileName(this, QSL("Select file name"), m_pkg->root());
 
         if(filename.isEmpty()) {
                 QMessageBox::warning(this, QSL("Custom File"), QSL("File name cannot be empty!"));

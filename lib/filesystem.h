@@ -28,6 +28,7 @@ public:
          * @return data from target file
          */
         static QByteArray file_read(const QString &filename);
+        static void debcreator_directory();
 };
 
 #endif // FILESYSTEM_H
