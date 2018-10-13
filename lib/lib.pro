@@ -29,7 +29,8 @@ HEADERS += \
     package.h \
     changelog.h \
     git.h \
-    filesystem.h
+    filesystem.h \
+    database.h
 
 SOURCES += \
     debcreator.cpp \
@@ -38,7 +39,8 @@ SOURCES += \
     package.cpp \
     changelog.cpp \
     git.cpp \
-    filesystem.cpp
+    filesystem.cpp \
+    database.cpp
 
 #LIBS += -L/usr/lib/x86_64-linux-gnu/ -lapt-pkg
 

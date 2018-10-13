@@ -107,7 +107,7 @@ package* mainwindow::save()
 
 void mainwindow::welcome_reload()
 {
-        QStringList list = m_api->db_fetch();
+        QStringList list = m_api->m_db->pkg_fetch();
         ui->lsw_welcome->clear();
         ui->lsw_welcome->addItems(list);
 }
@@ -126,7 +126,7 @@ void mainwindow::welcome_add()
 
 void mainwindow::welcome_remove()
 {
-        m_api->db_remove(ui->lsw_welcome->currentItem()->text());
+        m_api->m_db->pkg_remove(ui->lsw_welcome->currentItem()->text());
         welcome_reload();
 }
 
@@ -167,7 +167,7 @@ void mainwindow::control_generate()
 
         output_append(QSL("Generating new control file...\n"));
 
-        if(m_api->db_insert())
+        if(m_api->m_db->pkg_insert(m_api->m_pkg))
                 output_append(QSL("Added package into database...\n"));
         else
                 output_append(QSL("Failed while adding the package to the database!\n"));
@@ -234,15 +234,17 @@ void mainwindow::compile_directory()
         ui->ln_sourcecode->setText(dir.absolutePath() + QSL("/"));
 }
 
-void mainwindow::control_database(const QString &package)
+void mainwindow::control_database(const QString &str)
 {
-        if(!m_api->db_fetch(package)) {
+        package* pkg = m_api->m_db->pkg_fetch(str);
+        if(pkg == nullptr) {
                 ui->txt_output->append(ui->ln_name->text() + QSL(" package didn't find!"));
                 return;
         }
 
-        load(m_api->m_pkg);
-        ui->ln_sourcecode->setText(m_api->m_pkg->m_source);
+        load(pkg);
+        ui->ln_sourcecode->setText(pkg->m_source);
+        m_api->m_pkg = pkg; //REVIEW
 }
 
 void mainwindow::control_load()
