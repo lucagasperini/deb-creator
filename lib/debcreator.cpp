@@ -62,11 +62,6 @@ QByteArray debcreator::pkg_create(const QByteArray& control, const QString &outp
         return data;
 }
 
-QString debcreator::build_dir()
-{
-        return DEB_CREATOR_SRC + m_pkg->m_name;
-}
-
 bool debcreator::file_write(const QString &filename, const QString &data)
 {
         QFile file(filename);

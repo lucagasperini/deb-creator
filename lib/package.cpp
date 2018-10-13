@@ -114,6 +114,11 @@ QString package::root() const
         return dir.path();
 }
 
+QString package::build_dir()
+{
+        return DEB_CREATOR_SRC + m_name;
+}
+
 QString package::format(const QString &str) const
 {
         QString offset = str;

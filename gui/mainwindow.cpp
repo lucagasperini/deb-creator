@@ -269,7 +269,7 @@ void mainwindow::compile_refresh()
         if(m_model_compile == nullptr)
                 m_model_compile = new QFileSystemModel;
         git* proc = new git;
-        QString build_dir = m_api->build_dir();
+        QString build_dir = m_api->m_pkg->build_dir();
 
         if(dir.isDir())
                 filesystem::cp(dir.absoluteDir().path(), build_dir);
@@ -301,7 +301,7 @@ void mainwindow::build_add()
         ui->tbl_order->setItem(row, 0, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 1, new QTableWidgetItem);
         ui->tbl_order->setItem(row, 2, new QTableWidgetItem);
-        ui->tbl_order->item(row, 2)->setText(m_api->build_dir());
+        ui->tbl_order->item(row, 2)->setText(m_api->m_pkg->build_dir());
 }
 
 void mainwindow::build_remove()

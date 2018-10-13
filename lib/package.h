@@ -34,6 +34,11 @@ public:
          */
         QString root() const;
         /**
+         * @brief build_dir current build directory for stored package
+         * @return string of build directory path
+         */
+        QString build_dir();
+        /**
          * @brief format generate a formatted string
          * @param str core string using PKG_* definitions
          * @return formatted string

@@ -25,11 +25,6 @@ public:
          */
         QByteArray pkg_create(const QByteArray &control, const QString &outputfile);
         /**
-         * @brief build_dir current build directory for stored package
-         * @return string of build directory path
-         */
-        QString build_dir();
-        /**
          * @brief file_write write data in selected filename
          * @param filename target file
          * @param data binary data to write
