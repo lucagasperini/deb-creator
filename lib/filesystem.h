@@ -15,10 +15,19 @@ public:
          */
         static qint64 size(const QString &_dir);
         static void cp(const QString &src, const QString &dest);
-
-signals:
-
-public slots:
+        /**
+         * @brief file_write write data in selected filename
+         * @param filename target file
+         * @param data binary data to write
+         * @return if cannot write in target file it will return false, otherwise true
+         */
+        static bool file_write(const QString &filename, const QString &data);
+        /**
+         * @brief file_read read binary data from target file
+         * @param filename file where data is stored
+         * @return data from target file
+         */
+        static QByteArray file_read(const QString &filename);
 };
 
 #endif // FILESYSTEM_H

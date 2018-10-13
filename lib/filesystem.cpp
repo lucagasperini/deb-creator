@@ -45,3 +45,31 @@ void filesystem::cp(const QString &src, const QString &dest)
                 cp(fileInfo.absoluteFilePath(), fileInfo.absoluteFilePath().replace(src, dest));
         }
 }
+
+bool filesystem::file_write(const QString &filename, const QString &data)
+{
+        QFile file(filename);
+
+        if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+                return false;
+        }
+        file.write(data.toUtf8());
+
+        file.flush();
+        file.close();
+        return true;
+}
+
+QByteArray filesystem::file_read(const QString &filename)
+{
+        QByteArray offset;
+        QFile file(filename);
+
+        if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                return offset;
+        }
+
+        offset = file.readAll();
+        file.close();
+        return offset;
+}

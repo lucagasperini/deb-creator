@@ -61,31 +61,3 @@ QByteArray debcreator::pkg_create(const QByteArray& control, const QString &outp
         }
         return data;
 }
-
-bool debcreator::file_write(const QString &filename, const QString &data)
-{
-        QFile file(filename);
-
-        if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-                return false;
-        }
-        file.write(data.toUtf8());
-
-        file.flush();
-        file.close();
-        return true;
-}
-
-QByteArray debcreator::file_read(const QString &filename)
-{
-        QByteArray offset;
-        QFile file(filename);
-
-        if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-                return offset;
-        }
-
-        offset = file.readAll();
-        file.close();
-        return offset;
-}

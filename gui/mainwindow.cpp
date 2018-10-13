@@ -187,7 +187,6 @@ void mainwindow::changelog_refresh()
         m_api->m_changelog->fetch();
         ui->lsw_changelog->clear();
         ui->lsw_changelog->addItems(m_api->m_changelog->titles());
-
 }
 
 void mainwindow::changelog_change()
@@ -254,7 +253,7 @@ void mainwindow::control_load()
                 QMessageBox::warning(this, QSL("Control File"), QSL("File name cannot be empty!"));
                 return;
         }
-        package *tmp = new package(debcreator::file_read(filename));
+        package *tmp = new package(filesystem::file_read(filename));
         load(tmp);
 }
 
@@ -346,13 +345,13 @@ void mainwindow::custom_save()
                 return;
         }
 
-        debcreator::file_write(filename, ui->txt_code->toPlainText());
+        filesystem::file_write(filename, ui->txt_code->toPlainText());
 }
 
 
 void mainwindow::custom_load(const QModelIndex &a)
 {
         QString filename = m_model_custom->filePath(a);
-        QByteArray text = debcreator::file_read(filename);
+        QByteArray text = filesystem::file_read(filename);
         ui->txt_code->setText(text);
 }
