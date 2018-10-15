@@ -13,6 +13,7 @@ public:
         explicit package(const package &pkg);
         explicit package(const QString &control);
 
+        void copy(const package &pkg);
         /**
          * @brief is_empty check if the package is empty
          * @return if package is empty will return true, otherwise false

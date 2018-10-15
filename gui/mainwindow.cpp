@@ -72,42 +72,40 @@ mainwindow::~mainwindow()
         delete ui;
 }
 
-void mainwindow::load(const package *pkg)
+void mainwindow::load()
 {
-        ui->ln_name->setText(pkg->m_name);
-        ui->ln_version->setText(pkg->m_version);
-        ui->cb_arch->setCurrentText(package::architecture_name(pkg->m_arch));
-        ui->ln_dependancy->setText(pkg->m_depends);
-        ui->ln_build_dep->setText(pkg->m_build_dep);
-        ui->ln_maintainer->setText(pkg->m_maintainer);
-        ui->ln_descriptiontitle->setText(pkg->m_desc_title);
-        ui->txt_description->setText(pkg->m_desc_body);
-        ui->ln_homepage->setText(pkg->m_homepage);
-        ui->ln_replace->setText(pkg->m_replace);
-        ui->ln_section->setText(pkg->m_section);
-        ui->ln_source->setText(pkg->m_source);
-        ui->ln_uploaders->setText(pkg->m_uploaders);
+        ui->ln_name->setText(m_pkg->m_name);
+        ui->ln_version->setText(m_pkg->m_version);
+        ui->cb_arch->setCurrentText(package::architecture_name(m_pkg->m_arch));
+        ui->ln_dependancy->setText(m_pkg->m_depends);
+        ui->ln_build_dep->setText(m_pkg->m_build_dep);
+        ui->ln_maintainer->setText(m_pkg->m_maintainer);
+        ui->ln_descriptiontitle->setText(m_pkg->m_desc_title);
+        ui->txt_description->setText(m_pkg->m_desc_body);
+        ui->ln_homepage->setText(m_pkg->m_homepage);
+        ui->ln_replace->setText(m_pkg->m_replace);
+        ui->ln_section->setText(m_pkg->m_section);
+        ui->ln_source->setText(m_pkg->m_source);
+        ui->ln_uploaders->setText(m_pkg->m_uploaders);
+
+        ui->ln_sourcecode->setText(m_pkg->m_source);
 }
 
-package* mainwindow::save()
+void mainwindow::save()
 {
-        package *pkg = new package;
-
-        pkg->m_name = ui->ln_name->text();
-        pkg->m_version = ui->ln_version->text();
-        pkg->m_arch = package::architecture_value(ui->cb_arch->currentText());
-        pkg->m_depends = ui->ln_dependancy->text();
-        pkg->m_build_dep = ui->ln_build_dep->text();
-        pkg->m_maintainer = ui->ln_maintainer->text();
-        pkg->m_desc_title = ui->ln_descriptiontitle->text();
-        pkg->m_desc_body = ui->txt_description->toPlainText();
-        pkg->m_homepage = ui->ln_homepage->text();
-        pkg->m_replace = ui->ln_replace->text();
-        pkg->m_section = ui->ln_section->text();
-        pkg->m_source = ui->ln_source->text();
-        pkg->m_uploaders = ui->ln_uploaders->text();
-
-        return pkg;
+        m_pkg->m_name = ui->ln_name->text();
+        m_pkg->m_version = ui->ln_version->text();
+        m_pkg->m_arch = package::architecture_value(ui->cb_arch->currentText());
+        m_pkg->m_depends = ui->ln_dependancy->text();
+        m_pkg->m_build_dep = ui->ln_build_dep->text();
+        m_pkg->m_maintainer = ui->ln_maintainer->text();
+        m_pkg->m_desc_title = ui->ln_descriptiontitle->text();
+        m_pkg->m_desc_body = ui->txt_description->toPlainText();
+        m_pkg->m_homepage = ui->ln_homepage->text();
+        m_pkg->m_replace = ui->ln_replace->text();
+        m_pkg->m_section = ui->ln_section->text();
+        m_pkg->m_source = ui->ln_source->text();
+        m_pkg->m_uploaders = ui->ln_uploaders->text();
 }
 
 void mainwindow::welcome_reload()
@@ -123,10 +121,8 @@ void mainwindow::welcome_add()
         if(!m_pkg->is_empty()) //TODO: Manage multipackaging
                 return;
 
-        package *tmp = new package;
-        tmp->m_name = QSL("Empty");
-        m_pkg = tmp;
-        load(tmp);
+        m_pkg->m_name = QSL("Empty");
+        load();
 }
 
 void mainwindow::welcome_remove()
@@ -168,7 +164,7 @@ void mainwindow::control_generate()
                 return;
         }
 
-        m_pkg = save();
+        save();
 
         output_append(QSL("Generating new control file...\n"));
 
@@ -240,15 +236,14 @@ void mainwindow::compile_directory()
 
 void mainwindow::control_database(const QString &str)
 {
-        package* pkg = m_db->pkg_fetch(str);
-        if(pkg == nullptr) {
-                ui->txt_output->append(ui->ln_name->text() + QSL(" package didn't find!"));
+        package* tmp = m_db->pkg_fetch(str);
+        if(tmp == nullptr || tmp->is_empty()) {
+                ui->txt_output->append(str + QSL(" package didn't find!"));
                 return;
         }
 
-        load(pkg);
-        ui->ln_sourcecode->setText(pkg->m_source);
-        m_pkg = pkg; //REVIEW
+        m_pkg->copy(*tmp);
+        load();
 }
 
 void mainwindow::control_load()
@@ -259,7 +254,12 @@ void mainwindow::control_load()
                 return;
         }
         package *tmp = new package(filesystem::file_read(filename));
-        load(tmp);
+        if(tmp == nullptr || tmp->is_empty()) {
+                ui->txt_output->append(filename + QSL(" control file is not valid!"));
+                return;
+        }
+        m_pkg->copy(*tmp);
+        load();
 }
 
 void mainwindow::compile_refresh()

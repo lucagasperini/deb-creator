@@ -27,8 +27,8 @@ public:
         changelog *m_changelog;
         database *m_db;
 
-        void load(const package *pkg);
-        package *save();
+        void load();
+        void save();
 private:
         Ui::mainwindow *ui;
         depend* ui_dep;

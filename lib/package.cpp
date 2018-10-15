@@ -11,19 +11,7 @@ package::package(QObject *parent) : QObject(parent)
 
 package::package(const package &pkg)
 {
-        m_name = pkg.m_name;
-        m_version = pkg.m_version;
-        m_arch = pkg.m_arch;
-        m_depends = pkg.m_depends;
-        m_build_dep = pkg.m_build_dep;
-        m_maintainer = pkg.m_maintainer;
-        m_desc_title = pkg.m_desc_title;
-        m_desc_body = pkg.m_desc_body;
-        m_homepage = pkg.m_homepage;
-        m_uploaders = pkg.m_uploaders;
-        m_section = pkg.m_section;
-        m_source = pkg.m_source;
-        m_replace = pkg.m_replace;
+        copy(pkg);
 }
 
 package::package(const QString &control)
@@ -67,6 +55,23 @@ package::package(const QString &control)
                 }
         }
 
+}
+
+void package::copy(const package &pkg)
+{
+        m_name = pkg.m_name;
+        m_version = pkg.m_version;
+        m_arch = pkg.m_arch;
+        m_depends = pkg.m_depends;
+        m_build_dep = pkg.m_build_dep;
+        m_maintainer = pkg.m_maintainer;
+        m_desc_title = pkg.m_desc_title;
+        m_desc_body = pkg.m_desc_body;
+        m_homepage = pkg.m_homepage;
+        m_uploaders = pkg.m_uploaders;
+        m_section = pkg.m_section;
+        m_source = pkg.m_source;
+        m_replace = pkg.m_replace;
 }
 
 bool package::is_empty() const
