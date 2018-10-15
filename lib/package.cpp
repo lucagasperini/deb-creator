@@ -117,16 +117,7 @@ QByteArray package::create(const QByteArray& control, const QString &outputfile)
         if(!debian_dir.exists())
                 debian_dir.mkdir(pkg_root + QSL("/DEBIAN"));
 
-        QFile control_file(pkg_root + QSL("/DEBIAN/control"));
-
-        control_file.open(QIODevice::WriteOnly | QIODevice::Text);
-        out.setDevice(&control_file);
-
-        out << control;
-        out << "\n";
-
-        control_file.flush();
-        control_file.close();
+        filesystem::file_write(pkg_root + QSL("/DEBIAN/control"), control);
 
         QString cmd = QSL("dpkg -b ") + pkg_root + QSL(" ") + outputfile;
 

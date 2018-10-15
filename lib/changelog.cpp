@@ -1,6 +1,7 @@
 ﻿#include "changelog.h"
 #include "define.h"
 #include "git.h"
+#include "filesystem.h"
 
 #include <QDateTime>
 
@@ -53,17 +54,7 @@ void changelog::save(const QByteArray &text)
 {
         if(text.isEmpty())
                 return;
-        QString pkg_root = m_pkg->root();
-        QFile changelog_file(pkg_root + QSL("/DEBIAN/changelog"));
-
-        if(!changelog_file.open(QIODevice::Append | QIODevice::Text))
-                return;
-
-        changelog_file.write(text);
-        changelog_file.write("\n");
-
-        changelog_file.flush();
-        changelog_file.close();
+        filesystem::file_write(m_pkg->root() + QSL("/DEBIAN/changelog"), text);
 }
 
 void changelog::clear()
