@@ -11,6 +11,8 @@
 
 #define QSL(t) QStringLiteral(t)
 
+#define SYS_PROGRAM_DIR         QSL("/usr/bin/")
+
 #define DEB_CREATOR_LOCAL       QDir::homePath() + QSL("/.local/share/deb-creator/")
 #define DEB_CREATOR_DB          QDir::homePath() + QSL("/.local/share/deb-creator/deb-creator.db")
 #define DEB_CREATOR_TMP         QDir::tempPath() + QSL("/deb-creator/")

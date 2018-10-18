@@ -8,6 +8,7 @@
 
 #include "about.h"
 #include "depend.h"
+#include "build_editor.h"
 
 namespace Ui
 {

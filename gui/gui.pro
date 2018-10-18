@@ -28,18 +28,21 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     depend.cpp \
-    depend_add.cpp
+    depend_add.cpp \
+    build_editor.cpp
 
 HEADERS += \
         mainwindow.h \
         about.h \
     depend.h \
-    depend_add.h
+    depend_add.h \
+    build_editor.h
 
 FORMS += \
         mainwindow.ui \
     depend.ui \
-    depend_add.ui
+    depend_add.ui \
+    build_editor.ui
 
 unix|win32: LIBS += -L$$OUT_PWD/../lib/ -ldebcreator
 

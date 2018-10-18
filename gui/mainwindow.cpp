@@ -301,11 +301,16 @@ void mainwindow::build_add()
 {
         const int row = ui->tbl_order->rowCount();
 
+        build_editor *editor = new build_editor(m_pkg->build_dir(), this);
+        if(editor->exec() == QDialog::Rejected)
+                return;
+
+        editor->ok();
+
         ui->tbl_order->insertRow(row);
-        ui->tbl_order->setItem(row, 0, new QTableWidgetItem);
-        ui->tbl_order->setItem(row, 1, new QTableWidgetItem);
-        ui->tbl_order->setItem(row, 2, new QTableWidgetItem);
-        ui->tbl_order->item(row, 2)->setText(m_pkg->build_dir());
+        ui->tbl_order->setItem(row, 0, new QTableWidgetItem(editor->program));
+        ui->tbl_order->setItem(row, 1, new QTableWidgetItem(editor->args));
+        ui->tbl_order->setItem(row, 2, new QTableWidgetItem(editor->working_dir));
 }
 
 void mainwindow::build_remove()
