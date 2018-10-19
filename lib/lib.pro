@@ -30,7 +30,8 @@ HEADERS += \
     changelog.h \
     git.h \
     filesystem.h \
-    database.h
+    database.h \
+    build_step.h
 
 SOURCES += \
     multiprocess.cpp \
@@ -39,7 +40,8 @@ SOURCES += \
     changelog.cpp \
     git.cpp \
     filesystem.cpp \
-    database.cpp
+    database.cpp \
+    build_step.cpp
 
 #LIBS += -L/usr/lib/x86_64-linux-gnu/ -lapt-pkg
 

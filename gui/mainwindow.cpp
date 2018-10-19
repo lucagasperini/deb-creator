@@ -301,7 +301,7 @@ void mainwindow::build_add()
 {
         const int row = ui->tbl_order->rowCount();
 
-        build_editor *editor = new build_editor(m_pkg->build_dir(), this);
+        build_editor *editor = new build_editor(m_db->build_fetch(m_pkg->m_name), m_pkg->build_dir(), this);
         if(editor->exec() == QDialog::Rejected)
                 return;
 
@@ -328,11 +328,13 @@ void mainwindow::build_save()
 
         m_process->clear();
         for(int i = 0; i < rows; i++) {
-                QString program = ui->tbl_order->item(i, 0)->text();
-                QString args = ui->tbl_order->item(i, 1)->text();
-                QString working_dir = ui->tbl_order->item(i, 2)->text();
+                build_step step;
+                step.program = ui->tbl_order->item(i, 0)->text();
+                step.argument = ui->tbl_order->item(i, 1)->text();
+                step.directory = ui->tbl_order->item(i, 2)->text();
 
-                m_process->append(program, args.split(" "), working_dir);
+                m_process->append(step);
+                m_db->build_insert(m_pkg->m_name, step);
         }
 }
 

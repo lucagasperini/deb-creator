@@ -154,3 +154,106 @@ bool database::pkg_remove(const QString &pkg)
         }
         return true;
 }
+
+
+bool database::build_insert(const QString &pkg, const build_step &step)
+{
+        QSqlQuery* query = new QSqlQuery(*m_db);
+
+        if(!m_db->tables().contains(DB_BUILD_TABLE))
+                if(!query->exec(DB_BUILD_CREATE))
+                        return false;
+
+        if(!build_exists(pkg, step))
+                query->prepare(DB_BUILD_INSERT);
+        else
+                query->prepare(DB_BUILD_UPDATE); /* FIXME: DIDN'T WORK */
+
+        query->bindValue(BUILD_PROGRAM, step.program);
+        query->bindValue(BUILD_ARG, step.argument);
+        query->bindValue(BUILD_DIR, step.directory);
+        query->bindValue(BUILD_PKG, pkg);
+
+        bool offset = query->exec();
+
+#ifdef QT_DEBUG
+        if(!offset)
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+        query->finish();
+        return offset;
+}
+
+QList<build_step*>* database::build_fetch(const QString &pkg)
+{
+        QList<build_step*>* offset = nullptr;
+        QSqlQuery* query = new QSqlQuery(*m_db);
+
+        query->prepare(QSL("SELECT * FROM build WHERE pkg=:pkg"));
+        query->bindValue(BUILD_PKG, pkg);
+
+        if(!query->exec()) {
+#ifdef QT_DEBUG
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+                query->finish();
+                return offset;
+        }
+
+        offset = new QList<build_step*>;
+        build_step *buffer;
+
+
+        while (query->next()) {
+                buffer = new build_step;
+                buffer->program = query->value(query->record().indexOf(QSL("program"))).toString();
+                buffer->argument = query->value(query->record().indexOf(QSL("argument"))).toString();
+                buffer->directory = query->value(query->record().indexOf(QSL("directory"))).toString();
+                offset->append(buffer);
+        }
+
+        query->finish();
+        return offset;
+}
+
+bool database::build_exists(const QString &pkg, const build_step &step)
+{
+        QSqlQuery* query = new QSqlQuery(*m_db);
+
+        query->prepare(QSL("SELECT EXISTS(SELECT 1 FROM build WHERE program=:program AND argument=:argument AND directory=:directory AND pkg=:pkg)"));
+        query->bindValue(BUILD_PROGRAM, step.program);
+        query->bindValue(BUILD_ARG, step.argument);
+        query->bindValue(BUILD_DIR, step.directory);
+        query->bindValue(BUILD_PKG, pkg);
+
+        if(!query->exec()) {
+#ifdef QT_DEBUG
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+                query->finish();
+                return false;
+        }
+
+        if(query->next())
+                return query->value(0).toBool();
+}
+
+bool database::build_remove(const QString &pkg, const build_step &step)
+{
+        QSqlQuery* query = new QSqlQuery(*m_db);
+
+        query->prepare(QSL("DELETE FROM build WHERE program=:program AND argument=:argument AND directory=:directory AND pkg=:pkg"));
+        query->bindValue(BUILD_PROGRAM, step.program);
+        query->bindValue(BUILD_ARG, step.argument);
+        query->bindValue(BUILD_DIR, step.directory);
+        query->bindValue(BUILD_PKG, pkg);
+
+        if(!query->exec()) {
+#ifdef QT_DEBUG
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+                query->finish();
+                return false;
+        }
+        return true;
+}

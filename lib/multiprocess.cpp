@@ -3,55 +3,31 @@
 
 multiprocess::multiprocess(QObject *parent) : QThread(parent)
 {
-        m_pro = new QList<QProcess*>;
+        m_pro = new QList<build_step*>;
 }
 
 void multiprocess::run()
 {
-        QProcess* buffer = nullptr;
-
+        QProcess buffer;
         for(int i = 0; i < m_pro->size(); i++) {
-                buffer = m_pro->at(i);
-                if(buffer == nullptr)
-                        return;
+                buffer.setProgram(m_pro->at(i)->program);
+                buffer.setArguments(m_pro->at(i)->argument.split(' '));
+                buffer.setWorkingDirectory(m_pro->at(i)->directory);
 #ifdef QT_DEBUG
-                qDebug() << QSL("Executing:") << buffer->program() << buffer->arguments() << buffer->workingDirectory();
+                qDebug() << QSL("Executing:") << buffer.program() << buffer.arguments() << buffer.workingDirectory();
 #endif
-                buffer->start(QIODevice::ReadWrite);
-                while(buffer->waitForReadyRead()) {
-                        emit read(buffer->readAll());
+                buffer.start(QIODevice::ReadWrite);
+                while(buffer.waitForReadyRead()) {
+                        emit read(buffer.readAll());
                 }
 
-                buffer->waitForFinished();
+                buffer.waitForFinished();
         }
 }
 
-void multiprocess::append(const QString &program)
+void multiprocess::append(const build_step &step)
 {
-        QProcess* step = new QProcess;
-        step->setProgram(program);
-        m_pro->append(step);
-}
-
-void multiprocess::append(const QString &program, const QStringList &args)
-{
-        QProcess* step = new QProcess;
-        step->setProgram(program);
-        step->setArguments(args);
-        m_pro->append(step);
-}
-
-void multiprocess::append(const QString &program, const QStringList &args, const QString &working_dir)
-{
-        QProcess* step = new QProcess;
-        step->setProgram(program);
-        step->setArguments(args);
-        if(working_dir.isEmpty())
-                step->setWorkingDirectory(DEB_CREATOR_TMP);
-        else
-                step->setWorkingDirectory(working_dir);
-
-        m_pro->append(step);
+        m_pro->append(new build_step(step));
 }
 
 void multiprocess::clear()

@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QProcess>
 #include <QTextStream>
+#include <build_step.h>
 
 class multiprocess : public QThread
 {
@@ -18,20 +19,7 @@ public:
          * @brief append add a process in bottom list
          * @param program path of the program
          */
-        void append(const QString &program);
-        /**
-         * @brief append add a process in bottom list
-         * @param program path of the program
-         * @param args arguments of the program
-         */
-        void append(const QString &program, const QStringList &args);
-        /**
-         * @brief append add a process in bottom list
-         * @param program path of the program
-         * @param args arguments of the program
-         * @param working_dir directory where execute the process
-         */
-        void append(const QString &program, const QStringList &args, const QString &working_dir);
+        void append(const build_step &step);
         /**
          * @brief clear erase process into the list
          */
@@ -44,7 +32,7 @@ public:
 signals:
         void read(const QByteArray &text);
 private:
-        QList<QProcess*> *m_pro;
+        QList<build_step*> *m_pro;
 };
 
 #endif // MULTIPROCESS_H

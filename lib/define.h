@@ -34,6 +34,13 @@
 #define PKG_DESC_TITLE          QSL(":title")
 #define PKG_DESC_BODY           QSL(":body")
 
+#define BUILD_ID                QSL(":id")
+#define BUILD_PROGRAM           QSL(":program")
+#define BUILD_ARG               QSL(":argument")
+#define BUILD_DIR               QSL(":directory")
+#define BUILD_PKG               QSL(":pkg")
+
+
 #define DB_PACKAGE_TABLE QSL("package")
 #define DB_PACKAGE_CREATE QSL("CREATE TABLE package("           \
                                 "name TEXT PRIMARY KEY,"        \
@@ -96,5 +103,33 @@
                                 "body=:body"                    \
                                 " WHERE name=:name;")
 
+#define DB_BUILD_TABLE QSL("build")
+
+#define DB_BUILD_CREATE QSL("CREATE TABLE build("               \
+                                "id INTEGER PRIMARY KEY,"       \
+                                "program TEXT,"                 \
+                                "argument TEXT,"                \
+                                "directory TEXT,"               \
+                                "pkg TEXT"                      \
+                                ");")
+
+#define DB_BUILD_INSERT QSL("INSERT INTO build ("               \
+                                "program,"                      \
+                                "argument,"                     \
+                                "directory,"                    \
+                                "pkg"                           \
+                                ") VALUES ("                    \
+                                ":program,"                     \
+                                ":argument,"                    \
+                                ":directory,"                   \
+                                ":pkg"                          \
+                                ");")
+
+#define DB_BUILD_UPDATE QSL("UPDATE build SET "                 \
+                                "program=:program,"             \
+                                "argument=:argument,"           \
+                                "directory=:directory,"         \
+                                "pkg=:pkg,"                     \
+                                " WHERE id=:id;")
 
 #endif // DEFINE_H
