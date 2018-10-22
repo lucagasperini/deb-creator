@@ -6,6 +6,8 @@
 
 QT       += core sql
 
+QT       -= gui
+
 TEMPLATE = lib
 
 TARGET = debcreator
