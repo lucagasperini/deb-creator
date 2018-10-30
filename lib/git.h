@@ -18,6 +18,7 @@ public:
         /**
          * @brief git_clone fetch git repo in default directory
          * @param url repo git
+         * @param directory is the name of the directory to clone from
          * @return directory of files stored
          */
         QString clone(const QUrl &url, const QString &directory = "");
