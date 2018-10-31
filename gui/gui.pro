@@ -44,6 +44,13 @@ FORMS += \
     depend_add.ui \
     build_editor.ui
 
+icon.path = /usr/share/pixmaps/debcreator.png
+icon.files = /resource/logo.png
+desktop.path = /usr/share/applications/
+desktop.files = /system/debcreator.desktop
+
+INSTALLS += icon desktop
+
 unix|win32: LIBS += -L$$OUT_PWD/../lib/ -ldebcreator
 
 INCLUDEPATH += $$PWD/../lib

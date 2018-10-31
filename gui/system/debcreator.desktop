@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Debcreator
+GenericName=Debcreator
+Comment=Debcreator is an Debian package editor
+Exec=debcreator
+Icon=/usr/share/pixmaps/debcreator.png
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=System;Application
