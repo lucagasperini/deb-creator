@@ -16,6 +16,7 @@ public:
 
         /**
          * @brief pkg_insert insert into the database all variables
+         * @param pkg is the package to insert
          * @return if insert routine it's ok will return true otherwise false
          */
         bool pkg_insert(const package *pkg);
@@ -44,6 +45,8 @@ public:
         bool pkg_remove(const QString &pkg);
         /**
          * @brief build_insert insert into the database all variables
+         * @param pkg is the name of the package to insert
+         * @param step is the build_step to insert
          * @return if insert routine it's ok will return true otherwise false
          */
         bool build_insert(const QString &pkg, const build_step &step);
