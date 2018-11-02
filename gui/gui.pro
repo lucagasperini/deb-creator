@@ -45,7 +45,7 @@ FORMS += \
     build_editor.ui
 
 target.path = /usr/bin/
-icon.path = /usr/share/pixmaps/debcreator.png
+icon.path = /usr/share/pixmaps/debcreator.png/
 icon.files = $$PWD/resource/debcreator.png
 desktop.path = /usr/share/applications/
 desktop.files = $$PWD/system/debcreator.desktop
