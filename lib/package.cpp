@@ -3,6 +3,7 @@
 #include "filesystem.h"
 
 #include <QProcess>
+#include <QTextStream>
 
 package::package(QObject *parent) : QObject(parent)
 {
