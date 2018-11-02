@@ -5,6 +5,8 @@
 #include <QtSql/QSqlDriver>
 #include <QtSql/QSqlRecord>
 
+#include <QVariant>
+
 #ifdef QT_DEBUG
 #include <QtSql/QSqlError>
 #endif
