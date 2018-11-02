@@ -46,9 +46,9 @@ FORMS += \
 
 target.path = /usr/bin/
 icon.path = /usr/share/pixmaps/debcreator.png
-icon.files = /resource/logo.png
+icon.files = $$PWD/resource/logo.png
 desktop.path = /usr/share/applications/
-desktop.files = /system/debcreator.desktop
+desktop.files = $$PWD/system/debcreator.desktop
 
 INSTALLS += target icon desktop
 
