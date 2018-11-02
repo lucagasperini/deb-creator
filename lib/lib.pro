@@ -45,7 +45,6 @@ SOURCES += \
     database.cpp \
     build_step.cpp
 
-#LIBS += -L/usr/lib/x86_64-linux-gnu/ -lapt-pkg
+target.path = /usr/lib/
 
-#INCLUDEPATH += /usr/include/apt-pkg
-#DEPENDPATH += /usr/include/apt-pkg
+INSTALLS += target
