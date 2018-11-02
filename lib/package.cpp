@@ -85,11 +85,17 @@ QByteArray package::control() const
         QByteArray offset;
 
         offset += QSL("Package: ") + m_name;
-        offset += QSL("\nMaintainer: ") + m_maintainer;
-        offset += QSL("\nUploaders: ") + m_uploaders;
-        offset += QSL("\nVersion: ") + m_version;
-        offset += QSL("\nHomepage: ") + m_homepage;
-        offset += QSL("\nSource: ") + m_source;
+        if(!m_maintainer.isEmpty())
+                offset += QSL("\nMaintainer: ") + m_maintainer;
+        if(!m_uploaders.isEmpty())
+                offset += QSL("\nUploaders: ") + m_uploaders;
+        if(!m_version.isEmpty())
+                offset += QSL("\nVersion: ") + m_version;
+        if(!m_homepage.isEmpty())
+                offset += QSL("\nHomepage: ") + m_homepage;
+        if(!m_source.isEmpty())
+                offset += QSL("\nSource: ") + m_source;
+
         offset += QSL("\nInstalled-Size: ") + QString::number(filesystem::size(root()) / 1000);
         offset += QSL("\nArchitecture: ") + architecture_name(m_arch);
 
@@ -97,14 +103,16 @@ QByteArray package::control() const
                 offset += QSL("\nDepends: ") + m_depends;
         if (!m_build_dep.isEmpty())
                 offset += QSL("\nBuild-Depends: ") + m_build_dep;
-
-        offset += QSL("\nReplace: ") + m_replace;
-        offset += QSL("\nSection: ") + m_section;
-        offset += QSL("\nDescription: ") + m_desc_title;
+        if(!m_replace.isEmpty())
+                offset += QSL("\nReplace: ") + m_replace;
+        if(!m_section.isEmpty())
+                offset += QSL("\nSection: ") + m_section;
+        if(!m_desc_title.isEmpty())
+                offset += QSL("\nDescription: ") + m_desc_title;
         if (!m_desc_body.isEmpty()) {
                 QStringList rows = m_desc_body.split('\n');
                 for(int i = 0; i < rows.size(); i++)
-                        offset += QSL("\n ") + rows.at(i).trimmed();
+                        offset += QSL("\n ") + rows.at(i).trimmed() + QSL("\n");
         }
         return offset;
 }
