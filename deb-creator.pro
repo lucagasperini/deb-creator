@@ -6,8 +6,6 @@
 
 TEMPLATE = subdirs
 
-TARGET = debcreator
-
 SUBDIRS = gui lib
 
 gui.depends = lib
