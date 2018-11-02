@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>resource/men.png</file>
-        <file>resource/logo.png</file>
+        <file>resource/debcreator.png</file>
     </qresource>
 </RCC>
