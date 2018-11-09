@@ -17,7 +17,7 @@ public:
         void run();
         /**
          * @brief append add a process in bottom list
-         * @param program path of the program
+         * @param step is the build_step to append
          */
         void append(const build_step &step);
         /**
