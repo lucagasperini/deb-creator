@@ -60,6 +60,7 @@ package::package(const QString &control)
 
 void package::copy(const package &pkg)
 {
+        m_id = pkg.m_id;
         m_name = pkg.m_name;
         m_version = pkg.m_version;
         m_arch = pkg.m_arch;
