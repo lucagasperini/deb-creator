@@ -33,11 +33,12 @@ bool database::pkg_insert(const package *pkg)
                 if(!query->exec(DB_PACKAGE_CREATE))
                         return false;
 
-        if(!pkg_exists(pkg->m_name))
+        if(!pkg_exists(pkg->m_id))
                 query->prepare(DB_PACKAGE_INSERT);
         else
                 query->prepare(DB_PACKAGE_UPDATE);
 
+        query->bindValue(PKG_ID, QVariant(pkg->m_id));
         query->bindValue(PKG_NAME, QVariant(pkg->m_name));
         query->bindValue(PKG_MAINTAINER, QVariant(pkg->m_maintainer));
         query->bindValue(PKG_UPLOADER, QVariant(pkg->m_uploaders));
@@ -62,35 +63,37 @@ bool database::pkg_insert(const package *pkg)
         return offset;
 }
 
-QStringList database::pkg_fetch()
+QMap<int, QString> *database::pkg_fetch()
 {
-        QStringList offset;
         QSqlQuery* query = new QSqlQuery(*m_db);
 
-        query->prepare(QSL("SELECT name FROM package"));
+        query->prepare(QSL("SELECT id,name FROM package"));
 
         if(!query->exec()) {
 #ifdef QT_DEBUG
                 qDebug() << query->lastQuery() << query->lastError().text();
 #endif
                 query->finish();
-                return offset;
+                return nullptr;
         }
 
-        while(query->next())
-                offset.append(query->value(0).toString());
+        QMap<int, QString>* offset = new QMap<int, QString>;
+
+        while(query->next()) {
+                offset->insert(query->value(0).toInt(), query->value(1).toString());
+        }
 
         query->finish();
         return offset;
 }
 
-package *database::pkg_fetch(const QString &pkg)
+package *database::pkg_fetch(int id)
 {
         package* offset = new package();
         QSqlQuery* query = new QSqlQuery(*m_db);
 
-        query->prepare(QSL("SELECT * FROM package WHERE name = :name"));
-        query->bindValue(PKG_NAME, QVariant(pkg));
+        query->prepare(QSL("SELECT * FROM package WHERE id = :id"));
+        query->bindValue(PKG_ID, QVariant(id));
 
         if(!query->exec()) {
 #ifdef QT_DEBUG
@@ -100,9 +103,9 @@ package *database::pkg_fetch(const QString &pkg)
                 return offset;
         }
 
-
-        offset->m_name = pkg;
+        offset->m_id = id;
         while (query->next()) {
+                offset->m_name = query->value(QSL("name")).toString();
                 offset->m_maintainer = query->value(QSL("maintainer")).toString();
                 offset->m_uploaders = query->value(QSL("uploader")).toString();
                 offset->m_version = query->value(QSL("version")).toString();
@@ -121,12 +124,12 @@ package *database::pkg_fetch(const QString &pkg)
         return offset;
 }
 
-bool database::pkg_exists(const QString &pkg)
+bool database::pkg_exists(int id)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
-        query->prepare(QSL("SELECT EXISTS(SELECT 1 FROM package WHERE name=:name)"));
-        query->bindValue(PKG_NAME, QVariant(pkg));
+        query->prepare(QSL("SELECT EXISTS(SELECT 1 FROM package WHERE id=:id)"));
+        query->bindValue(PKG_ID, QVariant(id));
 
         if(!query->exec()) {
 #ifdef QT_DEBUG
@@ -140,12 +143,12 @@ bool database::pkg_exists(const QString &pkg)
                 return query->value(0).toBool();
 }
 
-bool database::pkg_remove(const QString &pkg)
+bool database::pkg_remove(int id)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
-        query->prepare(QSL("DELETE FROM package WHERE name=:name"));
-        query->bindValue(PKG_NAME, QVariant(pkg));
+        query->prepare(QSL("DELETE FROM package WHERE id=:id"));
+        query->bindValue(PKG_ID, QVariant(id));
 
         if(!query->exec()) {
 #ifdef QT_DEBUG

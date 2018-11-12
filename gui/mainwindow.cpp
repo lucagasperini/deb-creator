@@ -110,9 +110,12 @@ void mainwindow::save()
 
 void mainwindow::welcome_reload()
 {
-        QStringList list = m_db->pkg_fetch();
+        m_pkglist = m_db->pkg_fetch();
+        if(m_pkglist == nullptr)
+                return;
+
         ui->lsw_welcome->clear();
-        ui->lsw_welcome->addItems(list);
+        ui->lsw_welcome->addItems(m_pkglist->values());
 }
 
 void mainwindow::welcome_add()
@@ -127,7 +130,8 @@ void mainwindow::welcome_add()
 
 void mainwindow::welcome_remove()
 {
-        m_db->pkg_remove(ui->lsw_welcome->currentItem()->text());
+        QString name = ui->lsw_welcome->currentItem()->text();
+        m_db->pkg_remove(m_pkglist->key(name));
         welcome_reload();
 }
 
@@ -236,7 +240,7 @@ void mainwindow::compile_directory()
 
 void mainwindow::control_database(const QString &str)
 {
-        package* tmp = m_db->pkg_fetch(str);
+        package* tmp = m_db->pkg_fetch(m_pkglist->key(str));
         if(tmp == nullptr || tmp->is_empty()) {
                 ui->txt_output->append(str + QSL(" package didn't find!"));
                 return;

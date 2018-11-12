@@ -19,6 +19,7 @@
 #define DEB_CREATOR_SRC         QDir::tempPath() + QSL("/deb-creator/src/")
 #define DEB_CREATOR_PKG         QDir::tempPath() + QSL("/deb-creator/pkg/")
 
+#define PKG_ID                  QSL(":id")
 #define PKG_NAME                QSL(":name")
 #define PKG_MAINTAINER          QSL(":maintainer")
 #define PKG_UPLOADER            QSL(":uploader")
@@ -43,7 +44,8 @@
 
 #define DB_PACKAGE_TABLE QSL("package")
 #define DB_PACKAGE_CREATE QSL("CREATE TABLE package("           \
-                                "name TEXT PRIMARY KEY,"        \
+                                "id INTEGER PRIMARY KEY,"       \
+                                "name TEXT,"                    \
                                 "maintainer TEXT,"              \
                                 "uploader TEXT,"                \
                                 "version TEXT,"                 \
@@ -59,6 +61,7 @@
                                 ");")
 
 #define DB_PACKAGE_INSERT QSL("INSERT INTO package ("           \
+                                "id,"                           \
                                 "name,"                         \
                                 "maintainer,"                   \
                                 "uploader,"                     \
@@ -73,6 +76,7 @@
                                 "title,"                        \
                                 "body"                          \
                                 ") VALUES ("                    \
+                                ":id,"                          \
                                 ":name,"                        \
                                 ":maintainer,"                  \
                                 ":uploader,"                    \
@@ -89,6 +93,7 @@
                                 ");")
 
 #define DB_PACKAGE_UPDATE QSL("UPDATE package SET "             \
+                                "name=:name,"                   \
                                 "maintainer=:maintainer,"       \
                                 "uploader=:uploader,"           \
                                 "version=:version,"             \

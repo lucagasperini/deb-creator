@@ -64,6 +64,7 @@ public:
          */
         static arch_t architecture_value(const QString &arch);
 
+        int m_id;
         QString m_name;
         QString m_version;
         arch_t m_arch;

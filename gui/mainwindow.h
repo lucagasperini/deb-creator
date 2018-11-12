@@ -23,6 +23,7 @@ public:
         explicit mainwindow(QWidget *parent = nullptr);
         ~mainwindow();
 
+        QMap<int,QString>* m_pkglist;
         package *m_pkg;
         multiprocess *m_process;
         changelog *m_changelog;
