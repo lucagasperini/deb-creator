@@ -5,72 +5,60 @@
 
 #include <QDateTime>
 
-changelog::changelog(const package *pkg, QObject *parent) : QObject(parent), m_pkg(pkg)
+changelog::changelog(QObject *parent) : QObject(parent)
 {
 
 }
 
-QByteArray changelog::generate(const QString &text, const QString &status, const QString &urgency)
+changelog::changelog(const QByteArray& text, QObject *parent)  : QObject(parent), m_text(text)
+{
+
+}
+
+QByteArray changelog::generate(const package *pkg, const QString &text, const QString &status, const QString &urgency)
 {
         QDateTime now = QDateTime::currentDateTime();
         git info;
 
-        return m_pkg->m_name.toUtf8() + " (" + m_pkg->m_version.toUtf8() + ") " + status.toUtf8() + "; urgency=" + urgency.toUtf8() + "\n\n" +
+        return pkg->m_name.toUtf8() + " (" + pkg->m_version.toUtf8() + ") " + status.toUtf8() + "; urgency=" + urgency.toUtf8() + "\n\n" +
                text.toUtf8() + "\n\n" +
                " -- " + info.fetch_user().toUtf8() + " " + now.toString(QSL("ddd, dd MMM yyyy hh:mm:ss t")).toUtf8();
 }
 
-void changelog::fetch()
+QList<changelog*> *changelog::fetch(const QString &file)
 {
-        QDir pkg_root = m_pkg->root();
-        if(pkg_root.isEmpty())
-                return;
-
-        clear();
         QByteArray buffer;
         QByteArray line;
-        QFile changelog_file(pkg_root.path() + QSL("/DEBIAN/changelog"));
-        changelog_t *cl;
-        int i = 0;
+        QFile changelog_file(file);
 
         if(!changelog_file.open(QIODevice::ReadOnly | QIODevice::Text))
-                return;
+                return nullptr;
 
+        QList<changelog*> *cl = new QList<changelog*>;
         while (!changelog_file.atEnd()) {
                 line = changelog_file.readLine();
                 buffer.append(line);
                 if(line.startsWith(" -- ")) {
-                        cl = new changelog_t;
-                        cl->index = i++;
-                        cl->text = buffer;
-                        m_cl.append(cl);
+                        cl->append(new changelog(buffer));
                         buffer.clear();
                 }
         }
         changelog_file.close();
 }
 
-void changelog::save(const QByteArray &text)
+void changelog::save(const QString &file, const QByteArray &text)
 {
-        if(text.isEmpty())
+        if(text.isEmpty() || file.isEmpty())
                 return;
-        filesystem::file_write(m_pkg->root() + QSL("/DEBIAN/changelog"), text);
+        filesystem::file_write(file, text);
 }
 
 void changelog::clear()
 {
-        m_cl.clear();
+        m_text.clear();
 }
 
-QStringList changelog::titles()
+QString changelog::title()
 {
-        QStringList offset;
-        for(int i = 0; i < m_cl.size(); i++)
-                offset << m_cl.at(i)->text.split('\n').at(0);
-        return offset;
-}
-
-QByteArray changelog::text(int i)
-{
-        return m_cl.at(i)->text;
+        return m_text.split('\n').at(0);
 }

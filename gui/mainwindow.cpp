@@ -24,7 +24,6 @@ mainwindow::mainwindow(QWidget *parent) :
 {
         m_pkg = new package;
         m_process = new multiprocess;
-        m_changelog = new changelog(m_pkg);
         m_db = new database;
         filesystem::debcreator_directory();
 
@@ -182,21 +181,25 @@ void mainwindow::control_generate()
 
 void mainwindow::changelog_generate()
 {
-        QByteArray text = m_changelog->generate(ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
+        QByteArray text = changelog::generate(m_pkg, ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
         ui->txt_changelog->setText(text);
-        m_changelog->save(text);
+        changelog::save(m_pkg->root() + QSL("/DEBIAN/changelog"), text);
 }
 
 void mainwindow::changelog_refresh()
 {
-        m_changelog->fetch();
+        m_changelog = changelog::fetch(m_pkg->root() + QSL("/DEBIAN/changelog"));
+        QStringList titles;
+        for(int i = 0; i < m_changelog->size(); i++)
+                titles << m_changelog->at(i)->title();
         ui->lsw_changelog->clear();
-        ui->lsw_changelog->addItems(m_changelog->titles());
+        ui->lsw_changelog->addItems(titles);
 }
 
 void mainwindow::changelog_change()
 {
-        ui->txt_changelog->setText(m_changelog->text(ui->lsw_changelog->currentRow()));
+        QString text = m_changelog->at(ui->lsw_changelog->currentRow())->m_text;
+        ui->txt_changelog->setText(text);
 }
 
 void mainwindow::package_generate()

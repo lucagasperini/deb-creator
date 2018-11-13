@@ -5,16 +5,13 @@
 
 #include <QObject>
 
-struct changelog_t {
-        int index;
-        QByteArray text;
-};
 
 class changelog : public QObject
 {
         Q_OBJECT
 public:
-        explicit changelog(const package *pkg, QObject *parent = nullptr);
+        explicit changelog(QObject *parent = nullptr);
+        explicit changelog(const QByteArray& text, QObject *parent = nullptr);
         /**
          * @brief generate format the changelog text
          * @param text text in the changelog
@@ -22,34 +19,27 @@ public:
          * @param urgency string of urgency of changelog
          * @return the formatted text for changelogs
          */
-        QByteArray generate(const QString &text, const QString &status, const QString &urgency);
+        static QByteArray generate(const package *pkg, const QString &text, const QString &status, const QString &urgency);
         /**
          * @brief fetch fetch previous changelog
          */
-        void fetch();
+        static QList<changelog*>* fetch(const QString &file);
         /**
          * @brief save append text in changelog file
          * @param text text of the changelog
          */
-        void save(const QByteArray &text);
+        static void save(const QString &file, const QByteArray &text);
         /**
          * @brief clear remove all changelog_t from memory
          */
         void clear();
         /**
-         * @brief titles get the list of titles of changelogs stored
-         * @return list of titles of changelogs
+         * @brief title get the title of changelog
+         * @return title of changelog
          */
-        QStringList titles();
-        /**
-         * @brief text get the text of changelog
-         * @param i index of changelog
-         * @return the text of changelog
-         */
-        QByteArray text(int i);
+        QString title();
 
-        QList<changelog_t*> m_cl;
-        const package *m_pkg;
+        QByteArray m_text;
 };
 
 #endif // CHANGELOG_H

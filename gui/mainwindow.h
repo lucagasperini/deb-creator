@@ -26,7 +26,7 @@ public:
         QMap<int,QString>* m_pkglist;
         package *m_pkg;
         multiprocess *m_process;
-        changelog *m_changelog;
+        QList<changelog*>* m_changelog;
         database *m_db;
 
         void load();
