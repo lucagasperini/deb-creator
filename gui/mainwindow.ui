@@ -523,6 +523,20 @@
         <item row="1" column="2">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
+           <widget class="QLabel" name="lbl_cl_version">
+            <property name="text">
+             <string>Version:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="ln_cl_version">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="lbl_status">
             <property name="text">
              <string>Status:</string>

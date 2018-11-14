@@ -11,7 +11,7 @@ class changelog : public QObject
         Q_OBJECT
 public:
         explicit changelog(QObject *parent = nullptr);
-        explicit changelog(int id, const package* pkg, const QByteArray& text, const QString &status, const QString &urgency, QObject *parent = nullptr);
+        explicit changelog(int id, const package* pkg, const QString &version, const QByteArray& text, const QString &status, const QString &urgency, QObject *parent = nullptr);
         /**
          * @brief generate format the changelog text
          * @return the formatted text for changelogs

@@ -181,9 +181,7 @@ void mainwindow::control_generate()
 
 void mainwindow::changelog_generate()
 {
-        changelog cl(0, m_pkg, ui->txt_changelog->toPlainText().toUtf8(), ui->ln_status->text(), ui->cb_urgency->currentText()); //FIXME: "0" AS INVALID ID???
-        QByteArray text = cl.generate();
-        ui->txt_changelog->setText(text);
+        changelog cl(0, m_pkg, m_pkg->m_version, ui->txt_changelog->toPlainText().toUtf8(), ui->ln_status->text(), ui->cb_urgency->currentText()); //FIXME: "0" AS INVALID ID???
         m_db->cl_insert(cl);
         changelog_refresh();
 }
@@ -202,8 +200,11 @@ void mainwindow::changelog_refresh()
 
 void mainwindow::changelog_change()
 {
-        QString text = m_changelog->at(ui->lsw_changelog->currentRow())->m_text;
-        ui->txt_changelog->setText(text);
+        changelog* selected = m_changelog->at(ui->lsw_changelog->currentRow());
+        ui->txt_changelog->setText(selected->m_text);
+        ui->ln_status->setText(selected->m_status);
+        ui->cb_urgency->setCurrentText(selected->m_urgency);
+        ui->ln_cl_version->setText(selected->m_version);
 }
 
 void mainwindow::package_generate()
@@ -222,7 +223,14 @@ void mainwindow::package_generate()
                 return;
         }
 
-        output_append(m_pkg->create(control.toUtf8(), outputfile));
+        if(m_changelog != nullptr && m_changelog->isEmpty()) {
+                QByteArray cl_text;
+                for(int i = 0; i < m_changelog->size(); i++) {
+                        cl_text.append(m_changelog->at(i)->generate());
+                }
+                filesystem::file_write(m_pkg->root() + QSL("/DEBIAN/changelog"), cl_text);
+        }
+        output_append(m_pkg->create(control.toUtf8(), outputfile)); //TODO: ADD DPKG CLASS TO HANDLE PACKAGE CREATION
 }
 
 void mainwindow::output_append(const QString &text)
@@ -368,7 +376,7 @@ void mainwindow::custom_save()
                 return;
         }
 
-        filesystem::file_write(filename, ui->txt_code->toPlainText());
+        filesystem::file_write(filename, ui->txt_code->toPlainText().toUtf8());
 }
 
 

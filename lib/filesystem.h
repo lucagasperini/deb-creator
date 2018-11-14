@@ -21,7 +21,7 @@ public:
          * @param data binary data to write
          * @return if cannot write in target file it will return false, otherwise true
          */
-        static bool file_write(const QString &filename, const QString &data);
+        static bool file_write(const QString &filename, const QByteArray &data);
         /**
          * @brief file_read read binary data from target file
          * @param filename file where data is stored

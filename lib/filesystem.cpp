@@ -46,14 +46,14 @@ void filesystem::cp(const QString &src, const QString &dest)
         }
 }
 
-bool filesystem::file_write(const QString &filename, const QString &data)
+bool filesystem::file_write(const QString &filename, const QByteArray &data)
 {
         QFile file(filename);
 
         if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
                 return false;
         }
-        file.write(data.toUtf8());
+        file.write(data);
 
         file.flush();
         file.close();

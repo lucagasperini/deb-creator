@@ -10,10 +10,11 @@ changelog::changelog(QObject *parent) : QObject(parent)
 
 }
 
-changelog::changelog(int id, const package *pkg, const QByteArray& text, const QString &status, const QString &urgency, QObject *parent)  :
+changelog::changelog(int id, const package *pkg, const QString &version, const QByteArray& text, const QString &status, const QString &urgency, QObject *parent)  :
         QObject(parent),
         m_id(id),
         m_pkg(pkg),
+        m_version(version),
         m_text(text),
         m_status(status),
         m_urgency(urgency)
@@ -26,7 +27,7 @@ QByteArray changelog::generate()
         QDateTime now = QDateTime::currentDateTime();
         git info;
 
-        return m_pkg->m_name.toUtf8() + " (" + m_pkg->m_version.toUtf8() + ") " + m_status.toUtf8() + "; urgency=" + m_urgency.toUtf8() + "\n\n" +
+        return m_pkg->m_name.toUtf8() + " (" + m_version.toUtf8() + ") " + m_status.toUtf8() + "; urgency=" + m_urgency.toUtf8() + "\n\n" +
                m_text + "\n\n" +
                " -- " + info.fetch_user().toUtf8() + " " + now.toString(QSL("ddd, dd MMM yyyy hh:mm:ss t")).toUtf8();
 }
