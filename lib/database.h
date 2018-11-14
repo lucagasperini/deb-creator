@@ -3,6 +3,7 @@
 
 #include "package.h"
 #include "build_step.h"
+#include "changelog.h"
 
 #include <QObject>
 #include <QtSql/QSqlDatabase>
@@ -76,27 +77,27 @@ public:
          * @param step is the build_step to insert
          * @return if insert routine it's ok will return true otherwise false
          */
-        bool cl_insert(int pkg, const build_step &step);
+        bool cl_insert(const changelog &cl);
         /**
          * @brief cl_fetch check if there are build_step on the database, if yes it will put all data on values list
          * @param pkg is the name of the package
          * @return if package don't exist or something is wrong, it will return a nullptr
          */
-        QList<build_step *> *cl_fetch(const QString &pkg);
+        QList<changelog *> *cl_fetch(const package *pkg);
         /**
          * @brief cl_exists check if the build_step is on the database
          * @param pkg is the name of the package to find
          * @param step is the build_step to find
          * @return if package don't exist it will return false, otherwise true
          */
-        bool cl_exists(const QString &pkg, const build_step &step);
+        bool cl_exists(int pkg, const QByteArray &cl);
         /**
          * @brief cl_remove remove the build_step on the database
          * @param pkg is the name of the package to find
          * @param step is the build_step to find
          * @return if step_build don't exist it will return false, otherwise true
          */
-        bool cl_remove(const QString &pkg, const build_step &step);
+        bool cl_remove(int id);
         QSqlDatabase* m_db;
 };
 

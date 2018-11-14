@@ -41,6 +41,12 @@
 #define BUILD_DIR               QSL(":directory")
 #define BUILD_PKG               QSL(":pkg")
 
+#define CL_ID                   QSL(":id")
+#define CL_PKG                  QSL(":pkg")
+#define CL_TEXT                 QSL(":text")
+#define CL_VERSION              QSL(":version")
+#define CL_STATUS               QSL(":status")
+#define CL_URGENCY              QSL(":urgency")
 
 #define DB_PACKAGE_TABLE QSL("package")
 #define DB_PACKAGE_CREATE QSL("CREATE TABLE package("           \
@@ -135,6 +141,39 @@
                                 "argument=:argument,"           \
                                 "directory=:directory,"         \
                                 "pkg=:pkg,"                     \
+                                " WHERE id=:id;")
+
+#define DB_CL_TABLE QSL("changelog")
+
+#define DB_CL_CREATE QSL("CREATE TABLE changelog("              \
+                                "id INTEGER PRIMARY KEY,"       \
+                                "pkg INTEGER,"                  \
+                                "text TEXT,"                    \
+                                "version TEXT,"                 \
+                                "status TEXT,"                  \
+                                "urgency TEXT"                  \
+                                ");")
+
+#define DB_CL_INSERT QSL("INSERT INTO changelog ("              \
+                                "pkg,"                          \
+                                "text,"                         \
+                                "version,"                      \
+                                "status,"                       \
+                                "urgency"                       \
+                                ") VALUES ("                    \
+                                ":pkg,"                         \
+                                ":text,"                        \
+                                ":version,"                     \
+                                ":status,"                      \
+                                ":urgency"                      \
+                                ");")
+
+#define DB_CL_UPDATE QSL("UPDATE changelog SET "                \
+                                "pkg=:pkg,"                     \
+                                "text=:text,"                   \
+                                "version=:version,"             \
+                                "status=:status,"               \
+                                "urgency=:urgency,"             \
                                 " WHERE id=:id;")
 
 #endif // DEFINE_H

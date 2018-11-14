@@ -262,3 +262,107 @@ bool database::build_remove(const QString &pkg, const build_step &step)
         }
         return true;
 }
+bool database::cl_insert(const changelog &cl)
+{
+        QSqlQuery* query = new QSqlQuery(*m_db);
+
+        if(!m_db->tables().contains(DB_CL_TABLE))
+                if(!query->exec(DB_CL_CREATE))
+                        return false;
+
+        if(!cl_exists(cl.m_pkg->m_id, cl.m_text))
+                query->prepare(DB_CL_INSERT);
+        else
+                query->prepare(DB_CL_UPDATE); /* FIXME: DIDN'T WORK */
+
+        query->bindValue(CL_PKG, QVariant(cl.m_pkg->m_id));
+        query->bindValue(CL_TEXT, QVariant(cl.m_text));
+        query->bindValue(CL_VERSION, QVariant(cl.m_version));
+        query->bindValue(CL_STATUS, QVariant(cl.m_status));
+        query->bindValue(CL_URGENCY, QVariant(cl.m_urgency));
+
+        bool offset = query->exec();
+
+#ifdef QT_DEBUG
+        if(!offset)
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+        query->finish();
+        return offset;
+}
+
+QList<changelog *> *database::cl_fetch(const package* pkg)
+{
+        QList<changelog*>* offset = nullptr;
+        QSqlQuery* query = new QSqlQuery(*m_db);
+
+        if(!m_db->tables().contains(DB_CL_TABLE))
+                if(!query->exec(DB_CL_CREATE))
+                        return nullptr;
+
+        query->prepare(QSL("SELECT * FROM changelog WHERE pkg=:pkg"));
+        query->bindValue(CL_PKG, pkg->m_id);
+
+        if(!query->exec()) {
+#ifdef QT_DEBUG
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+                query->finish();
+                return offset;
+        }
+
+        offset = new QList<changelog*>;
+        changelog *buffer;
+
+
+        while (query->next()) {
+                buffer = new changelog;
+                buffer->m_id = query->value(QSL("id")).toInt();
+                buffer->m_pkg = pkg;
+                buffer->m_text = query->value(QSL("text")).toByteArray();
+                buffer->m_version = query->value(QSL("version")).toString();
+                buffer->m_status = query->value(QSL("status")).toString();
+                buffer->m_urgency = query->value(QSL("urgency")).toString();
+                offset->append(buffer);
+        }
+
+        query->finish();
+        return offset;
+}
+
+bool database::cl_exists(int pkg, const QByteArray &cl)
+{
+        QSqlQuery* query = new QSqlQuery(*m_db);
+
+        query->prepare(QSL("SELECT EXISTS(SELECT 1 FROM changelog WHERE pkg=:pkg AND text=:text)"));
+        query->bindValue(CL_PKG, QVariant(pkg));
+        query->bindValue(CL_TEXT, QVariant(cl));
+
+        if(!query->exec()) {
+#ifdef QT_DEBUG
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+                query->finish();
+                return false;
+        }
+
+        if(query->next())
+                return query->value(0).toBool();
+}
+
+bool database::cl_remove(int id)
+{
+        QSqlQuery* query = new QSqlQuery(*m_db);
+
+        query->prepare(QSL("DELETE FROM changelog WHERE id=:id"));
+        query->bindValue(CL_ID, QVariant(id));
+
+        if(!query->exec()) {
+#ifdef QT_DEBUG
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+                query->finish();
+                return false;
+        }
+        return true;
+}

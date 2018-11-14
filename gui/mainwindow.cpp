@@ -181,14 +181,18 @@ void mainwindow::control_generate()
 
 void mainwindow::changelog_generate()
 {
-        QByteArray text = changelog::generate(m_pkg, ui->txt_changelog->toPlainText(), ui->ln_status->text(), ui->cb_urgency->currentText());
+        changelog cl(0, m_pkg, ui->txt_changelog->toPlainText().toUtf8(), ui->ln_status->text(), ui->cb_urgency->currentText()); //FIXME: "0" AS INVALID ID???
+        QByteArray text = cl.generate();
         ui->txt_changelog->setText(text);
-        changelog::save(m_pkg->root() + QSL("/DEBIAN/changelog"), text);
+        m_db->cl_insert(cl);
+        changelog_refresh();
 }
 
 void mainwindow::changelog_refresh()
 {
-        m_changelog = changelog::fetch(m_pkg->root() + QSL("/DEBIAN/changelog"));
+        m_changelog = m_db->cl_fetch(m_pkg);
+        if(m_changelog == nullptr || m_changelog->isEmpty())
+                return;
         QStringList titles;
         for(int i = 0; i < m_changelog->size(); i++)
                 titles << m_changelog->at(i)->title();
