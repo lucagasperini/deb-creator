@@ -90,7 +90,7 @@ public:
          * @param step is the build_step to find
          * @return if package don't exist it will return false, otherwise true
          */
-        bool cl_exists(int pkg, const QByteArray &cl);
+        int cl_find(int pkg, const QByteArray &cl);
         /**
          * @brief cl_remove remove the build_step on the database
          * @param pkg is the name of the package to find

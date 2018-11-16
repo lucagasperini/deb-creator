@@ -270,10 +270,13 @@ bool database::cl_insert(const changelog &cl)
                 if(!query->exec(DB_CL_CREATE))
                         return false;
 
-        if(!cl_exists(cl.m_pkg->m_id, cl.m_text))
+        int found = cl_find(cl.m_pkg->m_id, cl.m_text);
+        if(!found) {
                 query->prepare(DB_CL_INSERT);
-        else
-                query->prepare(DB_CL_UPDATE); /* FIXME: DIDN'T WORK */
+        } else {
+                query->prepare(DB_CL_UPDATE);
+                query->bindValue(CL_ID, QVariant(found));
+        }
 
         query->bindValue(CL_PKG, QVariant(cl.m_pkg->m_id));
         query->bindValue(CL_TEXT, QVariant(cl.m_text));
@@ -330,11 +333,11 @@ QList<changelog *> *database::cl_fetch(const package* pkg)
         return offset;
 }
 
-bool database::cl_exists(int pkg, const QByteArray &cl)
+int database::cl_find(int pkg, const QByteArray &cl)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
-        query->prepare(QSL("SELECT EXISTS(SELECT 1 FROM changelog WHERE pkg=:pkg AND text=:text)"));
+        query->prepare(QSL("SELECT id FROM changelog WHERE pkg=:pkg AND text=:text)"));
         query->bindValue(CL_PKG, QVariant(pkg));
         query->bindValue(CL_TEXT, QVariant(cl));
 
@@ -343,11 +346,11 @@ bool database::cl_exists(int pkg, const QByteArray &cl)
                 qDebug() << query->lastQuery() << query->lastError().text();
 #endif
                 query->finish();
-                return false;
+                return 0;
         }
 
         if(query->next())
-                return query->value(0).toBool();
+                return query->value(0).toInt();
 }
 
 bool database::cl_remove(int id)

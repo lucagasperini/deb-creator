@@ -112,7 +112,7 @@
                                 "section=:section,"             \
                                 "title=:title,"                 \
                                 "body=:body"                    \
-                                " WHERE name=:name;")
+                                " WHERE id=:id;")
 
 #define DB_BUILD_TABLE QSL("build")
 
@@ -173,7 +173,7 @@
                                 "text=:text,"                   \
                                 "version=:version,"             \
                                 "status=:status,"               \
-                                "urgency=:urgency,"             \
+                                "urgency=:urgency"              \
                                 " WHERE id=:id;")
 
 #endif // DEFINE_H

@@ -39,7 +39,7 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &mainwindow::control_generate);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &mainwindow::package_generate);
         connect(ui->btn_clear, &QPushButton::clicked, this, &mainwindow::output_clear);
-        connect(ui->btn_changelog_create, &QPushButton::clicked, this, &mainwindow::changelog_generate);
+        connect(ui->btn_changelog_create, &QPushButton::clicked, this, &mainwindow::changelog_save);
         connect(ui->btn_changelog_refresh, &QPushButton::clicked, this, &mainwindow::changelog_refresh);
         connect(ui->btn_refresh, &QPushButton::clicked, this, &mainwindow::compile_refresh);
         connect(ui->btn_compile, &QPushButton::clicked, this, &mainwindow::compile);
@@ -57,7 +57,7 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->a_aboutqt, &QAction::triggered, qApp, &QApplication::aboutQt);
         connect(ui->a_loadctrl, &QAction::triggered, this, &mainwindow::control_load);
         connect(ui->lsw_welcome, &QListWidget::currentTextChanged, this, &mainwindow::control_database);
-        connect(ui->lsw_changelog, &QListWidget::currentTextChanged, this, &mainwindow::changelog_change);
+        connect(ui->lsw_changelog, &QListWidget::currentRowChanged, this, &mainwindow::changelog_change);
         connect(ui->tree_filesystem, &QTreeView::clicked, this, &mainwindow::custom_load);
         // connect(ui->a_manual) TODO: Add a manual?
 
@@ -179,7 +179,7 @@ void mainwindow::control_generate()
         ui->txt_control->setText(m_pkg->control());
 }
 
-void mainwindow::changelog_generate()
+void mainwindow::changelog_save()
 {
         changelog cl(0, m_pkg, m_pkg->m_version, ui->txt_changelog->toPlainText().toUtf8(), ui->ln_status->text(), ui->cb_urgency->currentText()); //FIXME: "0" AS INVALID ID???
         m_db->cl_insert(cl);
@@ -198,9 +198,13 @@ void mainwindow::changelog_refresh()
         ui->lsw_changelog->addItems(titles);
 }
 
-void mainwindow::changelog_change()
+void mainwindow::changelog_change(int row)
 {
-        changelog* selected = m_changelog->at(ui->lsw_changelog->currentRow());
+        if(row == -1) {
+                row =  m_changelog->size() - 1;
+                ui->lsw_changelog->setCurrentRow(row); //if row is invalid select last item
+        }
+        changelog* selected = m_changelog->at(row);
         ui->txt_changelog->setText(selected->m_text);
         ui->ln_status->setText(selected->m_status);
         ui->cb_urgency->setCurrentText(selected->m_urgency);
