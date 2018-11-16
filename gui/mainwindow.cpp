@@ -39,8 +39,9 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->btn_gencontrol, &QPushButton::clicked, this, &mainwindow::control_generate);
         connect(ui->btn_createpackage, &QPushButton::clicked, this, &mainwindow::package_generate);
         connect(ui->btn_clear, &QPushButton::clicked, this, &mainwindow::output_clear);
+        connect(ui->btn_changelog_add, &QPushButton::clicked, this, &mainwindow::changelog_add);
+        connect(ui->btn_changelog_remove, &QPushButton::clicked, this, &mainwindow::changelog_remove);
         connect(ui->btn_changelog_create, &QPushButton::clicked, this, &mainwindow::changelog_save);
-        connect(ui->btn_changelog_refresh, &QPushButton::clicked, this, &mainwindow::changelog_refresh);
         connect(ui->btn_refresh, &QPushButton::clicked, this, &mainwindow::compile_refresh);
         connect(ui->btn_compile, &QPushButton::clicked, this, &mainwindow::compile);
         connect(ui->btn_buildadd, &QPushButton::clicked, this, &mainwindow::build_add);
@@ -179,14 +180,29 @@ void mainwindow::control_generate()
         ui->txt_control->setText(m_pkg->control());
 }
 
-void mainwindow::changelog_save()
+void mainwindow::changelog_add()
 {
-        changelog cl(0, m_pkg, m_pkg->m_version, ui->txt_changelog->toPlainText().toUtf8(), ui->ln_status->text(), ui->cb_urgency->currentText()); //FIXME: "0" AS INVALID ID???
+        changelog cl(0, m_pkg, "", "New changelog", "", "");
         m_db->cl_insert(cl);
-        changelog_refresh();
+        changelog_reload();
 }
 
-void mainwindow::changelog_refresh()
+void mainwindow::changelog_remove()
+{
+        changelog *current = m_changelog->at(ui->lsw_changelog->currentRow());
+        m_db->cl_remove(current->m_id);
+        changelog_reload();
+}
+
+void mainwindow::changelog_save()
+{
+        changelog cl(0, m_pkg, ui->ln_cl_version->text(), ui->txt_changelog->toPlainText().toUtf8(), ui->ln_status->text(), ui->cb_urgency->currentText()); //FIXME: "0" AS INVALID ID???
+        changelog *current = m_changelog->at(ui->lsw_changelog->currentRow());
+        m_db->cl_update(current->m_id, cl);
+        changelog_reload();
+}
+
+void mainwindow::changelog_reload()
 {
         m_changelog = m_db->cl_fetch(m_pkg);
         if(m_changelog == nullptr || m_changelog->isEmpty())
@@ -201,7 +217,7 @@ void mainwindow::changelog_refresh()
 void mainwindow::changelog_change(int row)
 {
         if(row == -1) {
-                row =  m_changelog->size() - 1;
+                row = m_changelog->size() - 1;
                 ui->lsw_changelog->setCurrentRow(row); //if row is invalid select last item
         }
         changelog* selected = m_changelog->at(row);
@@ -267,6 +283,7 @@ void mainwindow::control_database(const QString &str)
 
         m_pkg->copy(*tmp);
         load();
+        changelog_reload();
 }
 
 void mainwindow::control_load()

@@ -73,22 +73,28 @@ public:
         bool build_remove(const QString &pkg, const build_step &step);
         /**
          * @brief cl_insert insert into the database all variables
-         * @param pkg is the name of the package to insert
-         * @param step is the build_step to insert
+         * @param cl is the changelog to insert
          * @return if insert routine it's ok will return true otherwise false
          */
         bool cl_insert(const changelog &cl);
         /**
-         * @brief cl_fetch check if there are build_step on the database, if yes it will put all data on values list
+         * @brief cl_update update a changelog into database
+         * @param id is the id of changelog to update
+         * @param cl is the changelog to update
+         * @return if insert routine it's ok will return true otherwise false
+         */
+        bool cl_update(int id, const changelog &cl);
+        /**
+         * @brief cl_fetch check if there are changelog on the database, if yes it will put all data on values list
          * @param pkg is the name of the package
          * @return if package don't exist or something is wrong, it will return a nullptr
          */
         QList<changelog *> *cl_fetch(const package *pkg);
         /**
-         * @brief cl_exists check if the build_step is on the database
-         * @param pkg is the name of the package to find
-         * @param step is the build_step to find
-         * @return if package don't exist it will return false, otherwise true
+         * @brief cl_exists find id of the changelog on the database
+         * @param pkg is the id package of changelog
+         * @param text is the changelog text
+         * @return id of the changelog
          */
         int cl_find(int pkg, const QByteArray &cl);
         /**

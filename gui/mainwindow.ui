@@ -401,7 +401,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset theme="insert-table">
+               <iconset theme="insert-table-row">
                 <normaloff>.</normaloff>.</iconset>
               </property>
               <property name="iconSize">
@@ -510,15 +510,8 @@
         <string>Changelog</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="2" column="2" colspan="2">
+        <item row="3" column="2" colspan="2">
          <widget class="QTextEdit" name="txt_changelog"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QPushButton" name="btn_changelog_refresh">
-          <property name="text">
-           <string>Refresh</string>
-          </property>
-         </widget>
         </item>
         <item row="1" column="2">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -532,7 +525,7 @@
           <item>
            <widget class="QLineEdit" name="ln_cl_version">
             <property name="readOnly">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -583,14 +576,14 @@
           </item>
          </layout>
         </item>
-        <item row="3" column="1" colspan="3">
+        <item row="4" column="1" colspan="3">
          <widget class="QPushButton" name="btn_changelog_create">
           <property name="text">
            <string>Create changelog</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="0" rowspan="2">
+        <item row="3" column="0" rowspan="2">
          <widget class="QListWidget" name="lsw_changelog">
           <property name="maximumSize">
            <size>
@@ -599,6 +592,51 @@
            </size>
           </property>
          </widget>
+        </item>
+        <item row="1" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="btn_changelog_add">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="insert-table-row"/>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>64</width>
+              <height>64</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_changelog_remove">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="delete-table-row"/>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>64</width>
+              <height>64</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>

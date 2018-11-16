@@ -51,8 +51,10 @@ private slots:
         void control_generate();
         void control_database(const QString &str);
         void control_load();
+        void changelog_add();
+        void changelog_remove();
         void changelog_save();
-        void changelog_refresh();
+        void changelog_reload();
         void changelog_change(int row);
         void compile_directory();
         void compile_refresh();
