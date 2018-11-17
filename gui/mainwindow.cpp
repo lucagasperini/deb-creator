@@ -29,6 +29,9 @@ mainwindow::mainwindow(QWidget *parent) :
 
         ui->setupUi(this);
 
+        m_model_compile = new QFileSystemModel;
+        ui->tw_compile->setModel(m_model_compile);
+
         ui->tabWidget->setCurrentIndex(TAB_WELCOME);
 
         connect(ui->btn_reload, &QPushButton::clicked, this, &mainwindow::welcome_reload);
@@ -42,14 +45,14 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->btn_changelog_add, &QPushButton::clicked, this, &mainwindow::changelog_add);
         connect(ui->btn_changelog_remove, &QPushButton::clicked, this, &mainwindow::changelog_remove);
         connect(ui->btn_changelog_save, &QPushButton::clicked, this, &mainwindow::changelog_save);
-        connect(ui->btn_refresh, &QPushButton::clicked, this, &mainwindow::compile_refresh);
+        connect(ui->btn_compile_import_local, &QPushButton::clicked, this, &mainwindow::compile_import_local);
+        connect(ui->btn_compile_import_remote, &QPushButton::clicked, this, &mainwindow::compile_import_remote);
         connect(ui->btn_compile, &QPushButton::clicked, this, &mainwindow::compile);
         connect(ui->btn_buildadd, &QPushButton::clicked, this, &mainwindow::build_add);
         connect(ui->btn_buildremove, &QPushButton::clicked, this, &mainwindow::build_remove);
         connect(ui->btn_buildsave, &QPushButton::clicked, this, &mainwindow::build_save);
         connect(ui->btn_custom_refresh, &QPushButton::clicked, this, &mainwindow::custom_refresh);
         connect(ui->btn_custom_save, &QPushButton::clicked, this, &mainwindow::custom_save);
-        connect(ui->bt_sourcecode, &QToolButton::clicked, this, &mainwindow::compile_directory);
 
         connect(ui->a_create_package, &QAction::triggered, this, &mainwindow::package_generate);
         connect(ui->a_generate_control, &QAction::triggered, this, &mainwindow::control_generate);
@@ -87,8 +90,6 @@ void mainwindow::load()
         ui->ln_section->setText(m_pkg->m_section);
         ui->ln_source->setText(m_pkg->m_source);
         ui->ln_uploaders->setText(m_pkg->m_uploaders);
-
-        ui->ln_sourcecode->setText(m_pkg->m_source);
 }
 
 void mainwindow::save()
@@ -266,13 +267,6 @@ void mainwindow::output_clear()
         ui->txt_output->clear();
 }
 
-void mainwindow::compile_directory()
-{
-        QDir dir;
-        dir = QFileDialog::getExistingDirectory(this, QSL("Source file of the package"));
-        ui->ln_sourcecode->setText(dir.absolutePath() + QSL("/"));
-}
-
 void mainwindow::control_database(const QString &str)
 {
         package* tmp = m_db->pkg_fetch(m_pkglist->key(str));
@@ -302,29 +296,41 @@ void mainwindow::control_load()
         load();
 }
 
-void mainwindow::compile_refresh()
+void mainwindow::compile_import_local()
 {
-        if(ui->ln_sourcecode->text().isEmpty()) {
-                QMessageBox::warning(this, QSL("Compile Package"), QSL("Source cannot be empty!\nPlease insert a source code directory or git repo."));
+        QString local = ui->ln_compile_import_local->text();
+        if(local.isEmpty()) {
+                local = QFileDialog::getExistingDirectory(this, QSL("Source file of the package"));
+                ui->ln_compile_import_local->setText(local);
+        }
+
+        QFileInfo dir(local);
+        QString build_dir = m_pkg->build_dir();
+
+        if(dir.isDir()) {
+                filesystem::cp(local, build_dir);
+        } else {
+                QMessageBox::warning(this, QSL("Compile Import from local"), QSL("Invalid local path!"));
                 return;
         }
 
-        QFileInfo dir(ui->ln_sourcecode->text());
-        if(m_model_compile == nullptr)
-                m_model_compile = new QFileSystemModel;
+        m_model_compile->setRootPath(build_dir);
+        ui->tw_compile->setRootIndex(m_model_compile->index(build_dir));
+}
+
+void mainwindow::compile_import_remote()
+{
+        QString remote = ui->ln_compile_import_remote->text();
+        if(remote.isEmpty()) {
+                QMessageBox::warning(this, QSL("Compile Package"), QSL("Remote cannot be empty!\nPlease insert a remote repo."));
+                return;
+        }
+
         git* proc = new git;
         QString build_dir = m_pkg->build_dir();
+        proc->clone(remote, build_dir);
 
-        if(dir.isDir())
-                filesystem::cp(dir.absoluteDir().path(), build_dir);
-        else
-                proc->clone(ui->ln_sourcecode->text(), build_dir);
-
-#ifdef QT_DEBUG
-        qDebug() << QSL("Current build path: ") << build_dir;
-#endif
         m_model_compile->setRootPath(build_dir);
-        ui->tw_compile->setModel(m_model_compile);
         ui->tw_compile->setRootIndex(m_model_compile->index(build_dir));
 }
 

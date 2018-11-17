@@ -56,8 +56,8 @@ private slots:
         void changelog_save();
         void changelog_reload();
         void changelog_change(int row);
-        void compile_directory();
-        void compile_refresh();
+        void compile_import_local();
+        void compile_import_remote();
         void compile();
         void build_add();
         void build_remove();
