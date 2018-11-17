@@ -19,10 +19,11 @@ QByteArray git::exec()
         return offset;
 }
 
-QString git::clone(const QUrl &url, const QString &directory)
+QString git::clone(const QUrl &url, const QString &directory, const QString &branch)
 {
         QStringList args;
         QString offset;
+
         if(directory.isEmpty()) {
                 args << QSL("clone") << url.toString();
                 if(url.fileName().endsWith(".git"))
@@ -33,6 +34,10 @@ QString git::clone(const QUrl &url, const QString &directory)
                 args << QSL("clone") << url.toString() << directory;
                 offset = directory; //FIXME: Maybe directory is relative path
         }
+
+        if(!branch.isEmpty())
+                args << QSL("-b") << branch;
+
         setArguments(args);
         exec();
         return offset;

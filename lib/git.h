@@ -19,9 +19,10 @@ public:
          * @brief git_clone fetch git repo in default directory
          * @param url repo git
          * @param directory is the name of the directory to clone from
+         * @param branch is the branch version to clone
          * @return directory of files stored
          */
-        QString clone(const QUrl &url, const QString &directory = "");
+        QString clone(const QUrl &url, const QString &directory = "", const QString &branch = "");
         /**
          * @brief git_fetch_user fetch user.email and user.name from git config
          * @return the format from git is user.name <user.email>, empty string if git is not installed or git is not configurated
