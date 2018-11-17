@@ -577,7 +577,7 @@
          </layout>
         </item>
         <item row="4" column="1" colspan="3">
-         <widget class="QPushButton" name="btn_changelog_create">
+         <widget class="QPushButton" name="btn_changelog_save">
           <property name="text">
            <string>Create changelog</string>
           </property>
@@ -604,7 +604,8 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset theme="insert-table-row"/>
+             <iconset theme="insert-table-row">
+              <normaloff>.</normaloff>.</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -623,7 +624,8 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset theme="delete-table-row"/>
+             <iconset theme="delete-table-row">
+              <normaloff>.</normaloff>.</iconset>
             </property>
             <property name="iconSize">
              <size>

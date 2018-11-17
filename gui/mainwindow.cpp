@@ -41,7 +41,7 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->btn_clear, &QPushButton::clicked, this, &mainwindow::output_clear);
         connect(ui->btn_changelog_add, &QPushButton::clicked, this, &mainwindow::changelog_add);
         connect(ui->btn_changelog_remove, &QPushButton::clicked, this, &mainwindow::changelog_remove);
-        connect(ui->btn_changelog_create, &QPushButton::clicked, this, &mainwindow::changelog_save);
+        connect(ui->btn_changelog_save, &QPushButton::clicked, this, &mainwindow::changelog_save);
         connect(ui->btn_refresh, &QPushButton::clicked, this, &mainwindow::compile_refresh);
         connect(ui->btn_compile, &QPushButton::clicked, this, &mainwindow::compile);
         connect(ui->btn_buildadd, &QPushButton::clicked, this, &mainwindow::build_add);
