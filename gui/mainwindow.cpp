@@ -31,6 +31,8 @@ mainwindow::mainwindow(QWidget *parent) :
 
         m_model_compile = new QFileSystemModel;
         ui->tw_compile->setModel(m_model_compile);
+        m_model_custom = new QFileSystemModel;
+        ui->tree_filesystem->setModel(m_model_custom);
 
         ui->tabWidget->setCurrentIndex(TAB_WELCOME);
 
@@ -386,11 +388,7 @@ void mainwindow::build_save()
 
 void mainwindow::custom_refresh()
 {
-        if(m_model_custom == nullptr)
-                m_model_custom = new QFileSystemModel;
-
         m_model_custom->setRootPath(m_pkg->root()); //+ DEBIAN/ ?
-        ui->tree_filesystem->setModel(m_model_custom);
         ui->tree_filesystem->setRootIndex(m_model_custom->index(m_pkg->root()));
 }
 
