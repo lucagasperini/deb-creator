@@ -11,6 +11,9 @@
 
 #define TAB_WELCOME 0
 #define TAB_CONTROL 1
+#define TAB_COMPILE 2
+#define TAB_CHANGELOG 3
+#define TAB_CUSTOM 4
 
 using namespace std;
 
@@ -35,6 +38,11 @@ mainwindow::mainwindow(QWidget *parent) :
         ui->tree_filesystem->setModel(m_model_custom);
 
         ui->tabWidget->setCurrentIndex(TAB_WELCOME);
+        ui->tab_control->setEnabled(false);
+        ui->tab_compile->setEnabled(false);
+        ui->tab_changelog->setEnabled(false);
+        ui->tab_custom->setEnabled(false);
+        ui->btn_createpackage->setEnabled(false);
 
         connect(ui->btn_reload, &QPushButton::clicked, this, &mainwindow::welcome_reload);
         connect(ui->btn_add, &QPushButton::clicked, this, &mainwindow::welcome_add);
@@ -92,6 +100,12 @@ void mainwindow::load()
         ui->ln_section->setText(m_pkg->m_section);
         ui->ln_source->setText(m_pkg->m_source);
         ui->ln_uploaders->setText(m_pkg->m_uploaders);
+
+        ui->tab_control->setEnabled(true);
+        ui->tab_compile->setEnabled(true);
+        ui->tab_changelog->setEnabled(true);
+        ui->tab_custom->setEnabled(true);
+        ui->btn_createpackage->setEnabled(true);
 }
 
 void mainwindow::save()
@@ -208,12 +222,13 @@ void mainwindow::changelog_save()
 void mainwindow::changelog_reload()
 {
         m_changelog = m_db->cl_fetch(m_pkg);
-        if(m_changelog == nullptr || m_changelog->isEmpty())
+        ui->lsw_changelog->clear();
+        if(m_changelog == nullptr || m_changelog->isEmpty()) {
                 return;
+        }
         QStringList titles;
         for(int i = 0; i < m_changelog->size(); i++)
                 titles << m_changelog->at(i)->title();
-        ui->lsw_changelog->clear();
         ui->lsw_changelog->addItems(titles);
 }
 
