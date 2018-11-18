@@ -14,7 +14,23 @@ public:
          * @return integer 64 bit of size in byte
          */
         static qint64 size(const QString &_dir);
+        /**
+         * @brief rmdir remove directory and it's contents
+         * @param target directory to remove
+         */
+        static void rmdir(const QString &target);
+        /**
+         * @brief cp copy a directory to another directory
+         * @param src source directory
+         * @param dest destination directory
+         */
         static void cp(const QString &src, const QString &dest);
+        /**
+         * @brief mv move a directory to another directory
+         * @param src source directory
+         * @param dest destination directory
+         */
+        static bool mv(const QString &src, const QString &dest);
         /**
          * @brief file_write write data in selected filename
          * @param filename target file
