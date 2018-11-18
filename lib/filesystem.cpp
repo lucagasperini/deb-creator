@@ -26,23 +26,10 @@ qint64 filesystem::size(const QString &_dir)
         return sizex;
 }
 
-void filesystem::rmdir(const QString &target)
+bool filesystem::rmdir(const QString &target)
 {
-        QFileInfo str_info(target);
-        if (!str_info.isDir()) {
-                QFile::remove(target);
-                return;
-        }
-
         QDir dir(target);
-        QFileInfoList list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-        for (int i = 0; i < list.size(); ++i) {
-                QFileInfo fileInfo = list.at(i);
-#ifdef QT_DEBUG
-                qDebug() << fileInfo.absoluteFilePath();
-#endif
-                rmdir(fileInfo.absoluteFilePath());
-        }
+        return dir.removeRecursively();
 }
 
 void filesystem::cp(const QString &src, const QString &dest)

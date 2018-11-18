@@ -18,7 +18,7 @@ public:
          * @brief rmdir remove directory and it's contents
          * @param target directory to remove
          */
-        static void rmdir(const QString &target);
+        static bool rmdir(const QString &target);
         /**
          * @brief cp copy a directory to another directory
          * @param src source directory

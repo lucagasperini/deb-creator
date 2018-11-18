@@ -308,6 +308,7 @@ void mainwindow::compile_import_local()
 
         QFileInfo dir(local);
         QString build_dir = m_pkg->build_dir();
+        filesystem::rmdir(build_dir);
 
         if(dir.isDir()) {
                 filesystem::cp(local, build_dir);
@@ -330,6 +331,7 @@ void mainwindow::compile_import_remote()
 
         git* proc = new git;
         QString build_dir = m_pkg->build_dir();
+        filesystem::rmdir(build_dir);
         proc->clone(remote, build_dir);
 
         m_model_compile->setRootPath(build_dir);
