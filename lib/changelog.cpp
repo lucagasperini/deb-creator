@@ -29,7 +29,7 @@ QByteArray changelog::generate()
 
         return m_pkg->m_name.toUtf8() + " (" + m_version.toUtf8() + ") " + m_status.toUtf8() + "; urgency=" + m_urgency.toUtf8() + "\n\n" +
                m_text + "\n\n" +
-               " -- " + info.fetch_user().toUtf8() + " " + now.toString(QSL("ddd, dd MMM yyyy hh:mm:ss t")).toUtf8();
+               " -- " + info.fetch_user().toUtf8() + " " + now.toString(QSL("ddd, dd MMM yyyy hh:mm:ss t")).toUtf8() + "\n\n";
 }
 
 void changelog::clear()

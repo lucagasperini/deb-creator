@@ -246,7 +246,7 @@ void mainwindow::package_generate()
                 return;
         }
 
-        if(m_changelog != nullptr && m_changelog->isEmpty()) {
+        if(m_changelog != nullptr && !m_changelog->isEmpty()) {
                 QByteArray cl_text;
                 for(int i = 0; i < m_changelog->size(); i++) {
                         cl_text.append(m_changelog->at(i)->generate());
