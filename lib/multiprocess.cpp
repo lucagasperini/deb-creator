@@ -10,9 +10,9 @@ void multiprocess::run()
 {
         QProcess buffer;
         for(int i = 0; i < m_pro->size(); i++) {
-                buffer.setProgram(m_pro->at(i)->program);
-                buffer.setArguments(m_pro->at(i)->argument.split(' '));
-                buffer.setWorkingDirectory(m_pro->at(i)->directory);
+                buffer.setProgram(m_pro->at(i)->m_app);
+                buffer.setArguments(m_pro->at(i)->m_arg.split(' '));
+                buffer.setWorkingDirectory(m_pro->at(i)->m_dir);
 #ifdef QT_DEBUG
                 qDebug() << QSL("Executing:") << buffer.program() << buffer.arguments() << buffer.workingDirectory();
 #endif

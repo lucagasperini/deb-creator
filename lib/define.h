@@ -121,7 +121,7 @@
                                 "program TEXT,"                 \
                                 "argument TEXT,"                \
                                 "directory TEXT,"               \
-                                "pkg TEXT"                      \
+                                "pkg INTEGER"                   \
                                 ");")
 
 #define DB_BUILD_INSERT QSL("INSERT INTO build ("               \
@@ -142,6 +142,12 @@
                                 "directory=:directory,"         \
                                 "pkg=:pkg,"                     \
                                 " WHERE id=:id;")
+
+#define DB_BUILD_FIND QSL("SELECT id FROM build "               \
+                                "WHERE program=:program "       \
+                                "AND argument=:argument "       \
+                                "AND directory=:directory "     \
+                                "AND pkg=:pkg;")
 
 #define DB_CL_TABLE QSL("changelog")
 

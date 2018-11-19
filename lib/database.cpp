@@ -161,7 +161,7 @@ bool database::pkg_remove(int id)
 }
 
 
-bool database::build_insert(const QString &pkg, const build_step &step)
+bool database::build_insert(const build_step &step)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
@@ -169,15 +169,11 @@ bool database::build_insert(const QString &pkg, const build_step &step)
                 if(!query->exec(DB_BUILD_CREATE))
                         return false;
 
-        if(!build_exists(pkg, step))
-                query->prepare(DB_BUILD_INSERT);
-        else
-                query->prepare(DB_BUILD_UPDATE); /* FIXME: DIDN'T WORK */
-
-        query->bindValue(BUILD_PROGRAM, QVariant(step.program));
-        query->bindValue(BUILD_ARG, QVariant(step.argument));
-        query->bindValue(BUILD_DIR, QVariant(step.directory));
-        query->bindValue(BUILD_PKG, QVariant(pkg));
+        query->prepare(DB_BUILD_INSERT);
+        query->bindValue(BUILD_PKG, QVariant(step.m_pkg));
+        query->bindValue(BUILD_PROGRAM, QVariant(step.m_app));
+        query->bindValue(BUILD_ARG, QVariant(step.m_arg));
+        query->bindValue(BUILD_DIR, QVariant(step.m_dir));
 
         bool offset = query->exec();
 
@@ -189,12 +185,37 @@ bool database::build_insert(const QString &pkg, const build_step &step)
         return offset;
 }
 
-QList<build_step*>* database::build_fetch(const QString &pkg)
+bool database::build_update(int id, const build_step &step)
+{
+        QSqlQuery* query = new QSqlQuery(*m_db);
+
+        if(!m_db->tables().contains(DB_BUILD_TABLE))
+                if(!query->exec(DB_BUILD_CREATE))
+                        return false;
+
+        query->prepare(DB_BUILD_UPDATE);
+        query->bindValue(BUILD_ID, QVariant(id));
+        query->bindValue(BUILD_PKG, QVariant(step.m_pkg));
+        query->bindValue(BUILD_PROGRAM, QVariant(step.m_app));
+        query->bindValue(BUILD_ARG, QVariant(step.m_arg));
+        query->bindValue(BUILD_DIR, QVariant(step.m_dir));
+
+        bool offset = query->exec();
+
+#ifdef QT_DEBUG
+        if(!offset)
+                qDebug() << query->lastQuery() << query->lastError().text();
+#endif
+        query->finish();
+        return offset;
+}
+
+QList<build_step*>* database::build_fetch(int pkg)
 {
         QList<build_step*>* offset = nullptr;
         QSqlQuery* query = new QSqlQuery(*m_db);
 
-        query->prepare(QSL("SELECT * FROM build WHERE pkg=:pkg"));
+        query->prepare(QSL("SELECT * FROM build WHERE pkg=:pkg;"));
         query->bindValue(BUILD_PKG, pkg);
 
         if(!query->exec()) {
@@ -211,9 +232,11 @@ QList<build_step*>* database::build_fetch(const QString &pkg)
 
         while (query->next()) {
                 buffer = new build_step;
-                buffer->program = query->value(QSL("program")).toString();
-                buffer->argument = query->value(QSL("argument")).toString();
-                buffer->directory = query->value(QSL("directory")).toString();
+                buffer->m_id = query->value(QSL("id")).toInt();
+                buffer->m_pkg = pkg;
+                buffer->m_app = query->value(QSL("program")).toString();
+                buffer->m_arg = query->value(QSL("argument")).toString();
+                buffer->m_dir = query->value(QSL("directory")).toString();
                 offset->append(buffer);
         }
 
@@ -221,37 +244,13 @@ QList<build_step*>* database::build_fetch(const QString &pkg)
         return offset;
 }
 
-bool database::build_exists(const QString &pkg, const build_step &step)
+
+bool database::build_remove(int id)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
-        query->prepare(QSL("SELECT EXISTS(SELECT 1 FROM build WHERE program=:program AND argument=:argument AND directory=:directory AND pkg=:pkg)"));
-        query->bindValue(BUILD_PROGRAM, QVariant(step.program));
-        query->bindValue(BUILD_ARG, QVariant(step.argument));
-        query->bindValue(BUILD_DIR, QVariant(step.directory));
-        query->bindValue(BUILD_PKG, QVariant(pkg));
-
-        if(!query->exec()) {
-#ifdef QT_DEBUG
-                qDebug() << query->lastQuery() << query->lastError().text();
-#endif
-                query->finish();
-                return false;
-        }
-
-        if(query->next())
-                return query->value(0).toBool();
-}
-
-bool database::build_remove(const QString &pkg, const build_step &step)
-{
-        QSqlQuery* query = new QSqlQuery(*m_db);
-
-        query->prepare(QSL("DELETE FROM build WHERE program=:program AND argument=:argument AND directory=:directory AND pkg=:pkg"));
-        query->bindValue(BUILD_PROGRAM, QVariant(step.program));
-        query->bindValue(BUILD_ARG, QVariant(step.argument));
-        query->bindValue(BUILD_DIR, QVariant(step.directory));
-        query->bindValue(BUILD_PKG, QVariant(pkg));
+        query->prepare(QSL("DELETE FROM build WHERE id=:id"));
+        query->bindValue(BUILD_ID, QVariant(id));
 
         if(!query->exec()) {
 #ifdef QT_DEBUG

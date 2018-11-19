@@ -50,27 +50,27 @@ public:
          * @param step is the build_step to insert
          * @return if insert routine it's ok will return true otherwise false
          */
-        bool build_insert(const QString &pkg, const build_step &step);
+        bool build_insert(const build_step &step);
+        /**
+         * @brief build_insert insert into the database all variables
+         * @param pkg is the name of the package to insert
+         * @param step is the build_step to insert
+         * @return if insert routine it's ok will return true otherwise false
+         */
+        bool build_update(int id, const build_step &step);
         /**
          * @brief build_fetch check if there are build_step on the database, if yes it will put all data on values list
          * @param pkg is the name of the package
          * @return if package don't exist or something is wrong, it will return a nullptr
          */
-        QList<build_step *> *build_fetch(const QString &pkg);
-        /**
-         * @brief build_exists check if the build_step is on the database
-         * @param pkg is the name of the package to find
-         * @param step is the build_step to find
-         * @return if package don't exist it will return false, otherwise true
-         */
-        bool build_exists(const QString &pkg, const build_step &step);
+        QList<build_step *> *build_fetch(int pkg);
         /**
          * @brief build_remove remove the build_step on the database
          * @param pkg is the name of the package to find
          * @param step is the build_step to find
          * @return if step_build don't exist it will return false, otherwise true
          */
-        bool build_remove(const QString &pkg, const build_step &step);
+        bool build_remove(int id);
         /**
          * @brief cl_insert insert into the database all variables
          * @param cl is the changelog to insert

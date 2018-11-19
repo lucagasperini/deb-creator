@@ -8,11 +8,14 @@ class build_step : public QObject
         Q_OBJECT
 public:
         explicit build_step(QObject *parent = nullptr);
+        explicit build_step(int id, int pkg, QString app, QString arg, QString dir, QObject *parent = nullptr);
         explicit build_step(const build_step &step);
 
-        QString program;
-        QString argument;
-        QString directory;
+        int m_id;
+        int m_pkg;
+        QString m_app;
+        QString m_arg;
+        QString m_dir;
 };
 
 #endif // BUILD_STEP_H

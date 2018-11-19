@@ -17,7 +17,7 @@ build_editor::build_editor(const QList<build_step *> *steps, const QString &work
         if(steps != nullptr) {
                 QStringList buffer;
                 for(int i = 0; i < steps->size(); i++)
-                        buffer << steps->at(i)->program;
+                        buffer << steps->at(i)->m_app;
 
                 ui->list_program->addItems(buffer);
         }
@@ -57,7 +57,7 @@ void build_editor::browse_dir()
 void build_editor::list_index()
 {
         const build_step *buffer = m_step->at(ui->list_program->currentRow());
-        ui->ln_program->setText(buffer->program);
-        ui->txt_args->setText(buffer->argument);
-        ui->ln_dir->setText(buffer->directory);
+        ui->ln_program->setText(buffer->m_app);
+        ui->txt_args->setText(buffer->m_arg);
+        ui->ln_dir->setText(buffer->m_dir);
 }
