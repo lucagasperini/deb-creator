@@ -33,11 +33,13 @@ build_editor::~build_editor()
         delete ui;
 }
 
-void build_editor::ok()
+build_step* build_editor::ok()
 {
-        program = ui->ln_program->text();
-        args = ui->txt_args->toPlainText();
-        working_dir = ui->ln_dir->text();
+        build_step *offset = new build_step;
+        offset->m_app = ui->ln_program->text();
+        offset->m_arg = ui->txt_args->toPlainText();
+        offset->m_dir = ui->ln_dir->text();
+        return offset;
 }
 
 void build_editor::browse_program()

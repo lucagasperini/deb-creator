@@ -18,12 +18,9 @@ public:
         explicit build_editor(const QList<build_step*>* steps = nullptr, const QString &_working_dir = "", QWidget *parent = 0);
         ~build_editor();
 
-        QString program;
-        QString args;
-        QString working_dir;
         const QList<build_step*>* m_step;
 public slots:
-        void ok();
+        build_step *ok();
         void browse_program();
         void browse_dir();
         void list_index();

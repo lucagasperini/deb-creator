@@ -381,12 +381,12 @@ void mainwindow::build_add()
         if(editor->exec() == QDialog::Rejected)
                 return;
 
-        editor->ok();
+        build_step *p = editor->ok();
 
         ui->tbl_order->insertRow(row);
-        ui->tbl_order->setItem(row, 0, new QTableWidgetItem(editor->program));
-        ui->tbl_order->setItem(row, 1, new QTableWidgetItem(editor->args));
-        ui->tbl_order->setItem(row, 2, new QTableWidgetItem(editor->working_dir));
+        ui->tbl_order->setItem(row, 0, new QTableWidgetItem(p->m_app));
+        ui->tbl_order->setItem(row, 1, new QTableWidgetItem(p->m_arg));
+        ui->tbl_order->setItem(row, 2, new QTableWidgetItem(p->m_dir));
 }
 
 void mainwindow::build_remove()
