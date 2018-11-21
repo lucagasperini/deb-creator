@@ -60,7 +60,6 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->btn_compile, &QPushButton::clicked, this, &mainwindow::compile);
         connect(ui->btn_buildadd, &QPushButton::clicked, this, &mainwindow::build_add);
         connect(ui->btn_buildremove, &QPushButton::clicked, this, &mainwindow::build_remove);
-        connect(ui->btn_buildsave, &QPushButton::clicked, this, &mainwindow::build_save);
         connect(ui->btn_custom_refresh, &QPushButton::clicked, this, &mainwindow::custom_refresh);
         connect(ui->btn_custom_save, &QPushButton::clicked, this, &mainwindow::custom_save);
 
@@ -355,9 +354,21 @@ void mainwindow::compile_import_remote()
 
 void mainwindow::compile()
 {
-        if(m_process->is_empty()) {
-                QMessageBox::warning(this, QSL("Compile Package"), QSL("Step build are not saved!\nPlease save step build in order to compile source code."));
+        const int rows = ui->tbl_order->rowCount();
+        if(rows == 0) {
+                QMessageBox::warning(this, QSL("Compile Package"), QSL("Step build table cannot be empty!\nPlease insert a step build in order to compile source code."));
                 return;
+        }
+        m_process->clear();
+        for(int i = 0; i < rows; i++) {
+                build_step step;
+                step.m_pkg = m_pkg->m_id;
+                step.m_app = ui->tbl_order->item(i, 0)->text();
+                step.m_arg = ui->tbl_order->item(i, 1)->text();
+                step.m_dir = ui->tbl_order->item(i, 2)->text();
+
+                m_process->append(step);
+                m_db->build_insert(step);
         }
         m_process->start();
 }
@@ -381,27 +392,6 @@ void mainwindow::build_add()
 void mainwindow::build_remove()
 {
         ui->tbl_order->removeRow(ui->tbl_order->currentRow());
-}
-
-void mainwindow::build_save()
-{
-        const int rows = ui->tbl_order->rowCount();
-        if(rows == 0) {
-                QMessageBox::warning(this, QSL("Compile Package"), QSL("Step build table cannot be empty!\nPlease insert a step build in order to compile source code."));
-                return;
-        }
-
-        m_process->clear();
-        for(int i = 0; i < rows; i++) {
-                build_step step;
-                step.m_pkg = m_pkg->m_id;
-                step.m_app = ui->tbl_order->item(i, 0)->text();
-                step.m_arg = ui->tbl_order->item(i, 1)->text();
-                step.m_dir = ui->tbl_order->item(i, 2)->text();
-
-                m_process->append(step);
-                m_db->build_insert(step);
-        }
 }
 
 void mainwindow::custom_refresh()
