@@ -19,6 +19,7 @@ using namespace std;
 
 mainwindow::mainwindow(QWidget *parent) :
         QMainWindow(parent),
+        m_build_db(nullptr),
         ui(new Ui::mainwindow),
         ui_dep(nullptr),
         ui_about(new about),
@@ -106,6 +107,8 @@ void mainwindow::load()
         ui->tab_changelog->setEnabled(true);
         ui->tab_custom->setEnabled(true);
         ui->btn_createpackage->setEnabled(true);
+
+        ui->ln_build_dir->setText(m_pkg->build_dir());
 }
 
 void mainwindow::save()
@@ -370,6 +373,10 @@ void mainwindow::build()
 
 void mainwindow::build_add()
 {
+        if(ui->ln_build_app->text().isEmpty()) {
+                QMessageBox::warning(this, QSL("Compile Package"), QSL("Please insert a program to run in build process."));
+                return;
+        }
         build_step* p = new build_step;
         p->m_app = ui->ln_build_app->text();
         p->m_arg = ui->txt_build_arg->toPlainText();
@@ -388,6 +395,9 @@ void mainwindow::build_remove()
 
 void mainwindow::build_reload()
 {
+        ui->list_build_db->clear();
+        if(m_build_db != nullptr)
+                m_build_db->clear();
         m_build_db = m_db->build_fetch(m_pkg->m_id);
         for(int i = 0; i < m_build_db->size(); i++)
                 ui->list_build_db->addItem(m_build_db->at(i)->m_app);
