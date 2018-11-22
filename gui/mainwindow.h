@@ -63,6 +63,9 @@ private slots:
         void build_add();
         void build_remove();
         void build_reload();
+        void build_select(int row);
+        void build_browse_app();
+        void build_browse_dir();
         void custom_refresh();
         void custom_save();
         void custom_load(const QModelIndex &a);

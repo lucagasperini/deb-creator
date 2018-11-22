@@ -62,6 +62,8 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->btn_build, &QPushButton::clicked, this, &mainwindow::build);
         connect(ui->btn_buildadd, &QPushButton::clicked, this, &mainwindow::build_add);
         connect(ui->btn_buildremove, &QPushButton::clicked, this, &mainwindow::build_remove);
+        connect(ui->btn_build_dir, &QPushButton::clicked, this, &mainwindow::build_browse_dir);
+        connect(ui->btn_build_app, &QPushButton::clicked, this, &mainwindow::build_browse_app);
         connect(ui->btn_custom_refresh, &QPushButton::clicked, this, &mainwindow::custom_refresh);
         connect(ui->btn_custom_save, &QPushButton::clicked, this, &mainwindow::custom_save);
 
@@ -73,6 +75,7 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->a_loadctrl, &QAction::triggered, this, &mainwindow::control_load);
         connect(ui->lsw_welcome, &QListWidget::currentTextChanged, this, &mainwindow::control_database);
         connect(ui->lsw_changelog, &QListWidget::currentRowChanged, this, &mainwindow::changelog_change);
+        connect(ui->list_build_db, &QListWidget::currentRowChanged, this, &mainwindow::build_select);
         connect(ui->tree_filesystem, &QTreeView::clicked, this, &mainwindow::custom_load);
         // connect(ui->a_manual) TODO: Add a manual?
 
@@ -382,7 +385,7 @@ void mainwindow::build_add()
         p->m_arg = ui->txt_build_arg->toPlainText();
         p->m_dir = ui->ln_build_dir->text();
         m_build->append(p);
-        QString text = QString::number(ui->list_build->count()) + ") " + p->m_dir + "$ " + p->m_app + " " + p->m_arg;
+        QString text = "[ " + p->m_dir + " ]$ " + p->m_app + " " + p->m_arg;
         ui->list_build->addItem(text);
 }
 
@@ -390,7 +393,7 @@ void mainwindow::build_remove()
 {
         const int current = ui->list_build->currentRow();
         m_build->removeAt(current);
-        ui->list_build->removeItemWidget(ui->list_build->item(current));
+        delete ui->list_build->item(current);
 }
 
 void mainwindow::build_reload()
@@ -401,6 +404,28 @@ void mainwindow::build_reload()
         m_build_db = m_db->build_fetch(m_pkg->m_id);
         for(int i = 0; i < m_build_db->size(); i++)
                 ui->list_build_db->addItem(m_build_db->at(i)->m_app);
+}
+
+void mainwindow::build_select(int row)
+{
+        build_step* current = m_build_db->at(row);
+        ui->ln_build_app->setText(current->m_app);
+        ui->txt_build_arg->setText(current->m_arg);
+        ui->ln_build_dir->setText(current->m_dir);
+}
+
+void mainwindow::build_browse_app()
+{
+        QString program;
+        program = QFileDialog::getOpenFileName(this, QSL("Select the program file"), SYS_PROGRAM_DIR);
+        ui->ln_build_app->setText(program);
+}
+
+void mainwindow::build_browse_dir()
+{
+        QString dir;
+        dir = QFileDialog::getExistingDirectory(this, QSL("Select the working directory"), ui->ln_build_dir->text());
+        ui->ln_build_dir->setText(dir);
 }
 
 void mainwindow::custom_refresh()
