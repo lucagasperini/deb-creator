@@ -28,21 +28,18 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     depend.cpp \
-    depend_add.cpp \
-    build_editor.cpp
+    depend_add.cpp
 
 HEADERS += \
         mainwindow.h \
         about.h \
     depend.h \
-    depend_add.h \
-    build_editor.h
+    depend_add.h
 
 FORMS += \
         mainwindow.ui \
     depend.ui \
-    depend_add.ui \
-    build_editor.ui
+    depend_add.ui
 
 target.path = /usr/bin/
 icon.path = /usr/share/pixmaps/

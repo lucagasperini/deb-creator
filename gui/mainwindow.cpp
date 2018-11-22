@@ -28,6 +28,7 @@ mainwindow::mainwindow(QWidget *parent) :
         m_pkg = new package;
         m_process = new multiprocess;
         m_db = new database;
+        m_build = new QList<build_step*>;
         filesystem::debcreator_directory();
 
         ui->setupUi(this);
@@ -57,7 +58,7 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->btn_changelog_save, &QPushButton::clicked, this, &mainwindow::changelog_save);
         connect(ui->btn_compile_import_local, &QPushButton::clicked, this, &mainwindow::compile_import_local);
         connect(ui->btn_compile_import_remote, &QPushButton::clicked, this, &mainwindow::compile_import_remote);
-        connect(ui->btn_compile, &QPushButton::clicked, this, &mainwindow::compile);
+        connect(ui->btn_build, &QPushButton::clicked, this, &mainwindow::build);
         connect(ui->btn_buildadd, &QPushButton::clicked, this, &mainwindow::build_add);
         connect(ui->btn_buildremove, &QPushButton::clicked, this, &mainwindow::build_remove);
         connect(ui->btn_custom_refresh, &QPushButton::clicked, this, &mainwindow::custom_refresh);
@@ -294,6 +295,7 @@ void mainwindow::control_database(const QString &str)
         m_pkg->copy(*tmp);
         load();
         changelog_reload();
+        build_reload();
 }
 
 void mainwindow::control_load()
@@ -352,46 +354,43 @@ void mainwindow::compile_import_remote()
         ui->tw_compile->setRootIndex(m_model_compile->index(build_dir));
 }
 
-void mainwindow::compile()
+void mainwindow::build()
 {
-        const int rows = ui->tbl_order->rowCount();
+        const int rows = ui->list_build->count();
         if(rows == 0) {
                 QMessageBox::warning(this, QSL("Compile Package"), QSL("Step build table cannot be empty!\nPlease insert a step build in order to compile source code."));
                 return;
         }
         m_process->clear();
-        for(int i = 0; i < rows; i++) {
-                build_step step;
-                step.m_pkg = m_pkg->m_id;
-                step.m_app = ui->tbl_order->item(i, 0)->text();
-                step.m_arg = ui->tbl_order->item(i, 1)->text();
-                step.m_dir = ui->tbl_order->item(i, 2)->text();
-
-                m_process->append(step);
-                m_db->build_insert(step);
+        for(int i = 0; i < m_build->size(); i++) {
+                m_process->append(*m_build->at(i));
         }
         m_process->start();
 }
 
 void mainwindow::build_add()
 {
-        const int row = ui->tbl_order->rowCount();
-
-        build_editor *editor = new build_editor(m_db->build_fetch(m_pkg->m_id), m_pkg->build_dir(), this);
-        if(editor->exec() == QDialog::Rejected)
-                return;
-
-        build_step *p = editor->ok();
-
-        ui->tbl_order->insertRow(row);
-        ui->tbl_order->setItem(row, 0, new QTableWidgetItem(p->m_app));
-        ui->tbl_order->setItem(row, 1, new QTableWidgetItem(p->m_arg));
-        ui->tbl_order->setItem(row, 2, new QTableWidgetItem(p->m_dir));
+        build_step* p = new build_step;
+        p->m_app = ui->ln_build_app->text();
+        p->m_arg = ui->txt_build_arg->toPlainText();
+        p->m_dir = ui->ln_build_dir->text();
+        m_build->append(p);
+        QString text = QString::number(ui->list_build->count()) + ") " + p->m_dir + "$ " + p->m_app + " " + p->m_arg;
+        ui->list_build->addItem(text);
 }
 
 void mainwindow::build_remove()
 {
-        ui->tbl_order->removeRow(ui->tbl_order->currentRow());
+        const int current = ui->list_build->currentRow();
+        m_build->removeAt(current);
+        ui->list_build->removeItemWidget(ui->list_build->item(current));
+}
+
+void mainwindow::build_reload()
+{
+        m_build_db = m_db->build_fetch(m_pkg->m_id);
+        for(int i = 0; i < m_build_db->size(); i++)
+                ui->list_build_db->addItem(m_build_db->at(i)->m_app);
 }
 
 void mainwindow::custom_refresh()

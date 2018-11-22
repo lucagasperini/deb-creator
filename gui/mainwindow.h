@@ -8,7 +8,6 @@
 
 #include "about.h"
 #include "depend.h"
-#include "build_editor.h"
 
 namespace Ui
 {
@@ -26,6 +25,8 @@ public:
         QMap<int,QString>* m_pkglist;
         package *m_pkg;
         multiprocess *m_process;
+        QList<build_step*>* m_build;
+        QList<build_step*>* m_build_db;
         QList<changelog*>* m_changelog;
         database *m_db;
 
@@ -58,9 +59,10 @@ private slots:
         void changelog_change(int row);
         void compile_import_local();
         void compile_import_remote();
-        void compile();
+        void build();
         void build_add();
         void build_remove();
+        void build_reload();
         void custom_refresh();
         void custom_save();
         void custom_load(const QModelIndex &a);
