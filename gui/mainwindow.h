@@ -25,7 +25,6 @@ public:
         QMap<int,QString>* m_pkglist;
         package *m_pkg;
         multiprocess *m_process;
-        QList<build_step*>* m_build;
         QList<build_step*>* m_build_db;
         QList<changelog*>* m_changelog;
         database *m_db;

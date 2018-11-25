@@ -29,7 +29,6 @@ mainwindow::mainwindow(QWidget *parent) :
         m_pkg = new package;
         m_process = new multiprocess;
         m_db = new database;
-        m_build = new QList<build_step*>;
         filesystem::debcreator_directory();
 
         ui->setupUi(this);
@@ -367,10 +366,6 @@ void mainwindow::build()
                 QMessageBox::warning(this, QSL("Compile Package"), QSL("Step build table cannot be empty!\nPlease insert a step build in order to compile source code."));
                 return;
         }
-        m_process->clear();
-        for(int i = 0; i < m_build->size(); i++) {
-                m_process->append(*m_build->at(i));
-        }
         m_process->start();
 }
 
@@ -384,7 +379,7 @@ void mainwindow::build_add()
         p->m_app = ui->ln_build_app->text();
         p->m_arg = ui->txt_build_arg->toPlainText();
         p->m_dir = ui->ln_build_dir->text();
-        m_build->append(p);
+        m_process->m_build->append(p);
         QString text = "[ " + p->m_dir + " ]$ " + p->m_app + " " + p->m_arg;
         ui->list_build->addItem(text);
 }
@@ -392,7 +387,7 @@ void mainwindow::build_add()
 void mainwindow::build_remove()
 {
         const int current = ui->list_build->currentRow();
-        m_build->removeAt(current);
+        m_process->m_build->removeAt(current);
         delete ui->list_build->item(current);
 }
 
