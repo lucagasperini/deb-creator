@@ -28,18 +28,21 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     depend.cpp \
-    depend_add.cpp
+    depend_add.cpp \
+    pkgwindow.cpp
 
 HEADERS += \
         mainwindow.h \
         about.h \
     depend.h \
-    depend_add.h
+    depend_add.h \
+    pkgwindow.h
 
 FORMS += \
         mainwindow.ui \
     depend.ui \
-    depend_add.ui
+    depend_add.ui \
+    pkgwindow.ui
 
 target.path = /usr/bin/
 icon.path = /usr/share/pixmaps/

@@ -14,6 +14,7 @@ class database : public QObject
 public:
         explicit database(QObject *parent = nullptr);
         explicit database(const QString &file_db, QObject *parent = nullptr);
+        explicit database(const QString &file_db, const QString &socket = "deb-creator-socket", QObject *parent = nullptr);
 
         /**
          * @brief pkg_insert insert into the database all variables

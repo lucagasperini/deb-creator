@@ -25,6 +25,14 @@ database::database(const QString &file_db, QObject *parent) : QObject(parent)
         m_db->open();
 }
 
+database::database(const QString &file_db, const QString &socket, QObject *parent) : QObject(parent)
+{
+        m_db = new QSqlDatabase(QSqlDatabase::addDatabase(QSL("QSQLITE"), socket));
+        m_db->setDatabaseName(file_db);
+        m_db->open();
+}
+
+
 bool database::pkg_insert(const package *pkg)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);

@@ -18,744 +18,89 @@
     <normaloff>:/resource/debcreator.png</normaloff>:/resource/debcreator.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="2">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>-1</number>
       </property>
-      <widget class="QWidget" name="tab_welcome">
-       <attribute name="title">
-        <string>Welcome</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QListWidget" name="lsw_welcome"/>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="btn_reload">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset theme="view-refresh">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>64</width>
-              <height>64</height>
-             </size>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_add">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset theme="list-add">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>64</width>
-              <height>64</height>
-             </size>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_remove">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset theme="list-remove">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>64</width>
-              <height>64</height>
-             </size>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_control">
-       <attribute name="title">
-        <string>Control file</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <layout class="QGridLayout" name="details_editor">
-          <item row="7" column="1">
-           <widget class="QLineEdit" name="ln_dependancy">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="2">
-           <widget class="QPushButton" name="btn_dependency">
-            <property name="text">
-             <string>Add</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="lbl_dependency">
-            <property name="text">
-             <string>Dependency</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="lbl_uploaders">
-            <property name="text">
-             <string>Uploaders</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="lbl_maintainer">
-            <property name="text">
-             <string>Maintainer</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="lbl_architecture">
-            <property name="text">
-             <string>Architecture</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="0">
-           <widget class="QLabel" name="lbl_descriptiontitle">
-            <property name="text">
-             <string>Description:  title</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="13" column="0">
-           <widget class="QLabel" name="lbl_description">
-            <property name="text">
-             <string>body</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="0">
-           <widget class="QLabel" name="lbl_section">
-            <property name="text">
-             <string>Section</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="lbl_source">
-            <property name="text">
-             <string>Source</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="0">
-           <widget class="QLabel" name="lbl_replace">
-            <property name="text">
-             <string>Replace</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="lbl_homepage">
-            <property name="text">
-             <string>Homepage</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="lbl_name">
-            <property name="text">
-             <string>Package Name</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="lbl_version">
-            <property name="text">
-             <string>Version</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="1" colspan="2">
-           <widget class="QLineEdit" name="ln_replace"/>
-          </item>
-          <item row="11" column="1" colspan="2">
-           <widget class="QLineEdit" name="ln_section"/>
-          </item>
-          <item row="12" column="1" colspan="2">
-           <widget class="QLineEdit" name="ln_descriptiontitle"/>
-          </item>
-          <item row="13" column="1" colspan="2">
-           <widget class="QTextEdit" name="txt_description"/>
-          </item>
-          <item row="6" column="1" colspan="2">
-           <widget class="QComboBox" name="cb_arch">
-            <property name="editable">
-             <bool>true</bool>
-            </property>
-            <item>
-             <property name="text">
-              <string>all</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>amd64</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>i386</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="5" column="1" colspan="2">
-           <widget class="QLineEdit" name="ln_source"/>
-          </item>
-          <item row="4" column="1" colspan="2">
-           <widget class="QLineEdit" name="ln_homepage"/>
-          </item>
-          <item row="3" column="1" colspan="2">
-           <widget class="QLineEdit" name="ln_uploaders"/>
-          </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QLineEdit" name="ln_maintainer">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" colspan="2">
-           <widget class="QLineEdit" name="ln_version"/>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QLineEdit" name="ln_name"/>
-          </item>
-          <item row="8" column="0">
-           <widget class="QLabel" name="lbl_build_dep">
-            <property name="text">
-             <string>Build Dependency</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <widget class="QLineEdit" name="ln_build_dep"/>
-          </item>
-          <item row="8" column="2">
-           <widget class="QPushButton" name="btn_build_dep">
-            <property name="text">
-             <string>Add</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QSplitter" name="splitter">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <widget class="QWidget" name="layoutWidget">
-           <layout class="QVBoxLayout" name="control_file_editor">
-            <item>
-             <widget class="QLabel" name="lbl_control">
-              <property name="text">
-               <string>Control file</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QTextEdit" name="txt_control">
-              <property name="lineWrapMode">
-               <enum>QTextEdit::NoWrap</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btn_gencontrol">
-              <property name="text">
-               <string>Generate control file</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_compile">
-       <attribute name="title">
-        <string>Compile</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_3">
-        <item row="1" column="2" rowspan="3">
-         <layout class="QGridLayout" name="gridLayout_6">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <item row="1" column="0">
-           <layout class="QGridLayout" name="gridLayout_2">
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <item row="3" column="1" colspan="2">
-             <widget class="QTextEdit" name="txt_build_arg"/>
-            </item>
-            <item row="5" column="1">
-             <widget class="QLineEdit" name="ln_build_dir"/>
-            </item>
-            <item row="5" column="2">
-             <widget class="QPushButton" name="btn_build_dir">
-              <property name="text">
-               <string>Browse</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QLabel" name="lbl_build_dir">
-              <property name="text">
-               <string>Working Directory</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLabel" name="lbl_build_args">
-              <property name="text">
-               <string>Arguments</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="ln_build_app"/>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="lbl_build_program">
-              <property name="text">
-               <string>Program File</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="2">
-             <widget class="QPushButton" name="btn_build_app">
-              <property name="text">
-               <string>Browse</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="0" colspan="3">
-             <widget class="QPushButton" name="btn_build">
-              <property name="text">
-               <string>Build</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0" rowspan="6">
-             <widget class="QListWidget" name="list_build_db"/>
-            </item>
-            <item row="6" column="0" colspan="3">
-             <widget class="QListWidget" name="list_build"/>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="1">
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QPushButton" name="btn_buildadd">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset theme="insert-table-row">
-                <normaloff>.</normaloff>.</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>64</width>
-                <height>64</height>
-               </size>
-              </property>
-              <property name="flat">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btn_buildremove">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset theme="removecell">
-                <normaloff>.</normaloff>.</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>64</width>
-                <height>64</height>
-               </size>
-              </property>
-              <property name="flat">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QLabel" name="lbl_build">
-            <property name="text">
-             <string>Build:</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="0" column="0" colspan="3">
-         <layout class="QGridLayout" name="gridLayout_7">
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="lbl_compile_import_clone">
-            <property name="text">
-             <string>Git clone:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="lbl_compile_import_local">
-            <property name="text">
-             <string>Directory:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="ln_compile_import_remote"/>
-          </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="btn_compile_import_remote">
-            <property name="text">
-             <string>Import from remote</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QPushButton" name="btn_compile_import_local">
-            <property name="text">
-             <string>Import from local</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="ln_compile_import_local"/>
-          </item>
-         </layout>
-        </item>
-        <item row="1" column="0" rowspan="4">
-         <layout class="QGridLayout" name="gridLayout_5">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetDefaultConstraint</enum>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item row="2" column="0" colspan="3">
-           <widget class="QTreeView" name="tw_compile">
-            <property name="maximumSize">
-             <size>
-              <width>256</width>
-              <height>16777215</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_changelog">
-       <attribute name="title">
-        <string>Changelog</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="3" column="2" colspan="2">
-         <widget class="QTextEdit" name="txt_changelog"/>
-        </item>
-        <item row="1" column="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <widget class="QLabel" name="lbl_cl_version">
-            <property name="text">
-             <string>Version:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="ln_cl_version">
-            <property name="readOnly">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="lbl_status">
-            <property name="text">
-             <string>Status:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="ln_status"/>
-          </item>
-          <item>
-           <widget class="QLabel" name="lbl_urgency">
-            <property name="text">
-             <string>Urgency Level:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="cb_urgency">
-            <property name="minimumSize">
-             <size>
-              <width>250</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="currentIndex">
-             <number>1</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>low</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>medium</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>high</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="4" column="1" colspan="3">
-         <widget class="QPushButton" name="btn_changelog_save">
-          <property name="text">
-           <string>Create changelog</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0" rowspan="2">
-         <widget class="QListWidget" name="lsw_changelog">
-          <property name="maximumSize">
-           <size>
-            <width>256</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="btn_changelog_add">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset theme="insert-table-row">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>64</width>
-              <height>64</height>
-             </size>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btn_changelog_remove">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset theme="delete-table-row">
-              <normaloff>.</normaloff>.</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>64</width>
-              <height>64</height>
-             </size>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_custom">
-       <attribute name="title">
-        <string>Custom File</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_4">
-        <item row="1" column="0" rowspan="3">
-         <widget class="QTreeView" name="tree_filesystem">
-          <property name="maximumSize">
-           <size>
-            <width>256</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QPushButton" name="btn_custom_save">
-          <property name="text">
-           <string>Save</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QPushButton" name="btn_custom_refresh">
-          <property name="text">
-           <string>Refresh</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1" rowspan="3">
-         <widget class="QTextEdit" name="txt_code"/>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="btn_createpackage">
-      <property name="text">
-       <string>Create package</string>
+      <property name="tabsClosable">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
+    <item row="1" column="1">
+     <widget class="QListWidget" name="lsw_welcome">
+      <property name="maximumSize">
+       <size>
+        <width>256</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout_5">
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
       <item>
-       <widget class="QLabel" name="lbl_output">
+       <widget class="QPushButton" name="btn_reload">
         <property name="text">
-         <string>Output</string>
+         <string/>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QTextEdit" name="txt_output">
-        <property name="lineWrapMode">
-         <enum>QTextEdit::NoWrap</enum>
+        <property name="icon">
+         <iconset theme="view-refresh">
+          <normaloff>.</normaloff>.</iconset>
         </property>
-        <property name="readOnly">
+        <property name="iconSize">
+         <size>
+          <width>64</width>
+          <height>64</height>
+         </size>
+        </property>
+        <property name="flat">
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btn_clear">
+       <widget class="QPushButton" name="btn_add">
         <property name="text">
-         <string>Clear</string>
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="list-add">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>64</width>
+          <height>64</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_remove">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset theme="list-remove">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>64</width>
+          <height>64</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -776,8 +121,14 @@
     <property name="title">
      <string>Fi&amp;le</string>
     </property>
+    <widget class="QMenu" name="menu_loadpkg">
+     <property name="title">
+      <string>Load Package</string>
+     </property>
+    </widget>
     <addaction name="a_quit"/>
     <addaction name="a_loadctrl"/>
+    <addaction name="menu_loadpkg"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -831,6 +182,11 @@
   <action name="a_loadctrl">
    <property name="text">
     <string>&amp;Load Control</string>
+   </property>
+  </action>
+  <action name="action_p">
+   <property name="text">
+    <string>òpò</string>
    </property>
   </action>
  </widget>
