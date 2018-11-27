@@ -24,7 +24,7 @@ public:
         explicit mainwindow(QWidget *parent = nullptr);
         ~mainwindow();
 
-        QMap<int,QString>* m_pkglist;
+        package_list* m_pkglist;
         database *m_db;
 private:
         Ui::mainwindow *ui;

@@ -4,6 +4,7 @@
 #include "multiprocess.h"
 #include "define.h"
 #include "package.h"
+#include "package_list.h"
 #include "changelog.h"
 #include "git.h"
 #include "filesystem.h"

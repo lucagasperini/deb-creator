@@ -33,7 +33,8 @@ HEADERS += \
     git.h \
     filesystem.h \
     database.h \
-    build_step.h
+    build_step.h \
+    package_list.h
 
 SOURCES += \
     multiprocess.cpp \
@@ -43,7 +44,8 @@ SOURCES += \
     git.cpp \
     filesystem.cpp \
     database.cpp \
-    build_step.cpp
+    build_step.cpp \
+    package_list.cpp
 
 target.path = /usr/lib/
 

@@ -1,7 +1,7 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include "package.h"
+#include "package_list.h"
 #include "build_step.h"
 #include "changelog.h"
 
@@ -23,16 +23,10 @@ public:
          */
         bool pkg_insert(const package *pkg);
         /**
-         * @brief pkg_fetch fetch all package name and id from database
+         * @brief pkg_fetch fetch all package from database
          * @return list of packages name of database
          */
-        QMap<int,QString>* pkg_fetch();
-        /**
-         * @brief pkg_fetch check if the package is on the database, if yes it will put all data into the variables
-         * @param pkg is the name of the package to fetch
-         * @return if package don't exist or something is wrong, it will return false, otherwise true
-         */
-        package *pkg_fetch(int id);
+        package_list* pkg_fetch();
         /**
          * @brief pkg_exists check if the package is on the database
          * @param id is the index of the package to find

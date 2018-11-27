@@ -16,6 +16,7 @@ mainwindow::mainwindow(QWidget *parent) :
         ui(new Ui::mainwindow)
 {
         m_db = new database(DEB_CREATOR_DB, "deb-creator-main");
+        m_pkglist = m_db->pkg_fetch();
         filesystem::debcreator_directory();
 
         ui->setupUi(this);
@@ -48,14 +49,13 @@ void mainwindow::reload()
                 return;
 
         ui->lsw_welcome->clear();
-        ui->lsw_welcome->addItems(m_pkglist->values());
+        ui->lsw_welcome->addItems(m_pkglist->names());
 }
 
 
 void mainwindow::open(const QString &pkg)
 {
-        package *found = m_db->pkg_fetch(m_pkglist->key(pkg));
-        pkgwindow *w = new pkgwindow(*found);
+        pkgwindow *w = new pkgwindow(*m_pkglist->byname(pkg));
         ui->tabWidget->addTab(w, pkg);
 }
 
