@@ -15,14 +15,15 @@ mainwindow::mainwindow(QWidget *parent) :
         QMainWindow(parent),
         ui(new Ui::mainwindow)
 {
-        m_db = new database(DEB_CREATOR_DB, "deb-creator-main");
-        m_pkglist = m_db->pkg_fetch();
+        m_db = new database;
         filesystem::debcreator_directory();
 
         ui->setupUi(this);
 
 
         connect(ui->btn_reload, &QPushButton::clicked, this, &mainwindow::reload);
+        connect(ui->btn_add, &QPushButton::clicked, this, &mainwindow::package_add);
+        connect(ui->btn_remove, &QPushButton::clicked, this, &mainwindow::package_remove);
 
         connect(ui->a_quit, &QAction::triggered, qApp, &QApplication::quit);
         connect(ui->a_about, &QAction::triggered, ui_about, &about::show);
@@ -53,10 +54,29 @@ void mainwindow::reload()
 }
 
 
-void mainwindow::open(const QString &pkg)
+void mainwindow::open(const QString &name)
 {
-        pkgwindow *w = new pkgwindow(*m_pkglist->byname(pkg));
-        ui->tabWidget->addTab(w, pkg);
+        if(name.isEmpty())
+                return;
+
+        QString buffer;
+        for(int i = 0; i < ui->tabWidget->count(); i++) {
+                buffer = ui->tabWidget->tabText(i).remove('&');
+                if(buffer == name) {
+                        ui->tabWidget->setCurrentIndex(i);
+                        return;
+                }
+        }
+
+        package* pkg = m_pkglist->byname(name);
+        if(pkg == nullptr) {
+                pkg = new package();
+                pkg->m_name = name;
+        }
+
+        pkgwindow *w = new pkgwindow(*pkg);
+        ui->tabWidget->addTab(w, name);
+        ui->tabWidget->setCurrentWidget(w);
 }
 
 void mainwindow::close(int index)
@@ -64,18 +84,31 @@ void mainwindow::close(int index)
         ui->tabWidget->removeTab(index);
 }
 
+void mainwindow::package_add()
+{
+        open(QSL("Empty"));
+}
+
+void mainwindow::package_remove()
+{
+        QString name = ui->lsw_welcome->currentItem()->text();
+        m_db->pkg_remove(m_pkglist->byname(name)->m_id);
+        reload();
+}
+
 void mainwindow::control_load()
 {
-        /*        QString filename = QFileDialog::getOpenFileName(this, QSL("Select a valid control file"), QDir::homePath());
-                if(filename.isEmpty()) {
-                        QMessageBox::warning(this, QSL("Control File"), QSL("File name cannot be empty!"));
-                        return;
-                }
-                package *tmp = new package(filesystem::file_read(filename));
-                if(tmp == nullptr || tmp->is_empty()) {
-                        ui->txt_output->append(filename + QSL(" control file is not valid!"));
-                        return;
-                }
-                m_pkg->copy(*tmp);
-                load();*/
+        QString filename = QFileDialog::getOpenFileName(this, QSL("Select a valid control file"), QDir::homePath());
+        if(filename.isEmpty()) {
+                QMessageBox::warning(this, QSL("Control File"), QSL("File name cannot be empty!"));
+                return;
+        }
+        package *tmp = new package(filesystem::file_read(filename));
+        if(tmp == nullptr || tmp->is_empty()) {
+                QMessageBox::warning(this, QSL("Control File"), filename + QSL(" control file is not valid!"));
+                return;
+        }
+        pkgwindow *w = new pkgwindow(*tmp);
+        ui->tabWidget->addTab(w, tmp->m_name);
+        ui->tabWidget->setCurrentWidget(w);
 }

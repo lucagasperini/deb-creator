@@ -5,10 +5,11 @@
 
 #include <QList>
 
-class package_list : public QList<package*>
+class package_list : public QObject, public QList<package*>
 {
+        Q_OBJECT
 public:
-        package_list();
+        package_list(QObject *parent = nullptr);
         QStringList names();
         package* byname(const QString &name);
 };

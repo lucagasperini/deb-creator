@@ -27,7 +27,7 @@ pkgwindow::pkgwindow(const package &pkg, QWidget *parent) :
 {
         m_pkg = new package(pkg);
         m_process = new multiprocess;
-        m_db = new database;
+        m_db = new database(DEB_CREATOR_DB, m_pkg->m_name);
 
         ui->setupUi(this);
 

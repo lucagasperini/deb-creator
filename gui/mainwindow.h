@@ -32,8 +32,11 @@ private:
 
 private slots:
         void reload();
-        void open(const QString &pkg);
+        void open(const QString &name);
         void close(int index);
+
+        void package_add();
+        void package_remove();
         void control_load();
 };
 
