@@ -28,7 +28,6 @@ pkgwindow::pkgwindow(const package &pkg, QWidget *parent) :
         m_pkg = new package(pkg);
         m_process = new multiprocess;
         m_db = new database;
-        filesystem::debcreator_directory();
 
         ui->setupUi(this);
 
