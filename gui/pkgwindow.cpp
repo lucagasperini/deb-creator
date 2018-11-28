@@ -21,7 +21,6 @@ pkgwindow::pkgwindow(const package &pkg, QWidget *parent) :
         m_build_db(nullptr),
         ui(new Ui::pkgwindow),
         ui_dep(nullptr),
-        ui_about(new about),
         m_model_custom(nullptr),
         m_model_compile(nullptr)
 {
@@ -54,11 +53,6 @@ pkgwindow::pkgwindow(const package &pkg, QWidget *parent) :
         connect(ui->btn_custom_refresh, &QPushButton::clicked, this, &pkgwindow::custom_refresh);
         connect(ui->btn_custom_save, &QPushButton::clicked, this, &pkgwindow::custom_save);
 
-        connect(ui->a_create_package, &QAction::triggered, this, &pkgwindow::package_generate);
-        connect(ui->a_generate_control, &QAction::triggered, this, &pkgwindow::control_generate);
-        connect(ui->a_quit, &QAction::triggered, qApp, &QApplication::quit);
-        connect(ui->a_about, &QAction::triggered, ui_about, &about::show);
-        connect(ui->a_aboutqt, &QAction::triggered, qApp, &QApplication::aboutQt);
         connect(ui->lsw_changelog, &QListWidget::currentRowChanged, this, &pkgwindow::changelog_change);
         connect(ui->list_build_db, &QListWidget::currentRowChanged, this, &pkgwindow::build_select);
         connect(ui->tree_filesystem, &QTreeView::clicked, this, &pkgwindow::custom_load);
@@ -301,9 +295,20 @@ void pkgwindow::build_add()
         p->m_app = ui->ln_build_app->text();
         p->m_arg = ui->txt_build_arg->toPlainText();
         p->m_dir = ui->ln_build_dir->text();
+        p->m_pkg = m_pkg->m_id;
+
+        const int current = ui->list_build_db->currentRow();
+        if(current > 0) {
+                build_step* t = m_build_db->at(current);
+                if(p->m_app != t->m_app || p->m_arg != t->m_arg || p->m_dir != t->m_dir)
+                        m_db->build_update(t->m_id, *p);
+        } else {
+                m_db->build_insert(*p);
+        }
         m_process->m_build->append(p);
         QString text = "[ " + p->m_dir + " ]$ " + p->m_app + " " + p->m_arg;
         ui->list_build->addItem(text);
+        build_reload();
 }
 
 void pkgwindow::build_remove()

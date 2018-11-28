@@ -32,7 +32,6 @@ public:
 private:
         Ui::pkgwindow *ui;
         depend* ui_dep;
-        about* ui_about;
 
         QFileSystemModel *m_model_custom;
         QFileSystemModel *m_model_compile;

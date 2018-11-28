@@ -140,8 +140,8 @@
                                 "program=:program,"             \
                                 "argument=:argument,"           \
                                 "directory=:directory,"         \
-                                "pkg=:pkg,"                     \
-                                " WHERE id=:id;")
+                                "pkg=:pkg "                     \
+                                "WHERE id=:id;")
 
 #define DB_BUILD_FIND QSL("SELECT id FROM build "               \
                                 "WHERE program=:program "       \
