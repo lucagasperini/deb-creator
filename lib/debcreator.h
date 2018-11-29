@@ -10,6 +10,7 @@
 #include "filesystem.h"
 #include "database.h"
 #include "apt.h"
+#include "dpkg.h"
 #include "build_step.h"
 
 #endif // DEBCREATOR_H

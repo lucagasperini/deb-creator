@@ -210,15 +210,10 @@ void pkgwindow::package_generate()
                 QMessageBox::warning(this, QSL("Creating Package"), QSL("Control file cannot be empty!\nPlease generate a control file."));
                 return;
         }
-
-        if(m_changelog != nullptr && !m_changelog->isEmpty()) {
-                QByteArray cl_text;
-                for(int i = 0; i < m_changelog->size(); i++) {
-                        cl_text.append(m_changelog->at(i)->generate());
-                }
-                filesystem::file_write(m_pkg->root() + QSL("/DEBIAN/changelog"), cl_text);
-        }
-        output_append(m_pkg->create(control.toUtf8(), outputfile)); //TODO: ADD DPKG CLASS TO HANDLE PACKAGE CREATION
+        dpkg* create = new dpkg(m_pkg->root());
+        create->changelogs(m_changelog);
+        create->control(control.toUtf8());
+        output_append(create->exec(outputfile));
 }
 
 void pkgwindow::output_append(const QString &text)

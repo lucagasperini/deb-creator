@@ -118,33 +118,6 @@ QByteArray package::control() const
         return offset;
 }
 
-QByteArray package::create(const QByteArray& control, const QString &outputfile)
-{
-        QProcess dpkg(this);
-        QTextStream out;
-        QString pkg_root = root();
-        QDir debian_dir(pkg_root + QSL("/DEBIAN"));
-        if(!debian_dir.exists())
-                debian_dir.mkdir(pkg_root + QSL("/DEBIAN"));
-
-        filesystem::file_write(pkg_root + QSL("/DEBIAN/control"), control);
-
-        QString cmd = QSL("dpkg -b ") + pkg_root + QSL(" ") + outputfile;
-
-#ifdef QT_DEBUG
-        qDebug() << QSL("Executing: ") << cmd;
-#endif
-
-        dpkg.start(cmd, QIODevice::ReadWrite);
-
-        QByteArray data;
-
-        while(dpkg.waitForReadyRead()) {
-                data.append(dpkg.readAll());
-        }
-        return data;
-}
-
 QString package::outputfile() const
 {
         return m_name + "_" + m_version + ".deb";

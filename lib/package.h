@@ -25,12 +25,6 @@ public:
          */
         QByteArray control() const;
         /**
-         * @brief package create the package using QProcess to dpkg
-         * @param control is the control text
-         * @param outputfile the path where package is created
-         */
-        QByteArray create(const QByteArray &control, const QString &outputfile);
-        /**
          * @brief outputfile generate a standard filename for package .deb
          * @return filename of the package
          */

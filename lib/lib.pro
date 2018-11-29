@@ -34,7 +34,8 @@ HEADERS += \
     filesystem.h \
     database.h \
     build_step.h \
-    package_list.h
+    package_list.h \
+    dpkg.h
 
 SOURCES += \
     multiprocess.cpp \
@@ -45,7 +46,8 @@ SOURCES += \
     filesystem.cpp \
     database.cpp \
     build_step.cpp \
-    package_list.cpp
+    package_list.cpp \
+    dpkg.cpp
 
 target.path = /usr/lib/
 
