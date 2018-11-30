@@ -3,7 +3,7 @@
 
 #include "package_list.h"
 #include "build_step.h"
-#include "changelog.h"
+#include "changelog_list.h"
 
 #include <QObject>
 #include <QtSql/QSqlDatabase>
@@ -84,7 +84,7 @@ public:
          * @param pkg is the name of the package
          * @return if package don't exist or something is wrong, it will return a nullptr
          */
-        QList<changelog *> *cl_fetch(const package *pkg);
+        changelog_list *cl_fetch(const package *pkg);
         /**
          * @brief cl_exists find id of the changelog on the database
          * @param pkg is the id package of changelog

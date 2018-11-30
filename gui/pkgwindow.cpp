@@ -176,10 +176,7 @@ void pkgwindow::changelog_reload()
         if(m_changelog == nullptr || m_changelog->isEmpty()) {
                 return;
         }
-        QStringList titles;
-        for(int i = 0; i < m_changelog->size(); i++)
-                titles << m_changelog->at(i)->title();
-        ui->lsw_changelog->addItems(titles);
+        ui->lsw_changelog->addItems(m_changelog->titles());
 }
 
 void pkgwindow::changelog_change(int row)

@@ -299,9 +299,9 @@ bool database::cl_update(int id, const changelog &cl)
         return offset;
 }
 
-QList<changelog *> *database::cl_fetch(const package* pkg)
+changelog_list *database::cl_fetch(const package* pkg)
 {
-        QList<changelog*>* offset = nullptr;
+        changelog_list* offset = nullptr;
         QSqlQuery* query = new QSqlQuery(*m_db);
 
         if(!m_db->tables().contains(DB_CL_TABLE))
@@ -319,7 +319,7 @@ QList<changelog *> *database::cl_fetch(const package* pkg)
                 return offset;
         }
 
-        offset = new QList<changelog*>;
+        offset = new changelog_list;
         changelog *buffer;
 
 

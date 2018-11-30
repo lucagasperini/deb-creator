@@ -6,6 +6,7 @@
 #include "package.h"
 #include "package_list.h"
 #include "changelog.h"
+#include "changelog_list.h"
 #include "git.h"
 #include "filesystem.h"
 #include "database.h"

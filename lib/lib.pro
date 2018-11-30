@@ -35,7 +35,8 @@ HEADERS += \
     database.h \
     build_step.h \
     package_list.h \
-    dpkg.h
+    dpkg.h \
+    changelog_list.h
 
 SOURCES += \
     multiprocess.cpp \
@@ -47,7 +48,8 @@ SOURCES += \
     database.cpp \
     build_step.cpp \
     package_list.cpp \
-    dpkg.cpp
+    dpkg.cpp \
+    changelog_list.cpp
 
 target.path = /usr/lib/
 
