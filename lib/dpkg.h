@@ -2,7 +2,7 @@
 #define DPKG_H
 
 #include <QProcess>
-#include <changelog.h>
+#include <changelog_list.h>
 
 class dpkg : public QProcess
 {
@@ -15,7 +15,7 @@ public:
          * @param outputfile the path where package is created
          */
         void control(const QByteArray &control);
-        void changelogs(const QList<changelog*> *cl);
+        void changelogs(const changelog_list *cl);
         QByteArray exec(const QString &outputfile);
 
 };

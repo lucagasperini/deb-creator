@@ -19,16 +19,12 @@ void dpkg::control(const QByteArray& control)
         filesystem::file_write(d_dir + QSL("/control"), control);
 }
 
-void dpkg::changelogs(const QList<changelog*> *cl)
+void dpkg::changelogs(const changelog_list *cl)
 {
         if(cl == nullptr || cl->isEmpty())
                 return;
 
-        QByteArray text;
-        for(int i = 0; i < cl->size(); i++) {
-                text.append(cl->at(i)->generate());
-        }
-        filesystem::file_write(workingDirectory() + QSL("/DEBIAN/changelog"), text);
+        filesystem::file_write(workingDirectory() + QSL("/DEBIAN/changelog"), cl->text());
 }
 
 QByteArray dpkg::exec(const QString &outputfile)
