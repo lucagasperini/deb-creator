@@ -24,7 +24,7 @@ public:
 
         package *m_pkg;
         multiprocess *m_process;
-        QList<build_step*>* m_build_db;
+        list_build_step* m_build_db;
         changelog_list* m_changelog;
         database *m_db;
 

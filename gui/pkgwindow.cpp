@@ -181,10 +181,8 @@ void pkgwindow::changelog_reload()
 
 void pkgwindow::changelog_change(int row)
 {
-        if(row == -1) {
-                row = m_changelog->size() - 1;
-                ui->lsw_changelog->setCurrentRow(row); //if row is invalid select last item
-        }
+        if(row < 0 || row >= m_changelog->size())
+                return;
         changelog* selected = m_changelog->at(row);
         ui->txt_changelog->setText(selected->m_text);
         ui->ln_status->setText(selected->m_status);
@@ -225,7 +223,6 @@ void pkgwindow::output_clear()
 {
         ui->txt_output->clear();
 }
-
 
 void pkgwindow::compile_import_local()
 {
@@ -298,8 +295,7 @@ void pkgwindow::build_add()
                 m_db->build_insert(*p);
         }
         m_process->m_build->append(p);
-        QString text = "[ " + p->m_dir + " ]$ " + p->m_app + " " + p->m_arg;
-        ui->list_build->addItem(text);
+        ui->list_build->addItem(p->shell());
         build_reload();
 }
 
@@ -316,8 +312,7 @@ void pkgwindow::build_reload()
         if(m_build_db != nullptr)
                 m_build_db->clear();
         m_build_db = m_db->build_fetch(m_pkg->m_id);
-        for(int i = 0; i < m_build_db->size(); i++)
-                ui->list_build_db->addItem(m_build_db->at(i)->m_app);
+        ui->list_build_db->addItems(m_build_db->titles());
 }
 
 void pkgwindow::build_select(int row)

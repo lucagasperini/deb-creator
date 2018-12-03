@@ -11,6 +11,8 @@ public:
         explicit build_step(int id, int pkg, QString app, QString arg, QString dir, QObject *parent = nullptr);
         explicit build_step(const build_step &step);
 
+        QString shell();
+
         int m_id;
         int m_pkg;
         QString m_app;

@@ -13,7 +13,8 @@ using namespace std;
 
 mainwindow::mainwindow(QWidget *parent) :
         QMainWindow(parent),
-        ui(new Ui::mainwindow)
+        ui(new Ui::mainwindow),
+        ui_about(new about)
 {
         m_db = new database;
         filesystem::debcreator_directory();
@@ -32,7 +33,6 @@ mainwindow::mainwindow(QWidget *parent) :
         connect(ui->tabWidget, &QTabWidget::tabCloseRequested, this, &mainwindow::close);
         connect(ui->a_loadctrl, &QAction::triggered, this, &mainwindow::control_load);
         // connect(ui->a_manual) TODO: Add a manual?
-
 
         reload();
 }

@@ -13,5 +13,6 @@
 #include "apt.h"
 #include "dpkg.h"
 #include "build_step.h"
+#include "list_build_step.h"
 
 #endif // DEBCREATOR_H

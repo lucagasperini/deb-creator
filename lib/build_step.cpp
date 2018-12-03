@@ -1,4 +1,5 @@
 #include "build_step.h"
+#include "define.h"
 
 build_step::build_step(QObject *parent) : QObject(parent)
 {
@@ -23,4 +24,9 @@ build_step::build_step(const build_step &step)
         m_app = step.m_app;
         m_arg = step.m_arg;
         m_dir = step.m_dir;
+}
+
+QString build_step::shell()
+{
+        return QSL("[ ") + m_dir + QSL(" ]$ ") + m_app + QSL(" ") + m_arg;
 }

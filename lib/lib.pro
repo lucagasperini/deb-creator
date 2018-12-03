@@ -36,7 +36,8 @@ HEADERS += \
     build_step.h \
     package_list.h \
     dpkg.h \
-    changelog_list.h
+    changelog_list.h \
+    list_build_step.h
 
 SOURCES += \
     multiprocess.cpp \
@@ -49,7 +50,8 @@ SOURCES += \
     build_step.cpp \
     package_list.cpp \
     dpkg.cpp \
-    changelog_list.cpp
+    changelog_list.cpp \
+    list_build_step.cpp
 
 target.path = /usr/lib/
 

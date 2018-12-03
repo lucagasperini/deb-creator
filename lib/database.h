@@ -2,7 +2,7 @@
 #define DATABASE_H
 
 #include "package_list.h"
-#include "build_step.h"
+#include "list_build_step.h"
 #include "changelog_list.h"
 
 #include <QObject>
@@ -58,7 +58,7 @@ public:
          * @param pkg is the name of the package
          * @return if package don't exist or something is wrong, it will return a nullptr
          */
-        QList<build_step *> *build_fetch(int pkg);
+        list_build_step *build_fetch(int pkg);
         /**
          * @brief build_remove remove the build_step on the database
          * @param pkg is the name of the package to find

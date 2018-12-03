@@ -1,10 +1,11 @@
 #ifndef MULTIPROCESS_H
 #define MULTIPROCESS_H
 
+#include "list_build_step.h"
+
 #include <QThread>
 #include <QProcess>
 #include <QTextStream>
-#include <build_step.h>
 
 class multiprocess : public QThread
 {
@@ -15,7 +16,7 @@ public:
          * @brief run QThread while all QProcess aren't executed
          */
         void run();
-        QList<build_step*> *m_build;
+        list_build_step *m_build;
 signals:
         void read(const QByteArray &text);
 };

@@ -197,9 +197,8 @@ bool database::build_update(int id, const build_step &step)
         return offset;
 }
 
-QList<build_step*>* database::build_fetch(int pkg)
+list_build_step* database::build_fetch(int pkg)
 {
-        QList<build_step*>* offset = nullptr;
         QSqlQuery* query = new QSqlQuery(*m_db);
 
         query->prepare(QSL("SELECT * FROM build WHERE pkg=:pkg;"));
@@ -210,12 +209,11 @@ QList<build_step*>* database::build_fetch(int pkg)
                 qDebug() << query->lastQuery() << query->lastError().text();
 #endif
                 query->finish();
-                return offset;
+                return nullptr;
         }
 
-        offset = new QList<build_step*>;
+        list_build_step* offset = new list_build_step;
         build_step *buffer;
-
 
         while (query->next()) {
                 buffer = new build_step;
