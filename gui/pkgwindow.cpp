@@ -148,7 +148,7 @@ void pkgwindow::control_generate()
 
 void pkgwindow::changelog_add()
 {
-        changelog cl(0, m_pkg, "", "New changelog", "", "");
+        changelog *cl = new changelog(0, m_pkg, "", "New changelog", "", "");
         m_db->cl_insert(cl);
         changelog_reload();
 }
@@ -162,7 +162,7 @@ void pkgwindow::changelog_remove()
 
 void pkgwindow::changelog_save()
 {
-        changelog cl(0, m_pkg, ui->ln_cl_version->text(), ui->txt_changelog->toPlainText().toUtf8(), ui->ln_status->text(), ui->cb_urgency->currentText()); //FIXME: "0" AS INVALID ID???
+        changelog *cl = new changelog(0, m_pkg, ui->ln_cl_version->text(), ui->txt_changelog->toPlainText().toUtf8(), ui->ln_status->text(), ui->cb_urgency->currentText()); //FIXME: "0" AS INVALID ID???
         changelog *current = m_changelog->at(ui->lsw_changelog->currentRow());
         m_db->cl_update(current->m_id, cl);
         changelog_reload();

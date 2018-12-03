@@ -246,7 +246,7 @@ bool database::build_remove(int id)
         }
         return true;
 }
-bool database::cl_insert(const changelog &cl)
+bool database::cl_insert(const changelog *cl)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
@@ -255,11 +255,11 @@ bool database::cl_insert(const changelog &cl)
                         return false;
 
         query->prepare(DB_CL_INSERT);
-        query->bindValue(CL_PKG, QVariant(cl.m_pkg->m_id));
-        query->bindValue(CL_TEXT, QVariant(cl.m_text));
-        query->bindValue(CL_VERSION, QVariant(cl.m_version));
-        query->bindValue(CL_STATUS, QVariant(cl.m_status));
-        query->bindValue(CL_URGENCY, QVariant(cl.m_urgency));
+        query->bindValue(CL_PKG, QVariant(cl->m_pkg->m_id));
+        query->bindValue(CL_TEXT, QVariant(cl->m_text));
+        query->bindValue(CL_VERSION, QVariant(cl->m_version));
+        query->bindValue(CL_STATUS, QVariant(cl->m_status));
+        query->bindValue(CL_URGENCY, QVariant(cl->m_urgency));
 
         bool offset = query->exec();
 
@@ -271,7 +271,7 @@ bool database::cl_insert(const changelog &cl)
         return offset;
 }
 
-bool database::cl_update(int id, const changelog &cl)
+bool database::cl_update(int id, const changelog *cl)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
@@ -281,11 +281,11 @@ bool database::cl_update(int id, const changelog &cl)
 
         query->prepare(DB_CL_UPDATE);
         query->bindValue(CL_ID, QVariant(id));
-        query->bindValue(CL_PKG, QVariant(cl.m_pkg->m_id));
-        query->bindValue(CL_TEXT, QVariant(cl.m_text));
-        query->bindValue(CL_VERSION, QVariant(cl.m_version));
-        query->bindValue(CL_STATUS, QVariant(cl.m_status));
-        query->bindValue(CL_URGENCY, QVariant(cl.m_urgency));
+        query->bindValue(CL_PKG, QVariant(cl->m_pkg->m_id));
+        query->bindValue(CL_TEXT, QVariant(cl->m_text));
+        query->bindValue(CL_VERSION, QVariant(cl->m_version));
+        query->bindValue(CL_STATUS, QVariant(cl->m_status));
+        query->bindValue(CL_URGENCY, QVariant(cl->m_urgency));
 
         bool offset = query->exec();
 

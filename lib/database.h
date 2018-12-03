@@ -71,14 +71,14 @@ public:
          * @param cl is the changelog to insert
          * @return if insert routine it's ok will return true otherwise false
          */
-        bool cl_insert(const changelog &cl);
+        bool cl_insert(const changelog *cl);
         /**
          * @brief cl_update update a changelog into database
          * @param id is the id of changelog to update
          * @param cl is the changelog to update
          * @return if insert routine it's ok will return true otherwise false
          */
-        bool cl_update(int id, const changelog &cl);
+        bool cl_update(int id, const changelog *cl);
         /**
          * @brief cl_fetch check if there are changelog on the database, if yes it will put all data on values list
          * @param pkg is the name of the package
