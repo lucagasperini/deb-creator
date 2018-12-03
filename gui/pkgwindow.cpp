@@ -75,6 +75,8 @@ pkgwindow::pkgwindow(const package &pkg, QWidget *parent) :
 
         ui->ln_build_dir->setText(m_pkg->build_dir());
 
+        ui->tabWidget->setCurrentIndex(TAB_CONTROL);
+
         changelog_reload();
         build_reload();
 }
