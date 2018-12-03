@@ -56,7 +56,6 @@ pkgwindow::pkgwindow(const package &pkg, QWidget *parent) :
         connect(ui->lsw_changelog, &QListWidget::currentRowChanged, this, &pkgwindow::changelog_change);
         connect(ui->list_build_db, &QListWidget::currentRowChanged, this, &pkgwindow::build_select);
         connect(ui->tree_filesystem, &QTreeView::clicked, this, &pkgwindow::custom_load);
-        // connect(ui->a_manual) TODO: Add a manual?
 
         connect(m_process, &multiprocess::read, this, &pkgwindow::output_append);
 
@@ -286,14 +285,9 @@ void pkgwindow::build_add()
         p->m_dir = ui->ln_build_dir->text();
         p->m_pkg = m_pkg->m_id;
 
-        const int current = ui->list_build_db->currentRow();
-        if(current > 0) {
-                build_step* t = m_build_db->at(current);
-                if(p->m_app != t->m_app || p->m_arg != t->m_arg || p->m_dir != t->m_dir)
-                        m_db->build_update(t->m_id, *p);
-        } else {
-                m_db->build_insert(*p);
-        }
+        if(m_build_db->find(p) == nullptr)
+                m_db->build_insert(p);
+
         m_process->m_build->append(p);
         ui->list_build->addItem(p->shell());
         build_reload();

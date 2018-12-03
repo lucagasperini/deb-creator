@@ -45,14 +45,14 @@ public:
          * @param step is the build_step to insert
          * @return if insert routine it's ok will return true otherwise false
          */
-        bool build_insert(const build_step &step);
+        bool build_insert(const build_step *step);
         /**
          * @brief build_insert insert into the database all variables
          * @param pkg is the name of the package to insert
          * @param step is the build_step to insert
          * @return if insert routine it's ok will return true otherwise false
          */
-        bool build_update(int id, const build_step &step);
+        bool build_update(int id, const build_step *step);
         /**
          * @brief build_fetch check if there are build_step on the database, if yes it will put all data on values list
          * @param pkg is the name of the package

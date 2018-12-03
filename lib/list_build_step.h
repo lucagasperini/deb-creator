@@ -12,6 +12,7 @@ public:
         explicit list_build_step(QObject *parent = nullptr);
 
         QStringList titles();
+        build_step* find(const build_step* p);
 };
 
 #endif // LIST_BUILD_STEP_H

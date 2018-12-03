@@ -148,7 +148,7 @@ bool database::pkg_remove(int id)
 }
 
 
-bool database::build_insert(const build_step &step)
+bool database::build_insert(const build_step *step)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
@@ -157,10 +157,10 @@ bool database::build_insert(const build_step &step)
                         return false;
 
         query->prepare(DB_BUILD_INSERT);
-        query->bindValue(BUILD_PKG, QVariant(step.m_pkg));
-        query->bindValue(BUILD_PROGRAM, QVariant(step.m_app));
-        query->bindValue(BUILD_ARG, QVariant(step.m_arg));
-        query->bindValue(BUILD_DIR, QVariant(step.m_dir));
+        query->bindValue(BUILD_PKG, QVariant(step->m_pkg));
+        query->bindValue(BUILD_PROGRAM, QVariant(step->m_app));
+        query->bindValue(BUILD_ARG, QVariant(step->m_arg));
+        query->bindValue(BUILD_DIR, QVariant(step->m_dir));
 
         bool offset = query->exec();
 
@@ -172,7 +172,7 @@ bool database::build_insert(const build_step &step)
         return offset;
 }
 
-bool database::build_update(int id, const build_step &step)
+bool database::build_update(int id, const build_step *step)
 {
         QSqlQuery* query = new QSqlQuery(*m_db);
 
@@ -182,10 +182,10 @@ bool database::build_update(int id, const build_step &step)
 
         query->prepare(DB_BUILD_UPDATE);
         query->bindValue(BUILD_ID, QVariant(id));
-        query->bindValue(BUILD_PKG, QVariant(step.m_pkg));
-        query->bindValue(BUILD_PROGRAM, QVariant(step.m_app));
-        query->bindValue(BUILD_ARG, QVariant(step.m_arg));
-        query->bindValue(BUILD_DIR, QVariant(step.m_dir));
+        query->bindValue(BUILD_PKG, QVariant(step->m_pkg));
+        query->bindValue(BUILD_PROGRAM, QVariant(step->m_app));
+        query->bindValue(BUILD_ARG, QVariant(step->m_arg));
+        query->bindValue(BUILD_DIR, QVariant(step->m_dir));
 
         bool offset = query->exec();
 
