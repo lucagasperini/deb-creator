@@ -11,6 +11,10 @@ public:
         explicit build_step(int id, int pkg, QString app, QString arg, QString dir, QObject *parent = nullptr);
         explicit build_step(const build_step &step);
 
+        /**
+         * @brief shell how build_step can be print into bash shell
+         * @return string formatted as bash
+         */
         QString shell();
 
         int m_id;

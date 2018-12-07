@@ -44,6 +44,9 @@ public:
          * @return data from target file
          */
         static QByteArray file_read(const QString &filename);
+        /**
+         * @brief debcreator_directory create debcreator directory structure
+         */
         static void debcreator_directory();
 };
 
