@@ -29,20 +29,34 @@ SOURCES += \
         mainwindow.cpp \
     depend.cpp \
     depend_add.cpp \
-    pkgwindow.cpp
+    pkgwindow.cpp \
+    form_control.cpp \
+    form_build.cpp \
+    form_changelog.cpp \
+    form_custom.cpp \
+    form_handler.cpp
 
 HEADERS += \
         mainwindow.h \
         about.h \
     depend.h \
     depend_add.h \
-    pkgwindow.h
+    pkgwindow.h \
+    form_control.h \
+    form_build.h \
+    form_changelog.h \
+    form_custom.h \
+    form_handler.h
 
 FORMS += \
         mainwindow.ui \
     depend.ui \
     depend_add.ui \
-    pkgwindow.ui
+    pkgwindow.ui \
+    form_control.ui \
+    form_build.ui \
+    form_changelog.ui \
+    form_custom.ui
 
 target.path = /usr/bin/
 icon.path = /usr/share/pixmaps/

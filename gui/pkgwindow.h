@@ -2,12 +2,8 @@
 #define PKGWINDOW_H
 
 #include <QMainWindow>
-#include <QFileSystemModel>
 
 #include <debcreator.h>
-
-#include "about.h"
-#include "depend.h"
 
 namespace Ui
 {
@@ -21,45 +17,16 @@ class pkgwindow : public QMainWindow
 public:
         explicit pkgwindow(const package &pkg, QWidget *parent = nullptr);
         ~pkgwindow();
-
         package *m_pkg;
-        multiprocess *m_process;
-        list_build_step* m_build_db;
-        changelog_list* m_changelog;
         database *m_db;
-
-        void save();
-private:
-        Ui::pkgwindow *ui;
-        depend* ui_dep;
-
-        QFileSystemModel *m_model_custom;
-        QFileSystemModel *m_model_compile;
-
-private slots:
-        void depend_show();
-        void depend_build_show();
+        dpkg *m_dpkg;
+public slots:
         void output_append(const QString &text);
         void output_clear();
         void package_generate();
-        void control_generate();
-        void changelog_add();
-        void changelog_remove();
-        void changelog_save();
-        void changelog_reload();
-        void changelog_change(int row);
-        void compile_import_local();
-        void compile_import_remote();
-        void build();
-        void build_add();
-        void build_remove();
-        void build_reload();
-        void build_select(int row);
-        void build_browse_app();
-        void build_browse_dir();
-        void custom_refresh();
-        void custom_save();
-        void custom_load(const QModelIndex &a);
+
+private:
+        Ui::pkgwindow *ui;
 };
 
 #endif // PKGWINDOW_H
