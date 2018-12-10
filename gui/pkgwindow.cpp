@@ -9,12 +9,6 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
-
-#define TAB_CONTROL 0
-#define TAB_COMPILE 1
-#define TAB_CHANGELOG 2
-#define TAB_CUSTOM 3
-
 using namespace std;
 
 pkgwindow::pkgwindow(const package &pkg, QWidget *parent) :
@@ -28,22 +22,22 @@ pkgwindow::pkgwindow(const package &pkg, QWidget *parent) :
         ui->setupUi(this);
 
         form_control *control = new form_control(this);
-        ui->tabWidget->addTab(control, "control");
+        ui->tabWidget->addTab(control, "Control");
         ui->tabWidget->setCurrentWidget(control);
 
         form_changelog *changelog = new form_changelog(this);
-        ui->tabWidget->addTab(changelog, "changelog");
+        ui->tabWidget->addTab(changelog, "Changelog");
         ui->tabWidget->setCurrentWidget(changelog);
 
         form_build *build = new form_build(this);
-        ui->tabWidget->addTab(build, "build");
+        ui->tabWidget->addTab(build, "Build");
         ui->tabWidget->setCurrentWidget(build);
 
         form_custom *custom = new form_custom(this);
-        ui->tabWidget->addTab(custom, "custom");
+        ui->tabWidget->addTab(custom, "Custom");
         ui->tabWidget->setCurrentWidget(custom);
 
-        ui->tabWidget->setCurrentIndex(TAB_CONTROL);
+        ui->tabWidget->setCurrentWidget(control);
 
         connect(ui->btn_createpackage, &QPushButton::clicked, control, &form_handler::generate);
         connect(ui->btn_createpackage, &QPushButton::clicked, changelog, &form_handler::generate);
