@@ -12,6 +12,7 @@ form_build::form_build(pkgwindow *handler, QWidget *parent) :
 {
         ui->setupUi(this);
 
+        m_process = new multiprocess;
         m_model_compile = new QFileSystemModel;
         ui->tw_compile->setModel(m_model_compile);
 

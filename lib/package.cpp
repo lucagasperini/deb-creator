@@ -113,7 +113,8 @@ QByteArray package::control() const
         if (!m_desc_body.isEmpty()) {
                 QStringList rows = m_desc_body.split('\n');
                 for(int i = 0; i < rows.size(); i++)
-                        offset += QSL("\n ") + rows.at(i).trimmed() + QSL("\n");
+                        offset += QSL("\n ") + rows.at(i).trimmed();
+                offset += QSL("\n");
         }
         return offset;
 }
