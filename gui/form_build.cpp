@@ -17,6 +17,7 @@ form_build::form_build(pkgwindow *handler, QWidget *parent) :
         ui->tw_compile->setModel(m_model_compile);
 
         ui->ln_build_dir->setText(m_handler->m_pkg->build_dir());
+        ui->ln_compile_import_remote->setText(m_handler->m_pkg->m_source);
         build_reload();
 
         connect(ui->btn_compile_import_local, &QPushButton::clicked, this, &form_build::compile_import_local);
@@ -70,7 +71,7 @@ void form_build::compile_import_remote()
         git* proc = new git;
         QString build_dir = m_handler->m_pkg->build_dir();
         filesystem::rmdir(build_dir);
-        proc->clone(remote, build_dir);
+        proc->clone(remote, build_dir, ui->ln_compile_import_branch->text());
 
         m_model_compile->setRootPath(build_dir);
         ui->tw_compile->setRootIndex(m_model_compile->index(build_dir));
