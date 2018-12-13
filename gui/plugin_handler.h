@@ -7,11 +7,11 @@
 
 class plugin_handler : public QObject
 {
-    Q_OBJECT
+        Q_OBJECT
 public:
-    explicit plugin_handler(QObject *parent = nullptr);
+        explicit plugin_handler(QObject *parent = nullptr);
 private:
-    QList<plugin*>* m_plugin;
+        QList<plugin*>* m_plugin;
 };
 
 #endif // PLUGIN_HANDLER_H

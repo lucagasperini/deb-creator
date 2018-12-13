@@ -6,14 +6,14 @@
 
 class plugin : public QObject
 {
-    Q_OBJECT
+        Q_OBJECT
 public:
-    explicit plugin(const QString path, QObject *parent = nullptr);
-    int load();
+        explicit plugin(const QString path, QObject *parent = nullptr);
+        int load();
 private:
-    plugin_interface* m_interface;
-    QString m_path;
-    bool m_active;
+        plugin_interface* m_interface;
+        QString m_path;
+        bool m_active;
 };
 
 #endif // PLUGIN_H

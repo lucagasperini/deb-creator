@@ -9,9 +9,9 @@ class form_handler;
 class plugin_interface
 {
 public:
-    virtual ~plugin_interface() = 0;
-    virtual void generate() = 0;
-    virtual void init(form_handler* p) = 0;
+        virtual ~plugin_interface() = 0;
+        virtual void generate() = 0;
+        virtual void init(form_handler* p) = 0;
 
 };
 
