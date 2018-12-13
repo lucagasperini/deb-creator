@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 
-#include <debcreator.h>
+#include <lib/debcreator.h>
 
 namespace Ui
 {

@@ -2,7 +2,7 @@
 #define DPKG_H
 
 #include <QProcess>
-#include <changelog_list.h>
+#include "changelog_list.h"
 
 class dpkg : public QProcess
 {

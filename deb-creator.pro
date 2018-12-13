@@ -6,6 +6,6 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS = gui lib
+SUBDIRS = gui lib plugins
 
 gui.depends = lib

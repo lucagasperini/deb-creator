@@ -6,7 +6,7 @@
 
 #include "pkgwindow.h"
 
-#include <debcreator.h>
+#include <lib/debcreator.h>
 
 #include "about.h"
 #include "depend.h"

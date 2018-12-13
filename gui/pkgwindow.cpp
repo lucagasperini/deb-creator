@@ -19,6 +19,8 @@ pkgwindow::pkgwindow(const package &pkg, QWidget *parent) :
         m_dpkg = new dpkg(m_pkg->root());
         ui->setupUi(this);
 
+
+
         form_control *control = new form_control(this);
         ui->tabWidget->addTab(control, "Control");
         ui->tabWidget->setCurrentWidget(control);

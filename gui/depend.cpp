@@ -1,6 +1,6 @@
 #include "depend.h"
 #include "ui_depend.h"
-#include "define.h"
+#include <lib/define.h>
 
 depend::depend(QWidget *parent) :
         QDialog(parent),

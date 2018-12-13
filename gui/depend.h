@@ -1,7 +1,7 @@
 #ifndef DEPEND_H
 #define DEPEND_H
 
-#include <apt.h>
+#include <lib/apt.h>
 
 #include "depend_add.h"
 

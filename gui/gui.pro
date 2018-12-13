@@ -34,7 +34,10 @@ SOURCES += \
     form_build.cpp \
     form_changelog.cpp \
     form_custom.cpp \
-    form_handler.cpp
+    form_handler.cpp \
+    plugin_interface.cpp \
+    plugin_handler.cpp \
+    plugin.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -46,7 +49,10 @@ HEADERS += \
     form_build.h \
     form_changelog.h \
     form_custom.h \
-    form_handler.h
+    form_handler.h \
+    plugin_interface.h \
+    plugin_handler.h \
+    plugin.h
 
 FORMS += \
         mainwindow.ui \
@@ -68,8 +74,8 @@ INSTALLS += target icon desktop
 
 unix|win32: LIBS += -L$$OUT_PWD/../lib/ -ldebcreator
 
-INCLUDEPATH += $$PWD/../lib
-DEPENDPATH += $$PWD/../lib
+INCLUDEPATH += $$PWD/../
+DEPENDPATH += $$PWD/../
 
 RESOURCES += \
     resource.qrc
