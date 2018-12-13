@@ -9,8 +9,6 @@
 #include <QPushButton>
 #include <QFileInfo>
 
-using namespace std;
-
 mainwindow::mainwindow(QWidget *parent) :
         QMainWindow(parent),
         ui(new Ui::mainwindow),

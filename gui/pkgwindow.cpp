@@ -9,8 +9,6 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
-using namespace std;
-
 pkgwindow::pkgwindow(const package &pkg, QWidget *parent) :
         QMainWindow(parent),
         ui(new Ui::pkgwindow)
