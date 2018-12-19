@@ -23,6 +23,11 @@ public:
          * @return the list of packages
          */
         QList<package *>* search(const QString &text);
+        /**
+         * @brief install install pkglist on system
+         * @param pkglist list of packages
+         */
+        void install(const QStringList &pkglist);
 };
 
 #endif // APT_H

@@ -28,6 +28,7 @@ public slots:
         void build_select(int row);
         void build_browse_app();
         void build_browse_dir();
+        void install_dependencies();
         void generate();
 private:
         Ui::form_build *ui;

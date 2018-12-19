@@ -11,11 +11,14 @@ QByteArray apt::exec()
         QByteArray offset;
         start(QIODevice::ReadWrite);
 #ifdef QT_DEBUG
-        qDebug() << QSL("Executing:") << program() << arguments() << workingDirectory();
+        qDebug() << QSL("Executing: ") << program() << arguments() << workingDirectory();
 #endif
         waitForFinished();
         offset = readAll();
         close();
+#ifdef QT_DEBUG
+        qDebug() << QSL("Output: ") << offset;
+#endif
         return offset;
 }
 
@@ -40,4 +43,17 @@ QList<package*>* apt::search(const QString &text)
                 offset->append(pkg);
         }
         return offset;
+}
+
+void apt::install(const QStringList &pkglist)
+{
+        QStringList args;
+
+        setProgram(QSL("bash"));
+        for(int i = 0; i < pkglist.size(); i++) {
+                args.clear();
+                args << QSL("-c") << (QSL("apt-get install -y ") + pkglist.at(i));
+                setArguments(args);
+                exec();
+        }
 }

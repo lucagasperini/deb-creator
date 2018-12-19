@@ -27,6 +27,7 @@ form_build::form_build(pkgwindow *handler, QWidget *parent) :
         connect(ui->btn_buildremove, &QPushButton::clicked, this, &form_build::build_remove);
         connect(ui->btn_build_dir, &QPushButton::clicked, this, &form_build::build_browse_dir);
         connect(ui->btn_build_app, &QPushButton::clicked, this, &form_build::build_browse_app);
+        connect(ui->btn_install_dependencies, &QPushButton::clicked, this, &form_build::install_dependencies);
 
         connect(ui->list_build_db, &QListWidget::currentRowChanged, this, &form_build::build_select);
         connect(m_process, &multiprocess::read, m_handler, &pkgwindow::output_append);
@@ -145,6 +146,19 @@ void form_build::build_browse_dir()
         QString dir;
         dir = QFileDialog::getExistingDirectory(this, QSL("Select the working directory"), ui->ln_build_dir->text());
         ui->ln_build_dir->setText(dir);
+}
+
+void form_build::install_dependencies()
+{
+        QStringList pkglist_version = m_handler->m_pkg->m_build_dep.split(',');
+        QStringList pkglist;
+        QString buffer;
+        for(int i = 0; i < pkglist_version.size(); i++) {
+                buffer = pkglist_version.at(i);
+                pkglist.append(buffer.split(' ').at(0));
+        }
+        apt* installer = new apt;
+        installer->install(pkglist);
 }
 
 void form_build::generate()

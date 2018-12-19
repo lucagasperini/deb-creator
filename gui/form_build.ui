@@ -127,6 +127,25 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="btn_install_dependencies">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset theme="dependency"/>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>64</width>
+             <height>64</height>
+            </size>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
